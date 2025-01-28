@@ -4,7 +4,6 @@ import brave.Tracing;
 import brave.sampler.Sampler;
 import fun.golinks.trace.http.servlet.ServletAutoConfiguration;
 import fun.golinks.trace.rpc.grpc.GrpcAutoConfiguration;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -14,7 +13,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
-import zipkin2.reporter.urlconnection.URLConnectionSender;
+import zipkin2.reporter.okhttp3.OkHttpSender;
+
+import javax.annotation.Resource;
 
 @ConditionalOnProperty(prefix = "infra.trace", name = "enable", havingValue = "true", matchIfMissing = true)
 @Configuration
@@ -28,7 +29,8 @@ public class TraceAutoConfiguration {
 
     @Bean
     public AsyncZipkinSpanHandler asyncZipkinSpanHandler(TraceProperties traceProperties) {
-        return AsyncZipkinSpanHandler.create(URLConnectionSender.create(traceProperties.getZipkin().getUrl()));
+        OkHttpSender sender = OkHttpSender.create(traceProperties.getZipkin().getUrl());
+        return AsyncZipkinSpanHandler.create(sender);
     }
 
     @Bean

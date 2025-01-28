@@ -1,11 +1,12 @@
 package fun.golinks.trace.http.servlet;
 
 import brave.Tracing;
-import brave.jakarta.servlet.TracingFilter;
-import jakarta.servlet.Filter;
+import brave.servlet.TracingFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.servlet.Filter;
 
 @Configuration
 public class ServletAutoConfiguration {

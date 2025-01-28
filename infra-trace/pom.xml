@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>fun.golinks</groupId>
         <artifactId>infra-bom</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>infra-trace</artifactId>
     <properties>
@@ -39,18 +39,20 @@
         <dependency>
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-reporter-brave</artifactId>
+            <version>3.4.3</version>
         </dependency>
         <dependency>
             <groupId>io.zipkin.reporter2</groupId>
-            <artifactId>zipkin-sender-urlconnection</artifactId>
+            <artifactId>zipkin-sender-okhttp3</artifactId>
+            <version>3.4.3</version>
         </dependency>
         <dependency>
             <groupId>io.zipkin.brave</groupId>
-            <artifactId>brave-instrumentation-servlet-jakarta</artifactId>
+            <artifactId>brave-instrumentation-servlet</artifactId>
         </dependency>
         <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
