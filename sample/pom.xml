@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>fun.golinks</groupId>
-        <artifactId>infra-framework</artifactId>
-        <version>0.0.1</version>
+        <artifactId>infra-bom</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>sample</artifactId>
     <dependencies>
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>fun.golinks</groupId>
             <artifactId>infra-trace</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
