@@ -11,7 +11,7 @@
 	<groupId>fun.golinks</groupId>
 	<artifactId>infra-framework</artifactId>
 	<packaging>pom</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>infra-framework</name>
 	<description>Java后端，基础框架</description>
 	<properties>
