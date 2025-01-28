@@ -10,7 +10,7 @@
 		<module>sample</module>
 		<module>infra-bom</module>
 	</modules>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>infra-framework</name>
 	<description>Java后端，基础框架</description>
 	<properties>

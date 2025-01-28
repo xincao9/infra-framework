@@ -6,7 +6,8 @@
     <parent>
         <groupId>fun.golinks</groupId>
         <artifactId>infra-bom</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
+        <relativePath/>
     </parent>
     <artifactId>sample</artifactId>
     <dependencies>
@@ -21,7 +22,6 @@
         <dependency>
             <groupId>fun.golinks</groupId>
             <artifactId>infra-trace</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
@@ -36,6 +36,7 @@
                         </goals>
                     </execution>
                 </executions>
+                <version>${spring-boot.version}</version>
             </plugin>
         </plugins>
     </build>
