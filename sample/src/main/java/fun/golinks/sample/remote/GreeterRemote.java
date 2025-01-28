@@ -12,12 +12,11 @@ public class GreeterRemote extends GreeterGrpc.GreeterImplBase {
 
     private static final String GREETING_PREFIX = "Server:Hello ";
 
-    private static final GrpcConsumer<HelloRequest, HelloReply> grpcConsumer = GrpcConsumer.wrap(helloRequest -> buildHelloReply(helloRequest.getName()));
+    private static final GrpcConsumer<HelloRequest, HelloReply> grpcConsumer = GrpcConsumer
+            .wrap(helloRequest -> buildHelloReply(helloRequest.getName()));
 
     private static HelloReply buildHelloReply(String name) {
-        return HelloReply.newBuilder()
-                .setMessage(GREETING_PREFIX + name)
-                .build();
+        return HelloReply.newBuilder().setMessage(GREETING_PREFIX + name).build();
     }
 
     @Override
@@ -25,4 +24,3 @@ public class GreeterRemote extends GreeterGrpc.GreeterImplBase {
         grpcConsumer.accept(req, responseObserver);
     }
 }
-

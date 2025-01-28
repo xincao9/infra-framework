@@ -19,12 +19,13 @@ public class GreeterController {
     @Resource
     private GreeterGrpc.GreeterBlockingStub greeterBlockingStub;
 
-    private final GrpcInvoker<HelloRequest, HelloReply> grpcInvoker = GrpcInvoker.wrap(new GrpcFunction<HelloRequest, HelloReply>() {
-        @Override
-        public HelloReply apply(HelloRequest helloRequest) throws Throwable {
-            return greeterBlockingStub.sayHello(helloRequest);
-        }
-    });
+    private final GrpcInvoker<HelloRequest, HelloReply> grpcInvoker = GrpcInvoker
+            .wrap(new GrpcFunction<HelloRequest, HelloReply>() {
+                @Override
+                public HelloReply apply(HelloRequest helloRequest) throws Throwable {
+                    return greeterBlockingStub.sayHello(helloRequest);
+                }
+            });
 
     @GetMapping
     public String get(@RequestParam("name") String name) throws Throwable {
