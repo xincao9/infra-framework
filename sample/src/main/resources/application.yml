@@ -9,3 +9,14 @@ infra:
     zipkin:
       url: "http://localhost:9411/api/v2/spans"
       sampler: "1.0F"
+grpc:
+  pure:
+    app-name: greeter
+    server:
+      port: 9999
+    discovery:
+      type: nacos
+      nacos:
+        address: 127.0.0.1:8848
+        username: nacos
+        password: nacos

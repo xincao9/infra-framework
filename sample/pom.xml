@@ -16,6 +16,10 @@
         </dependency>
         <dependency>
             <groupId>fun.golinks</groupId>
+            <artifactId>grpc-pure-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fun.golinks</groupId>
             <artifactId>infra-trace</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
