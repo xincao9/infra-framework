@@ -13,8 +13,9 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>infra-trace</module>
+		<module>sample</module>
 	</modules>
-	<version>0.0.1</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>infra-framework</name>
 	<description>Java后端，基础框架</description>
 	<properties>
@@ -77,6 +78,10 @@
 			</extension>
 		</extensions>
 		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
