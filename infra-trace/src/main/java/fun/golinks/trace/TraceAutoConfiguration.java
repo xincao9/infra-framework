@@ -4,9 +4,11 @@ import brave.Tracing;
 import brave.sampler.Sampler;
 import fun.golinks.trace.http.servlet.ServletAutoConfiguration;
 import fun.golinks.trace.jdbc.mybatis.MyBatisAutoConfiguration;
+import fun.golinks.trace.redis.RedisAutoConfiguration;
 import fun.golinks.trace.rpc.grpc.GrpcAutoConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -23,7 +25,8 @@ import javax.annotation.Resource;
 @EnableConfigurationProperties(TraceProperties.class)
 @ImportAutoConfiguration({ TraceAutoConfiguration.ServletAutoConfigurationImporter.class,
         TraceAutoConfiguration.GrpcAutoConfigurationImporter.class,
-        TraceAutoConfiguration.MyBatisAutoConfigurationImporter.class })
+        TraceAutoConfiguration.MyBatisAutoConfigurationImporter.class,
+        TraceAutoConfiguration.RedisAutoConfigurationImporter.class })
 public class TraceAutoConfiguration {
 
     @Resource
@@ -55,5 +58,12 @@ public class TraceAutoConfiguration {
     @ConditionalOnClass(name = "org.apache.ibatis.plugin.Interceptor")
     @ImportAutoConfiguration(MyBatisAutoConfiguration.class)
     static class MyBatisAutoConfigurationImporter {
+    }
+
+    @ConditionalOnClass(name = "org.springframework.data.redis.core.RedisTemplate")
+    @ConditionalOnBean(type = "org.springframework.data.redis.connection.RedisConnectionFactory")
+    @ImportAutoConfiguration(RedisAutoConfiguration.class)
+    static class RedisAutoConfigurationImporter {
+
     }
 }
