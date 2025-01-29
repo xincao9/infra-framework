@@ -5,7 +5,7 @@
     <groupId>fun.golinks</groupId>
     <artifactId>infra-bom</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>infra-bom</name>
     <description>Java后端，基础框架</description>
     <properties>
@@ -17,7 +17,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>2.7.18</spring-boot.version>
         <grpc-pure-spring-boot-starter.version>1.0.4</grpc-pure-spring-boot-starter.version>
-        <infra-trace.version>0.0.1</infra-trace.version>
+        <infra-trace.version>0.0.2-SNAPSHOT</infra-trace.version>
     </properties>
     <url>https://github.com/xincao9/infra-framework</url>
     <developers>
