@@ -1,8 +1,15 @@
 package fun.golinks.trace.redis;
 
+import brave.Span;
 import brave.Tracer;
 import brave.Tracing;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 
+@Aspect
+@Slf4j
 public class RedisTemplateAspect {
     private final Tracer tracer;
 

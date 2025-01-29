@@ -13,6 +13,14 @@ import io.grpc.ServerInterceptor;
 import java.util.Map;
 
 public final class GrpcTracing {
+    final RpcTracing rpcTracing;
+    final Map<String, Metadata.Key<String>> nameToKey;
+
+    GrpcTracing(Builder builder) { // intentionally hidden constructor
+        rpcTracing = builder.rpcTracing;
+        nameToKey = GrpcPropagation.nameToKey(rpcTracing.propagation());
+    }
+
     public static GrpcTracing create(Tracing tracing) {
         return newBuilder(tracing).build();
     }
@@ -27,6 +35,24 @@ public final class GrpcTracing {
 
     public static Builder newBuilder(RpcTracing rpcTracing) {
         return new Builder(rpcTracing);
+    }
+
+    public Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    /**
+     * This interceptor traces outbound calls
+     */
+    public ClientInterceptor newClientInterceptor() {
+        return new TracingClientInterceptor(this);
+    }
+
+    /**
+     * This interceptor traces inbound calls
+     */
+    public ServerInterceptor newServerInterceptor() {
+        return new TracingServerInterceptor(this);
     }
 
     public static final class Builder {
@@ -45,27 +71,5 @@ public final class GrpcTracing {
         public GrpcTracing build() {
             return new GrpcTracing(this);
         }
-    }
-
-    final RpcTracing rpcTracing;
-    final Map<String, Metadata.Key<String>> nameToKey;
-
-    GrpcTracing(Builder builder) { // intentionally hidden constructor
-        rpcTracing = builder.rpcTracing;
-        nameToKey = GrpcPropagation.nameToKey(rpcTracing.propagation());
-    }
-
-    public Builder toBuilder() {
-        return new Builder(this);
-    }
-
-    /** This interceptor traces outbound calls */
-    public ClientInterceptor newClientInterceptor() {
-        return new TracingClientInterceptor(this);
-    }
-
-    /** This interceptor traces inbound calls */
-    public ServerInterceptor newServerInterceptor() {
-        return new TracingServerInterceptor(this);
     }
 }

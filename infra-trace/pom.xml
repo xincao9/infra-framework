@@ -49,7 +49,7 @@
             <artifactId>zipkin-sender-okhttp3</artifactId>
             <version>${zipkin-sender-okhttp3.version}</version>
         </dependency>
-<!--        servlet http-->
+        <!--        servlet http-->
         <dependency>
             <groupId>io.zipkin.brave</groupId>
             <artifactId>brave-instrumentation-servlet</artifactId>
@@ -59,7 +59,7 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
-<!--        grpc-->
+        <!--        grpc-->
         <dependency>
             <groupId>io.zipkin.brave</groupId>
             <artifactId>brave-instrumentation-rpc</artifactId>
@@ -69,14 +69,14 @@
             <artifactId>grpc-pure-spring-boot-starter</artifactId>
             <scope>provided</scope>
         </dependency>
-<!--        mybatis-->
+        <!--        mybatis-->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>${mybatis.version}</version>
             <scope>provided</scope>
         </dependency>
-<!--        redis-->
+        <!--        redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -84,8 +84,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-aop</artifactId>
-            <scope>provided</scope>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
     </dependencies>
 </project>

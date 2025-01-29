@@ -39,7 +39,9 @@ public final class GrpcServerResponse extends RpcServerResponse implements GrpcR
         this.trailers = trailers;
     }
 
-    /** Returns the {@link #status()} */
+    /**
+     * Returns the {@link #status()}
+     */
     @Override
     public Status unwrap() {
         return status;
@@ -50,7 +52,9 @@ public final class GrpcServerResponse extends RpcServerResponse implements GrpcR
         return request;
     }
 
-    /** Returns {@link Status#getCause()} */
+    /**
+     * Returns {@link Status#getCause()}
+     */
     @Override
     @Nullable
     public Throwable error() {

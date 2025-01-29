@@ -13,7 +13,7 @@ import io.grpc.Status;
  *
  * <p>
  * Here's an example that adds default tags, and if gRPC, the response encoding:
- * 
+ *
  * <pre>
  * {@code
  * Tag<GrpcResponse> responseEncoding = new Tag<GrpcResponse>("grpc.response_encoding") {

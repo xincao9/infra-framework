@@ -8,7 +8,6 @@ import fun.golinks.trace.redis.RedisAutoConfiguration;
 import fun.golinks.trace.rpc.grpc.GrpcAutoConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -18,8 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
-import javax.annotation.Resource;
-
 @ConditionalOnProperty(prefix = "infra.trace", name = "enable", havingValue = "true", matchIfMissing = true)
 @Configuration
 @EnableConfigurationProperties(TraceProperties.class)
@@ -28,9 +25,6 @@ import javax.annotation.Resource;
         TraceAutoConfiguration.MyBatisAutoConfigurationImporter.class,
         TraceAutoConfiguration.RedisAutoConfigurationImporter.class })
 public class TraceAutoConfiguration {
-
-    @Resource
-    private TraceProperties traceProperties;
 
     @Bean
     public AsyncZipkinSpanHandler asyncZipkinSpanHandler(TraceProperties traceProperties) {
@@ -63,6 +57,5 @@ public class TraceAutoConfiguration {
     @ConditionalOnClass(name = "org.springframework.data.redis.core.RedisTemplate")
     @ImportAutoConfiguration(RedisAutoConfiguration.class)
     static class RedisAutoConfigurationImporter {
-
     }
 }

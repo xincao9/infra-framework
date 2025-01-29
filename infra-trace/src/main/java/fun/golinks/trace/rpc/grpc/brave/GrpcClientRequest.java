@@ -44,7 +44,9 @@ public final class GrpcClientRequest extends RpcClientRequest implements GrpcReq
         this.headers = headers;
     }
 
-    /** Returns the {@link #call()} */
+    /**
+     * Returns the {@link #call()}
+     */
     @Override
     public Object unwrap() {
         return call;

@@ -13,7 +13,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 final class GrpcPropagation {
-    /** Creates constant keys for use in propagating trace identifiers or baggage. */
+    /**
+     * Creates constant keys for use in propagating trace identifiers or baggage.
+     */
     static Map<String, Key<String>> nameToKey(Propagation<String> propagation) {
         Map<String, Key<String>> result = new LinkedHashMap<String, Key<String>>();
         for (String keyName : propagation.keys()) {

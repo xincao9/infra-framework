@@ -3,17 +3,15 @@ package fun.golinks.trace.redis;
 import brave.Tracing;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-
-import java.lang.reflect.Proxy;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @EnableAspectJAutoProxy
 @Configuration
 public class RedisAutoConfiguration {
 
-
+    @Bean
+    public RedisTemplateAspect redisTemplateAspect(Tracing tracing) {
+        return new RedisTemplateAspect(tracing);
+    }
 
 }

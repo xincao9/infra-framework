@@ -23,10 +23,10 @@ import static brave.internal.Throwables.propagateIfFatal;
 
 // not exposed directly as implementation notably changes between versions 1.2 and 1.3
 final class TracingServerInterceptor implements ServerInterceptor {
+    private static final String INFRA_EXTEND_PING = "infra.Extend/ping";
     final Map<String, Key<String>> nameToKey;
     final CurrentTraceContext currentTraceContext;
     final RpcServerHandler handler;
-    private static final String INFRA_EXTEND_PING = "infra.Extend/ping";
 
     TracingServerInterceptor(GrpcTracing grpcTracing) {
         nameToKey = grpcTracing.nameToKey;

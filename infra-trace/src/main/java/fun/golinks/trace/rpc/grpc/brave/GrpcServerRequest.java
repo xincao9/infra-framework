@@ -38,7 +38,9 @@ public class GrpcServerRequest extends RpcServerRequest implements GrpcRequest {
         this.headers = headers;
     }
 
-    /** Returns the {@link #call()} */
+    /**
+     * Returns the {@link #call()}
+     */
     @Override
     public Object unwrap() {
         return call;

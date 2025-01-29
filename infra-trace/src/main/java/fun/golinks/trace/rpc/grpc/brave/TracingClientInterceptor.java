@@ -24,10 +24,10 @@ import static brave.internal.Throwables.propagateIfFatal;
 
 // not exposed directly as implementation notably changes between versions 1.2 and 1.3
 final class TracingClientInterceptor implements ClientInterceptor {
+    private static final String INFRA_EXTEND_PING = "infra.Extend/ping";
     final Map<String, Key<String>> nameToKey;
     final CurrentTraceContext currentTraceContext;
     final RpcClientHandler handler;
-    private static final String INFRA_EXTEND_PING = "infra.Extend/ping";
 
     TracingClientInterceptor(GrpcTracing grpcTracing) {
         nameToKey = grpcTracing.nameToKey;
@@ -43,6 +43,15 @@ final class TracingClientInterceptor implements ClientInterceptor {
         }
         return new TracingClientCall<ReqT, RespT>(method, callOptions, currentTraceContext.get(),
                 next.newCall(method, callOptions));
+    }
+
+    /**
+     * Scopes the client context or the invocation if the client span finished
+     */
+    Scope maybeScopeClientOrInvocationContext(AtomicReference<Span> spanRef, @Nullable TraceContext invocationContext) {
+        Span span = spanRef.get();
+        TraceContext context = span != null ? span.context() : invocationContext;
+        return currentTraceContext.maybeScope(context);
     }
 
     final class TracingClientCall<ReqT, RespT> extends SimpleForwardingClientCall<ReqT, RespT> {
@@ -150,13 +159,6 @@ final class TracingClientInterceptor implements ClientInterceptor {
                 scope.close();
             }
         }
-    }
-
-    /** Scopes the client context or the invocation if the client span finished */
-    Scope maybeScopeClientOrInvocationContext(AtomicReference<Span> spanRef, @Nullable TraceContext invocationContext) {
-        Span span = spanRef.get();
-        TraceContext context = span != null ? span.context() : invocationContext;
-        return currentTraceContext.maybeScope(context);
     }
 
     final class TracingClientCallListener<RespT> extends SimpleForwardingClientCallListener<RespT> {

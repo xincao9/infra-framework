@@ -13,7 +13,7 @@ import io.grpc.MethodDescriptor;
  *
  * <p>
  * Here's an example that adds default tags, and if gRPC, the {@linkplain MethodDescriptor#getType() method type}:
- * 
+ *
  * <pre>
  * {
  *     &#64;code
