@@ -15,6 +15,7 @@ import io.grpc.ClientCall.Listener;
 import io.grpc.ForwardingClientCall.SimpleForwardingClientCall;
 import io.grpc.ForwardingClientCallListener.SimpleForwardingClientCallListener;
 import io.grpc.Metadata.Key;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -26,6 +27,7 @@ final class TracingClientInterceptor implements ClientInterceptor {
     final Map<String, Key<String>> nameToKey;
     final CurrentTraceContext currentTraceContext;
     final RpcClientHandler handler;
+    private static final String INFRA_EXTEND_PING = "infra.Extend/ping";
 
     TracingClientInterceptor(GrpcTracing grpcTracing) {
         nameToKey = grpcTracing.nameToKey;
@@ -36,6 +38,9 @@ final class TracingClientInterceptor implements ClientInterceptor {
     @Override
     public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> method,
             CallOptions callOptions, Channel next) {
+        if (StringUtils.equals(method.getFullMethodName(), INFRA_EXTEND_PING)) {
+            return next.newCall(method, callOptions);
+        }
         return new TracingClientCall<ReqT, RespT>(method, callOptions, currentTraceContext.get(),
                 next.newCall(method, callOptions));
     }

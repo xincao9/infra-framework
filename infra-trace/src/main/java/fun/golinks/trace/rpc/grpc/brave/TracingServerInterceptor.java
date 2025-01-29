@@ -14,6 +14,7 @@ import io.grpc.ForwardingServerCallListener.SimpleForwardingServerCallListener;
 import io.grpc.*;
 import io.grpc.Metadata.Key;
 import io.grpc.ServerCall.Listener;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -25,6 +26,7 @@ final class TracingServerInterceptor implements ServerInterceptor {
     final Map<String, Key<String>> nameToKey;
     final CurrentTraceContext currentTraceContext;
     final RpcServerHandler handler;
+    private static final String INFRA_EXTEND_PING = "infra.Extend/ping";
 
     TracingServerInterceptor(GrpcTracing grpcTracing) {
         nameToKey = grpcTracing.nameToKey;
@@ -35,6 +37,9 @@ final class TracingServerInterceptor implements ServerInterceptor {
     @Override
     public <ReqT, RespT> Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
             ServerCallHandler<ReqT, RespT> next) {
+        if (StringUtils.equals(call.getMethodDescriptor().getFullMethodName(), INFRA_EXTEND_PING)) {
+            return next.startCall(call, headers);
+        }
         GrpcServerRequest request = new GrpcServerRequest(nameToKey, call, headers);
 
         Span span = handler.handleReceive(request);
