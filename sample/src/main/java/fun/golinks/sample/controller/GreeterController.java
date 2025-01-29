@@ -5,6 +5,8 @@ import fun.golinks.grpc.pure.util.GrpcInvoker;
 import fun.golinks.sample.GreeterGrpc;
 import fun.golinks.sample.HelloReply;
 import fun.golinks.sample.HelloRequest;
+import fun.golinks.sample.entity.SysUser;
+import fun.golinks.sample.service.SysUserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +17,9 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("greeter")
 public class GreeterController {
+
+    @Resource
+    private SysUserService sysUserService;
 
     @Resource
     private GreeterGrpc.GreeterBlockingStub greeterBlockingStub;
@@ -28,8 +33,12 @@ public class GreeterController {
             });
 
     @GetMapping
-    public String get(@RequestParam("name") String name) throws Throwable {
-        HelloRequest request = HelloRequest.newBuilder().setName(name).build();
+    public String say(@RequestParam("name") String name) throws Throwable {
+        SysUser sysUser = sysUserService.findByName(name);
+        if (sysUser == null) {
+            return "not found";
+        }
+        HelloRequest request = HelloRequest.newBuilder().setName(sysUser.getEmail()).build();
         HelloReply response = grpcInvoker.apply(request);
         return response.getMessage();
     }

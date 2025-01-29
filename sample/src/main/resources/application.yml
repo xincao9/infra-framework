@@ -1,6 +1,20 @@
 spring:
   application:
     name: sample
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:file:/tmp/sample
+    username: root
+    password: 123456
+  sql:
+    init:
+      schema-locations: classpath:db/schema-h2.sql
+      data-locations: classpath:db/data-h2.sql
+      mode: always
+  h2:
+    console:
+      enable: true
+      path: /h2-console
 server:
   port: 8080
 infra:
