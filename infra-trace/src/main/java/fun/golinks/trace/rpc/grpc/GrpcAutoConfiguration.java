@@ -1,9 +1,9 @@
 package fun.golinks.trace.rpc.grpc;
 
 import brave.Tracing;
-import brave.grpc.GrpcTracing;
 import io.grpc.ClientInterceptor;
 import io.grpc.ServerInterceptor;
+import fun.golinks.trace.rpc.grpc.brave.GrpcTracing;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
