@@ -11,6 +11,9 @@
     <artifactId>infra-trace</artifactId>
     <properties>
         <brave.version>6.0.3</brave.version>
+        <zipkin-reporter-brave.version>3.4.3</zipkin-reporter-brave.version>
+        <zipkin-sender-okhttp3.version>3.4.3</zipkin-sender-okhttp3.version>
+        <mybatis.version>3.5.19</mybatis.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -39,13 +42,14 @@
         <dependency>
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-reporter-brave</artifactId>
-            <version>3.4.3</version>
+            <version>${zipkin-reporter-brave.version}</version>
         </dependency>
         <dependency>
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-sender-okhttp3</artifactId>
-            <version>3.4.3</version>
+            <version>${zipkin-sender-okhttp3.version}</version>
         </dependency>
+<!--        servlet http-->
         <dependency>
             <groupId>io.zipkin.brave</groupId>
             <artifactId>brave-instrumentation-servlet</artifactId>
@@ -55,6 +59,7 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+<!--        grpc-->
         <dependency>
             <groupId>io.zipkin.brave</groupId>
             <artifactId>brave-instrumentation-rpc</artifactId>
@@ -62,6 +67,13 @@
         <dependency>
             <groupId>fun.golinks</groupId>
             <artifactId>grpc-pure-spring-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+<!--        mybatis-->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

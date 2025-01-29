@@ -3,6 +3,7 @@ package fun.golinks.trace;
 import brave.Tracing;
 import brave.sampler.Sampler;
 import fun.golinks.trace.http.servlet.ServletAutoConfiguration;
+import fun.golinks.trace.jdbc.mybatis.MyBatisAutoConfiguration;
 import fun.golinks.trace.rpc.grpc.GrpcAutoConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -21,7 +22,8 @@ import javax.annotation.Resource;
 @Configuration
 @EnableConfigurationProperties(TraceProperties.class)
 @ImportAutoConfiguration({ TraceAutoConfiguration.ServletAutoConfigurationImporter.class,
-        TraceAutoConfiguration.GrpcAutoConfigurationImporter.class })
+        TraceAutoConfiguration.GrpcAutoConfigurationImporter.class,
+        TraceAutoConfiguration.MyBatisAutoConfigurationImporter.class })
 public class TraceAutoConfiguration {
 
     @Resource
@@ -48,5 +50,10 @@ public class TraceAutoConfiguration {
     @ConditionalOnClass(name = { "io.grpc.ClientInterceptor", "io.grpc.ServerInterceptor" })
     @ImportAutoConfiguration(GrpcAutoConfiguration.class)
     static class GrpcAutoConfigurationImporter {
+    }
+
+    @ConditionalOnClass(name = "org.apache.ibatis.plugin.Interceptor")
+    @ImportAutoConfiguration(MyBatisAutoConfiguration.class)
+    static class MyBatisAutoConfigurationImporter {
     }
 }
