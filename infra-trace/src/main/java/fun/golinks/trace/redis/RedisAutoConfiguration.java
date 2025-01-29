@@ -17,7 +17,7 @@ public class RedisAutoConfiguration {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         return (RedisTemplate<Object, Object>) Proxy.newProxyInstance(template.getClass().getClassLoader(),
-                template.getClass().getInterfaces(), new RedisTemplateInvocationHandler(tracing, template));
+                new Class[] { RedisTemplate.class }, new RedisTemplateInvocationHandler(tracing, template));
     }
 
     @Bean
@@ -25,7 +25,7 @@ public class RedisAutoConfiguration {
         StringRedisTemplate template = new StringRedisTemplate(redisConnectionFactory);
         template.setConnectionFactory(redisConnectionFactory);
         return (StringRedisTemplate) Proxy.newProxyInstance(template.getClass().getClassLoader(),
-                template.getClass().getInterfaces(), new RedisTemplateInvocationHandler(tracing, template));
+                new Class[] { StringRedisTemplate.class }, new RedisTemplateInvocationHandler(tracing, template));
     }
 
 }

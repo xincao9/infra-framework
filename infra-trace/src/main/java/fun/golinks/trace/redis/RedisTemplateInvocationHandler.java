@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 
 public class RedisTemplateInvocationHandler implements InvocationHandler {
 
-    private Tracing tracing;
+    private final Tracing tracing;
     private final RedisTemplate<?, ?> redisTemplate;
 
     public RedisTemplateInvocationHandler(Tracing tracing, RedisTemplate<?, ?> redisTemplate) {
