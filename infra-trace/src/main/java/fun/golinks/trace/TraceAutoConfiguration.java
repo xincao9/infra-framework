@@ -61,7 +61,6 @@ public class TraceAutoConfiguration {
     }
 
     @ConditionalOnClass(name = "org.springframework.data.redis.core.RedisTemplate")
-    @ConditionalOnBean(type = "org.springframework.data.redis.connection.RedisConnectionFactory")
     @ImportAutoConfiguration(RedisAutoConfiguration.class)
     static class RedisAutoConfigurationImporter {
 
