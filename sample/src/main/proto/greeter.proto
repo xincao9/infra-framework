@@ -1,20 +1,19 @@
 syntax = "proto3";
 
-package fun.golinks.sample;
-
+package fun.golinks.sample.rpc;
 option java_multiple_files = true;
 
 // Greeting 服务定义
-service Greeter {
-  rpc SayHello (HelloRequest) returns (HelloReply);
+service GreeterRPCService {
+  rpc Say (GreeterSayRequest) returns (GreeterSayResponse);
 }
 
-// 请求消息（包含用户名称）
-message HelloRequest {
+// Greeting.Say方法请求体
+message GreeterSayRequest {
   string name = 1;
 }
 
-// 响应消息（包含问候语）
-message HelloReply {
+// Greeting.Say方法请求体响应体
+message GreeterSayResponse {
   string message = 1;
 }
