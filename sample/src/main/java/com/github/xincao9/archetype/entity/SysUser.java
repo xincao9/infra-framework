@@ -1,4 +1,4 @@
-package fun.golinks.archetype.entity;
+package com.github.xincao9.archetype.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;

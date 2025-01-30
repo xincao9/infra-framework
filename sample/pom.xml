@@ -9,7 +9,9 @@
         <version>0.0.2-SNAPSHOT</version>
         <relativePath/>
     </parent>
-    <artifactId>infra</artifactId>
+    <groupId>com.github.xincao9.archetype</groupId>
+    <artifactId>sample</artifactId>
+    <version>0.0.2-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,7 +1,7 @@
-package fun.golinks.archetype.service;
+package com.github.xincao9.archetype.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import fun.golinks.archetype.entity.SysUser;
+import com.github.xincao9.archetype.entity.SysUser;
 
 public interface SysUserService extends IService<SysUser> {
 

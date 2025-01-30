@@ -1,4 +1,4 @@
-package fun.golinks.archetype.config;
+package com.github.xincao9.archetype.config;
 
 import com.github.xincao9.infra.archetype.GreeterRPCServiceGrpc;
 import fun.golinks.grpc.pure.GrpcChannels;

@@ -1,12 +1,12 @@
-package fun.golinks.archetype.service.impl;
+package com.github.xincao9.archetype.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import fun.golinks.archetype.entity.SysUser;
-import fun.golinks.archetype.mapper.SysUserMapper;
-import fun.golinks.archetype.service.SysUserService;
+import com.github.xincao9.archetype.entity.SysUser;
+import com.github.xincao9.archetype.mapper.SysUserMapper;
+import com.github.xincao9.archetype.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
