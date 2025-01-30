@@ -2,8 +2,8 @@ package fun.golinks.sample.controller;
 
 import fun.golinks.sample.entity.SysUser;
 import fun.golinks.sample.invoker.GreeterInvoker;
-import fun.golinks.sample.rpc.GreeterSayRequest;
-import fun.golinks.sample.rpc.GreeterSayResponse;
+import grpc.fun.golinks.sample.GreeterSayRequest;
+import grpc.fun.golinks.sample.GreeterSayResponse;
 import fun.golinks.sample.service.SysUserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

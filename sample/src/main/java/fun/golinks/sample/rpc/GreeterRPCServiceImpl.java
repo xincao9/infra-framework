@@ -1,6 +1,9 @@
 package fun.golinks.sample.rpc;
 
 import fun.golinks.grpc.pure.util.GrpcConsumer;
+import grpc.fun.golinks.sample.GreeterRPCServiceGrpc;
+import grpc.fun.golinks.sample.GreeterSayRequest;
+import grpc.fun.golinks.sample.GreeterSayResponse;
 import io.grpc.stub.StreamObserver;
 import org.springframework.stereotype.Service;
 

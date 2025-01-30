@@ -1,6 +1,6 @@
 spring:
   application:
-    name: sample
+    name: application
   redis:
     url: redis://:@127.0.0.1:6379
     host: localhost
@@ -31,7 +31,7 @@ infra:
       sampler: "1.0F"
 grpc:
   pure:
-    app-name: greeter
+    app-name: application
     server:
       port: 9999
     discovery:

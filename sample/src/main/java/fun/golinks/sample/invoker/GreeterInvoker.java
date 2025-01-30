@@ -2,9 +2,9 @@ package fun.golinks.sample.invoker;
 
 import fun.golinks.grpc.pure.util.GrpcFunction;
 import fun.golinks.grpc.pure.util.GrpcInvoker;
-import fun.golinks.sample.rpc.GreeterRPCServiceGrpc;
-import fun.golinks.sample.rpc.GreeterSayRequest;
-import fun.golinks.sample.rpc.GreeterSayResponse;
+import grpc.fun.golinks.sample.GreeterRPCServiceGrpc;
+import grpc.fun.golinks.sample.GreeterSayRequest;
+import grpc.fun.golinks.sample.GreeterSayResponse;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
