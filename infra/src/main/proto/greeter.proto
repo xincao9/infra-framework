@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package grpc.fun.golinks.sample;
+package com.github.xincao9.infra.archetype;
 option java_multiple_files = true;
 
 // Greeting 服务定义

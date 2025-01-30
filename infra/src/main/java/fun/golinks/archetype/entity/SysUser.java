@@ -1,4 +1,4 @@
-package fun.golinks.sample.entity;
+package fun.golinks.archetype.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;

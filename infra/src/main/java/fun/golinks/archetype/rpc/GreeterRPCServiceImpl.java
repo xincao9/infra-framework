@@ -1,9 +1,9 @@
-package fun.golinks.sample.rpc;
+package fun.golinks.archetype.rpc;
 
+import com.github.xincao9.infra.archetype.GreeterRPCServiceGrpc;
+import com.github.xincao9.infra.archetype.GreeterSayRequest;
+import com.github.xincao9.infra.archetype.GreeterSayResponse;
 import fun.golinks.grpc.pure.util.GrpcConsumer;
-import grpc.fun.golinks.sample.GreeterRPCServiceGrpc;
-import grpc.fun.golinks.sample.GreeterSayRequest;
-import grpc.fun.golinks.sample.GreeterSayResponse;
 import io.grpc.stub.StreamObserver;
 import org.springframework.stereotype.Service;
 

@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>infra-trace</module>
-        <module>sample</module>
+        <module>infra</module>
         <module>infra-bom</module>
     </modules>
     <version>0.0.2-SNAPSHOT</version>

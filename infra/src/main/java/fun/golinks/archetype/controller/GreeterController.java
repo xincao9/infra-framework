@@ -1,10 +1,10 @@
-package fun.golinks.sample.controller;
+package fun.golinks.archetype.controller;
 
-import fun.golinks.sample.entity.SysUser;
-import fun.golinks.sample.invoker.GreeterInvoker;
-import grpc.fun.golinks.sample.GreeterSayRequest;
-import grpc.fun.golinks.sample.GreeterSayResponse;
-import fun.golinks.sample.service.SysUserService;
+import com.github.xincao9.infra.archetype.GreeterSayRequest;
+import com.github.xincao9.infra.archetype.GreeterSayResponse;
+import fun.golinks.archetype.entity.SysUser;
+import fun.golinks.archetype.invoker.GreeterInvoker;
+import fun.golinks.archetype.service.SysUserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

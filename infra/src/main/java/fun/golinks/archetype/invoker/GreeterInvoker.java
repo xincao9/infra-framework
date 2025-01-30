@@ -1,10 +1,10 @@
-package fun.golinks.sample.invoker;
+package fun.golinks.archetype.invoker;
 
+import com.github.xincao9.infra.archetype.GreeterRPCServiceGrpc;
+import com.github.xincao9.infra.archetype.GreeterSayRequest;
+import com.github.xincao9.infra.archetype.GreeterSayResponse;
 import fun.golinks.grpc.pure.util.GrpcFunction;
 import fun.golinks.grpc.pure.util.GrpcInvoker;
-import grpc.fun.golinks.sample.GreeterRPCServiceGrpc;
-import grpc.fun.golinks.sample.GreeterSayRequest;
-import grpc.fun.golinks.sample.GreeterSayResponse;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;

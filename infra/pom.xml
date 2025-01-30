@@ -9,7 +9,7 @@
         <version>0.0.2-SNAPSHOT</version>
         <relativePath/>
     </parent>
-    <artifactId>sample</artifactId>
+    <artifactId>infra</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

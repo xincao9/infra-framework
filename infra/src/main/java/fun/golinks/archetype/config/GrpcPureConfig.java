@@ -1,7 +1,7 @@
-package fun.golinks.sample.config;
+package fun.golinks.archetype.config;
 
+import com.github.xincao9.infra.archetype.GreeterRPCServiceGrpc;
 import fun.golinks.grpc.pure.GrpcChannels;
-import grpc.fun.golinks.sample.GreeterRPCServiceGrpc;
 import io.grpc.ManagedChannel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

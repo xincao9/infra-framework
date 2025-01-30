@@ -1,11 +1,11 @@
-package fun.golinks.sample;
+package fun.golinks.archetype;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("fun.golinks.sample.mapper")
+@MapperScan("fun.golinks.archetype.mapper")
 public class Application {
 
     public static void main(String... args) {

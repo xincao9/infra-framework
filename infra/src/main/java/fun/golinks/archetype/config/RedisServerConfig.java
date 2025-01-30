@@ -1,4 +1,4 @@
-package fun.golinks.sample.config;
+package fun.golinks.archetype.config;
 
 import com.github.microwww.redis.RedisServer;
 import lombok.extern.slf4j.Slf4j;
