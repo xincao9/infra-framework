@@ -31,7 +31,7 @@ infra:
       sampler: "1.0F"
 grpc:
   pure:
-    app-name: application
+    app-name: greeter
     server:
       port: 9999
     discovery:

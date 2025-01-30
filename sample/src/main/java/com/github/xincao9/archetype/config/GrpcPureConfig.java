@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GrpcPureConfig {
 
-    private static final String GREETER_APP_URL = "nacos://application";
+    private static final String GREETER_APP_URL = "nacos://greeter";
 
     @Bean
     public GreeterRPCServiceGrpc.GreeterRPCServiceBlockingStub greeterRPCServiceBlockingStub(
