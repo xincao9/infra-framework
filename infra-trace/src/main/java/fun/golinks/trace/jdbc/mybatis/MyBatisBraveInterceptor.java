@@ -29,6 +29,7 @@ import java.util.Properties;
                 RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class }) })
 public class MyBatisBraveInterceptor implements Interceptor {
 
+    private static final String SQL = "SQL";
     private final Tracing tracing;
 
     public MyBatisBraveInterceptor(Tracing tracing) {
@@ -42,7 +43,9 @@ public class MyBatisBraveInterceptor implements Interceptor {
         String methodName = strArr[strArr.length - 2] + "." + strArr[strArr.length - 1];
         Tracer tracer = tracing.tracer();
         TraceContext currentTraceContext = tracer.currentSpan().context();
-        Span span = currentTraceContext != null ? tracer.nextSpan().name(methodName).start() : null;
+        String sql = showSQL(invocation, mappedStatement);
+        Span span = currentTraceContext != null ? tracer.nextSpan().name("mybatis: " + methodName).tag(SQL, sql).start()
+                : null;
         try {
             return invocation.proceed();
         } finally {
@@ -61,9 +64,9 @@ public class MyBatisBraveInterceptor implements Interceptor {
         Configuration configuration = mappedStatement.getConfiguration();
         Object parameterObject = boundSql.getParameterObject();
         List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
-        String sql = boundSql.getSql().replaceAll("[\\s]+", " ");
+        String sql = boundSql.getSql().replaceAll("\\s+", " ");
         StringBuilder sb = new StringBuilder(sql);
-        if (parameterMappings.size() > 0 && parameterObject != null) {
+        if (!parameterMappings.isEmpty() && parameterObject != null) {
             int start = sb.indexOf("?");
             int end = start + 1;
             TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();

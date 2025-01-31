@@ -20,7 +20,7 @@ public class RedisTemplateAspect {
     @Around("execution(* org.springframework.data.redis.core.RedisTemplate.*(..))")
     public Object traceRedisTemplate(ProceedingJoinPoint joinPoint) throws Throwable {
         String methodName = joinPoint.getSignature().getName();
-        Span span = tracer.nextSpan().name("Redis: " + methodName).start();
+        Span span = tracer.nextSpan().name("redis: " + methodName).start();
         try {
             return joinPoint.proceed();
         } catch (Throwable throwable) {

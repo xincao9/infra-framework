@@ -1,10 +1,10 @@
 package com.github.xincao9.archetype.controller;
 
-import com.github.xincao9.infra.archetype.GreeterSayRequest;
-import com.github.xincao9.infra.archetype.GreeterSayResponse;
 import com.github.xincao9.archetype.entity.SysUser;
 import com.github.xincao9.archetype.invoker.GreeterInvoker;
 import com.github.xincao9.archetype.service.SysUserService;
+import com.github.xincao9.infra.archetype.GreeterSayRequest;
+import com.github.xincao9.infra.archetype.GreeterSayResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
