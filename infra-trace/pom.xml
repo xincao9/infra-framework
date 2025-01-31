@@ -101,9 +101,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                </configuration>
             </plugin>
         </plugins>
     </build>
