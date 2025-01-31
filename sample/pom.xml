@@ -43,6 +43,11 @@
             <artifactId>redis-server</artifactId>
             <version>0.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>fun.golinks</groupId>
+            <artifactId>infra-config</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

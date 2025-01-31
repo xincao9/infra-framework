@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
+
 @ConditionalOnProperty(prefix = "infra.config", name = "enable", havingValue = "true")
 @Configuration
 @EnableConfigurationProperties(ConfigProperties.class)
@@ -13,7 +15,7 @@ public class ConfigAutoConfiguration {
 
     @ConditionalOnProperty(prefix = "infra.config", name = "type", havingValue = "git", matchIfMissing = true)
     @Bean
-    public GitRunner gitRunner(ConfigProperties configProperties) throws GitAPIException {
+    public GitRunner gitRunner(ConfigProperties configProperties) throws GitAPIException, IOException {
         return new GitRunner(configProperties.getGit());
     }
 }

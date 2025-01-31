@@ -1,13 +1,12 @@
 package fun.golinks.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
-
-import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.Executors;
@@ -17,10 +16,11 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class GitRunner implements Runnable {
 
+    private static final int TIMEOUT = 300;
     private final GitConfig gitConfig;
     private final Git git;
 
-    public GitRunner(GitConfig gitConfig) throws GitAPIException {
+    public GitRunner(GitConfig gitConfig) throws GitAPIException, IOException {
         this.gitConfig = gitConfig;
         this.git = createGit();
         pull();
@@ -28,25 +28,21 @@ public class GitRunner implements Runnable {
         scheduledExecutorService.schedule(this, 30, TimeUnit.SECONDS);
     }
 
-    private Git createGit() throws GitAPIException {
-        try {
-            Path path = Paths.get(gitConfig.getDir(), "/.git");
+    private Git createGit() throws GitAPIException, IOException {
+        String repo = StringUtils.substringAfterLast(gitConfig.getUri(), "/");
+        repo = StringUtils.substringBefore(repo, ".git");
+        Path path = Paths.get(gitConfig.getDir(), repo, ".git");
+        if (path.toFile().exists()) {
             Repository repository = new RepositoryBuilder().setGitDir(path.toFile()).readEnvironment().findGitDir()
                     .build();
             return new Git(repository);
-        } catch (Throwable e1) {
-            log.warn("git.findGitDir", e1);
-            try {
-                FileUtils.deleteDirectory(new File(gitConfig.getDir()));
-            } catch (Throwable e2) {
-                log.warn("deleteDirectory", e2);
-            }
         }
-        return cloneRepository();
+        return cloneRepository(repo);
     }
 
-    private Git cloneRepository() throws GitAPIException {
-        return Git.cloneRepository().setURI(gitConfig.getUri()).setDirectory(new File(gitConfig.getDir())).call();
+    private Git cloneRepository(String repo) throws GitAPIException {
+        Path path = Paths.get(gitConfig.getDir(), repo);
+        return Git.cloneRepository().setURI(gitConfig.getUri()).setDirectory(path.toFile()).setTimeout(TIMEOUT).call();
     }
 
     private void pull() throws GitAPIException {

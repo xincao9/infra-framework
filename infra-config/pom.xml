@@ -8,6 +8,7 @@
         <artifactId>infra-bom</artifactId>
         <version>0.0.2</version>
     </parent>
+    <version>0.0.1-SNAPSHOT</version>
     <artifactId>infra-config</artifactId>
     <dependencies>
         <dependency>
