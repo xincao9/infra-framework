@@ -28,7 +28,7 @@ public class GreeterController {
             return null;
         }
         GreeterSayRequest request = GreeterSayRequest.newBuilder().setName(sysUser.getEmail()).build();
-        GreeterSayResponse response = greeterInvoker.SAY_INVOKER.apply(request);
+        GreeterSayResponse response = greeterInvoker.sayInvoker.apply(request);
         return response.getMessage();
     }
 }

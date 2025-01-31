@@ -15,7 +15,7 @@ public class GreeterInvoker {
     @Resource
     private GreeterRPCServiceGrpc.GreeterRPCServiceBlockingStub greeterRPCServiceBlockingStub;
 
-    public final GrpcInvoker<GreeterSayRequest, GreeterSayResponse> SAY_INVOKER = GrpcInvoker
+    public final GrpcInvoker<GreeterSayRequest, GreeterSayResponse> sayInvoker = GrpcInvoker
             .wrap(new GrpcFunction<GreeterSayRequest, GreeterSayResponse>() {
                 @Override
                 public GreeterSayResponse apply(GreeterSayRequest greeterSayRequest) throws Throwable {
