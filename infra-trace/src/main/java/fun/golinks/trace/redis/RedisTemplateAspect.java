@@ -8,6 +8,9 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
+/**
+ * RedisTemplate切面
+ */
 @Aspect
 @Slf4j
 public class RedisTemplateAspect {

@@ -7,6 +7,9 @@ import io.grpc.ServerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * grpc配置类
+ */
 @Configuration
 public class GrpcAutoConfiguration {
 

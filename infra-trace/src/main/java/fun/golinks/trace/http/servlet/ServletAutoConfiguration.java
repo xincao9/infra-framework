@@ -8,14 +8,33 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
 
+/**
+ * http servlet 配置类
+ */
 @Configuration
 public class ServletAutoConfiguration {
 
+    /**
+     * trace http servlet 过滤器
+     *
+     * @param tracing
+     *            追踪
+     * 
+     * @return 过滤器
+     */
     @Bean
     public Filter tracingFilter(Tracing tracing) {
         return TracingFilter.create(tracing);
     }
 
+    /**
+     * 过滤器注册Bean
+     *
+     * @param tracingFilter
+     *            过滤器
+     * 
+     * @return 过滤器注册Bean
+     */
     @Bean
     public FilterRegistrationBean<Filter> filterFilterRegistrationBean(Filter tracingFilter) {
         FilterRegistrationBean<Filter> registrationBean = new FilterRegistrationBean<>();

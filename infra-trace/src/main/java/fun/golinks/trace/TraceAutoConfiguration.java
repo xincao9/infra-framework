@@ -17,6 +17,9 @@ import org.springframework.context.annotation.Configuration;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
+/**
+ * trace配置类（核心类）
+ */
 @ConditionalOnProperty(prefix = "infra.trace", name = "enable", havingValue = "true", matchIfMissing = true)
 @Configuration
 @EnableConfigurationProperties(TraceProperties.class)

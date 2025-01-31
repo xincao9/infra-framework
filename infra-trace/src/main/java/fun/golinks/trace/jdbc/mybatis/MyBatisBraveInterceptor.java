@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+/**
+ * mybatis trace 拦截器
+ */
 @Intercepts({ @Signature(type = Executor.class, method = "update", args = { MappedStatement.class, Object.class }),
         @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
                 RowBounds.class, ResultHandler.class }),
@@ -32,6 +35,12 @@ public class MyBatisBraveInterceptor implements Interceptor {
     private static final String SQL = "SQL";
     private final Tracing tracing;
 
+    /**
+     * 构造器
+     * 
+     * @param tracing
+     *            追踪
+     */
     public MyBatisBraveInterceptor(Tracing tracing) {
         this.tracing = tracing;
     }

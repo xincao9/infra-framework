@@ -2,6 +2,9 @@ package fun.golinks.trace;
 
 import lombok.Data;
 
+/**
+ * zipkin配置属性
+ */
 @Data
 public class ZipkinConfig {
 
