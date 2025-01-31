@@ -6,12 +6,12 @@
     <parent>
         <groupId>fun.golinks</groupId>
         <artifactId>infra-bom</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.2</version>
         <relativePath/>
     </parent>
     <groupId>com.github.xincao9.archetype</groupId>
     <artifactId>sample</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
