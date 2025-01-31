@@ -6,9 +6,10 @@
     <artifactId>infra-framework</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>infra-bom</module>
+        <module>infra-config</module>
         <module>infra-trace</module>
         <module>sample</module>
-        <module>infra-bom</module>
     </modules>
     <version>0.0.2</version>
     <name>infra-framework</name>
