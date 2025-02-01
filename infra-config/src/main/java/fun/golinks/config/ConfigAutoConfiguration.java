@@ -36,11 +36,4 @@ public class ConfigAutoConfiguration {
             @Value("${spring.application.name}") String application) throws Throwable {
         return new GitSyncRunner(configProperties.getGit(), application);
     }
-
-    @ConditionalOnProperty(prefix = "infra.config", name = "type", havingValue = "git", matchIfMissing = true)
-    @Bean
-    public GitEnvironmentPostProcessor gitEnvironmentPostProcessor(ConfigProperties configProperties,
-            @Value("${spring.application.name}") String application) {
-        return new GitEnvironmentPostProcessor(configProperties.getGit(), application);
-    }
 }

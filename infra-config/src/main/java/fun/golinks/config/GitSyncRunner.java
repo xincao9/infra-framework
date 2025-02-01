@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class GitSyncRunner implements Runnable {
 
-    private static final int TIMEOUT = 300;
+    private static final int TIMEOUT = 600;
     private static final int DELAY = 30;
     private final GitConfig gitConfig;
     private final String application;
