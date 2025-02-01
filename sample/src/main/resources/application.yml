@@ -47,3 +47,14 @@ grpc:
         address: 127.0.0.1:8848
         username: nacos
         password: nacos
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /management
+  endpoint:
+    health:
+      show-details: "always"
+  server:
+    port: 7777

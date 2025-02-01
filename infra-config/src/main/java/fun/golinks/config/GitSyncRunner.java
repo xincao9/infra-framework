@@ -8,6 +8,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.config.StandardConfigDataLoader;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -70,8 +71,8 @@ public class GitSyncRunner implements Runnable {
         ScheduledExecutorService scheduledExecutorService = Executors
                 .newSingleThreadScheduledExecutor(r -> new Thread(r, "GitSyncRunner"));
         scheduledExecutorService.scheduleAtFixedRate(this, DELAY, DELAY, TimeUnit.SECONDS);
-        String configDir = Paths.get(gitConfig.getDir(), application).toString();
-        System.setProperty("spring.config.additional-location", "file:" + configDir);
+        String configDir = Paths.get(gitConfig.getDir(), application, repo, "/").toString();
+        System.setProperty("spring.config.additional-location", configDir);
     }
 
     private Git createGit(String repo) throws GitAPIException, IOException {
