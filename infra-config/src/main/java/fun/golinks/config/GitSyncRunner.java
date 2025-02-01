@@ -8,7 +8,6 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.config.StandardConfigDataLoader;
 
 import java.io.IOException;
 import java.nio.file.Path;
