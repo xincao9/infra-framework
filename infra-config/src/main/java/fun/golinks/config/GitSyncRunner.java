@@ -70,7 +70,7 @@ public class GitSyncRunner implements Runnable {
         ScheduledExecutorService scheduledExecutorService = Executors
                 .newSingleThreadScheduledExecutor(r -> new Thread(r, "GitSyncRunner"));
         scheduledExecutorService.scheduleAtFixedRate(this, DELAY, DELAY, TimeUnit.SECONDS);
-        String configDir = Paths.get(gitConfig.getDir(), repo).toString();
+        String configDir = Paths.get(gitConfig.getDir(), application).toString();
         System.setProperty("spring.config.additional-location", "file:" + configDir);
     }
 
