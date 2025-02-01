@@ -19,6 +19,8 @@
         <grpc-pure-spring-boot-starter.version>1.0.4</grpc-pure-spring-boot-starter.version>
         <infra-trace.version>0.0.3-SNAPSHOT</infra-trace.version>
         <infra-config.version>0.0.3-SNAPSHOT</infra-config.version>
+        <mybatis-plus-boot-starter.version>3.5.10.1</mybatis-plus-boot-starter.version>
+        <redis-server.version>0.3.1</redis-server.version>
     </properties>
     <url>https://github.com/xincao9/infra-framework</url>
     <developers>
@@ -77,6 +79,16 @@
                 <groupId>fun.golinks</groupId>
                 <artifactId>infra-config</artifactId>
                 <version>${infra-config.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.microwww</groupId>
+                <artifactId>redis-server</artifactId>
+                <version>${redis-server.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
