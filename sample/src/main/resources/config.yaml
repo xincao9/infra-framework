@@ -4,6 +4,6 @@ infra:
     enabled: true
     type: git
     git:
-      uri: git@github.com:xincao9/sample-config-repo.git
+      uri: https://github.com/xincao9/sample-config-repo.git
       remote: origin
       remote-branch-name: main
