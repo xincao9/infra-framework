@@ -49,5 +49,6 @@ management:
   endpoint:
     health:
       show-details: "always"
+      enabled: false
   server:
     port: 7777
