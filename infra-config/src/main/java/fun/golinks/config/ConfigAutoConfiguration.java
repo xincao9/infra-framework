@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * 配置中心自动配置类
  */
-@ConditionalOnProperty(prefix = "infra.config", name = "enable", havingValue = "true")
+@ConditionalOnProperty(prefix = "infra.config", name = "enabled", havingValue = "true")
 @Configuration
 @EnableConfigurationProperties(ConfigProperties.class)
 public class ConfigAutoConfiguration {

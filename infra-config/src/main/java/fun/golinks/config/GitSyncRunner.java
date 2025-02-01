@@ -3,6 +3,7 @@ package fun.golinks.config;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
@@ -37,9 +38,10 @@ public class GitSyncRunner implements Runnable {
     public GitSyncRunner(GitConfig gitConfig) throws GitAPIException, IOException {
         this.gitConfig = gitConfig;
         this.git = createGit();
-        pull();
+        PullResult pullResult = pull();
+        log.info("GitSyncRunner git {} pull {}", gitConfig, pullResult);
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.schedule(this, 30, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(this, 30, 30, TimeUnit.SECONDS);
     }
 
     private Git createGit() throws GitAPIException, IOException {
@@ -76,8 +78,8 @@ public class GitSyncRunner implements Runnable {
      * @throws GitAPIException
      *             git api 异常
      */
-    private void pull() throws GitAPIException {
-        git.pull().setRemote(gitConfig.getRemote()).setRemoteBranchName(gitConfig.getRemoteBranchName()).call();
+    private PullResult pull() throws GitAPIException {
+        return git.pull().setRemote(gitConfig.getRemote()).setRemoteBranchName(gitConfig.getRemoteBranchName()).call();
     }
 
     /**
@@ -86,8 +88,8 @@ public class GitSyncRunner implements Runnable {
     @Override
     public void run() {
         try {
-            pull();
-            log.info("git {} pull success", gitConfig);
+            PullResult pullResult = pull();
+            log.info("git {} pull {}", gitConfig, pullResult);
         } catch (GitAPIException e) {
             log.warn("git {} pull failure", gitConfig);
         } catch (Throwable e) {

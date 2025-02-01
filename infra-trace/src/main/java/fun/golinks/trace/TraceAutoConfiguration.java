@@ -20,7 +20,7 @@ import zipkin2.reporter.okhttp3.OkHttpSender;
 /**
  * trace配置类（核心类）
  */
-@ConditionalOnProperty(prefix = "infra.trace", name = "enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "infra.trace", name = "enabled", havingValue = "true", matchIfMissing = true)
 @Configuration
 @EnableConfigurationProperties(TraceProperties.class)
 @ImportAutoConfiguration({ TraceAutoConfiguration.ServletAutoConfigurationImporter.class,
