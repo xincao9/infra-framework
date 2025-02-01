@@ -43,7 +43,7 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
             return;
         }
         String home = System.getenv("HOME");
-        String dir = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, "./config").toString());
+        String dir = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, ".config").toString());
         String repo = StringUtils.substringAfterLast(uri, "/");
         repo = StringUtils.substringBefore(repo, ".git");
         Path path = Paths.get(Objects.requireNonNull(dir), appName, repo);
