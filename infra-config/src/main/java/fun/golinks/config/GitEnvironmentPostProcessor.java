@@ -1,5 +1,6 @@
 package fun.golinks.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
@@ -11,10 +12,19 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+        try {
+            // 创建git 远程同步runner
+            GitSyncRunner.getInstance();
+        } catch (Throwable e) {
+            log.error("GitSyncRunner.new", e);
+            System.exit(1);
+            return;
+        }
         Map<String, String> configEnv = FileUtils.readConfig();
         if (configEnv.isEmpty()) {
             return;

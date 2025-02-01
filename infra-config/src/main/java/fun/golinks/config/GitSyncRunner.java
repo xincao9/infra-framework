@@ -32,6 +32,15 @@ public class GitSyncRunner implements Runnable {
     private String remote;
     private String remoteBranchName;
 
+    private static GitSyncRunner instance;
+
+    public synchronized static GitSyncRunner getInstance() throws Throwable {
+        if (instance == null) {
+            instance = new GitSyncRunner();
+        }
+        return instance;
+    }
+
     /**
      * 构造器
      *
@@ -40,7 +49,7 @@ public class GitSyncRunner implements Runnable {
      * @throws IOException
      *             io异常
      */
-    public GitSyncRunner() throws Throwable {
+    private GitSyncRunner() throws Throwable {
         Map<String, String> configEnv = FileUtils.readConfig();
         if (configEnv.isEmpty()) {
             return;
@@ -132,7 +141,7 @@ public class GitSyncRunner implements Runnable {
     public void run() {
         try {
             PullResult pullResult = pull();
-            log.info("GitSyncRunner pullResult {}", pullResult);
+            log.debug("GitSyncRunner pullResult {}", pullResult);
         } catch (GitAPIException e) {
             log.warn("GitSyncRunner failure!", e);
         } catch (Throwable e) {
