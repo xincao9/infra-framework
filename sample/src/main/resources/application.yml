@@ -29,13 +29,6 @@ infra:
     zipkin:
       url: "http://localhost:9411/api/v2/spans"
       sampler: "1.0F"
-  config:
-    enabled: true
-    git:
-      uri: git@github.com:xincao9/sample-config-repo.git
-      dir: ${HOME}/.config
-      remote: origin
-      remote-branch-name: main
 grpc:
   pure:
     app-name: greeter

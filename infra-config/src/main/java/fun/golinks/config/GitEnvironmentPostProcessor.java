@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.io.ClassPathResource;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -15,18 +16,25 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        boolean enabled = Boolean.TRUE
-                .equals(environment.getProperty(ConfigConsts.INFRA_CONFIG_ENABLED, Boolean.class));
+        Map<Object, Object> configMap = FileUtils.readYamlFile(new ClassPathResource(ConfigConsts.CONFIG_FILE));
+        if (configMap.isEmpty()) {
+            return;
+        }
+        Map<String, Object> configEnv = new HashMap<>(configMap.size());
+        for (Map.Entry<Object, Object> entry : configMap.entrySet()) {
+            configEnv.put(String.valueOf(entry.getKey()), entry.getValue());
+        }
+        boolean enabled = Boolean.parseBoolean(String.valueOf(configEnv.get(ConfigConsts.INFRA_CONFIG_ENABLED)));
         if (!enabled) {
             return;
         }
-        String type = environment.getProperty(ConfigConsts.INFRA_CONFIG_TYPE, String.class);
+        String type = String.valueOf(configEnv.get(ConfigConsts.INFRA_CONFIG_TYPE));
         if (!Objects.equals(type, ConfigConsts.GIT)) {
             return;
         }
-        String uri = environment.getProperty(ConfigConsts.INFRA_CONFIG_GIT_URI, String.class);
-        String dir = environment.getProperty(ConfigConsts.INFRA_CONFIG_GIT_DIR, String.class);
-        String appName = environment.getProperty(ConfigConsts.SPRING_APPLICATION_NAME, String.class);
+        String uri = String.valueOf(configEnv.get(ConfigConsts.INFRA_CONFIG_GIT_URI));
+        String dir = String.valueOf(configEnv.get(ConfigConsts.INFRA_CONFIG_GIT_DIR));
+        String appName = String.valueOf(configEnv.get(ConfigConsts.INFRA_CONFIG_APP_NAME));
         if (StringUtils.isAnyBlank(uri, dir, appName)) {
             return;
         }

@@ -36,8 +36,12 @@ public class FileUtils {
     }
 
     public static Map<Object, Object> readYamlFile(String filepath) {
-        YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
         Resource resource = new FileSystemResource(filepath);
+        return readYamlFile(resource);
+    }
+
+    public static Map<Object, Object> readYamlFile(Resource resource) {
+        YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
         yamlFactory.setResources(resource);
         Properties properties = yamlFactory.getObject();
         if (properties != null) {
