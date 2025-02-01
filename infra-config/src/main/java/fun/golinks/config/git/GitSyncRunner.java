@@ -1,9 +1,11 @@
 package fun.golinks.config.git;
 
 import fun.golinks.config.ConfigConsts;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
@@ -33,12 +35,16 @@ public class GitSyncRunner implements Runnable {
     private String remote;
     private String remoteBranchName;
 
+    @Setter
+    private Runnable callback;
+
     private static GitSyncRunner instance;
 
-    public synchronized static void start() throws Throwable {
+    public synchronized static GitSyncRunner start() throws Throwable {
         if (instance == null) {
             instance = new GitSyncRunner();
         }
+        return instance;
     }
 
     /**
@@ -141,7 +147,9 @@ public class GitSyncRunner implements Runnable {
     public void run() {
         try {
             PullResult pullResult = pull();
-            log.debug("GitSyncRunner pullResult {}", pullResult);
+            if (pullResult.getMergeResult().getMergeStatus() == MergeResult.MergeStatus.FAST_FORWARD && callback != null) {
+                callback.run();
+            }
         } catch (GitAPIException e) {
             log.warn("GitSyncRunner failure!", e);
         } catch (Throwable e) {

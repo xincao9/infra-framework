@@ -1,5 +1,6 @@
 package fun.golinks.config.git;
 
+import com.google.gson.Gson;
 import fun.golinks.config.ConfigConsts;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -7,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,11 +18,14 @@ import java.util.Objects;
 @Slf4j
 public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
+    private final Gson gson = new Gson();
+
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+        GitSyncRunner gitSyncRunner;
         try {
             // 创建git 远程同步runner
-            GitSyncRunner.start();
+            gitSyncRunner = GitSyncRunner.start();
         } catch (Throwable e) {
             log.error("GitSyncRunner.new", e);
             System.exit(1);
@@ -49,10 +54,21 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
         repo = StringUtils.substringBefore(repo, ".git");
         Path path = Paths.get(Objects.requireNonNull(dir), appName, repo);
         Map<String, Object> configItems = FileUtils.readConfig(path.toString());
+        MutablePropertySources mutablePropertySources = environment.getPropertySources();
         if (!configItems.isEmpty()) {
             configItems.putAll(configEnv);
-            environment.getPropertySources().addFirst(new MapPropertySource(GitConsts.GIT_CONFIG, configItems));
+            log.info("加载本地配置 {}", gson.toJson(configItems));
+            mutablePropertySources.addFirst(new MapPropertySource(GitConsts.GIT_CONFIG, configItems));
         }
+        gitSyncRunner.setCallback(() -> {
+            Map<String, Object> configItems1 = FileUtils.readConfig(path.toString());
+            mutablePropertySources.remove(GitConsts.GIT_CONFIG);
+            if (!configItems1.isEmpty()) {
+                configItems1.putAll(configEnv);
+                log.info("同步本地配置 {}", gson.toJson(configItems1));
+                mutablePropertySources.addFirst(new MapPropertySource(GitConsts.GIT_CONFIG, configItems1));
+            }
+        });
 
     }
 }
