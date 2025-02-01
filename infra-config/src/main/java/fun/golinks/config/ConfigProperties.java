@@ -13,7 +13,7 @@ public class ConfigProperties {
     /**
      * 功能开关
      */
-    private Boolean enable = false;
+    private Boolean enabled = false;
 
     /**
      * type is git or apollo

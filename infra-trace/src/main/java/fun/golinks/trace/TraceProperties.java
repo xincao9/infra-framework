@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "infra.trace")
 public class TraceProperties {
 
-    private Boolean enable = true;
+    private Boolean enabled = true;
 
     private ZipkinConfig zipkin = new ZipkinConfig();
 }

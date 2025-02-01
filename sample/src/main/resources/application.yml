@@ -2,11 +2,11 @@ spring:
   application:
     name: application
   redis:
-    url: redis://:@127.0.0.1:6379
+    url: redis://:@127.0.0.1:6380
     host: localhost
     username: ''
     password: ''
-    port: 6379
+    port: 6380
   datasource:
     driverClassName: org.h2.Driver
     url: jdbc:h2:file:/tmp/sample
@@ -25,12 +25,12 @@ server:
   port: 8080
 infra:
   trace:
-    enable: true
+    enabled: true
     zipkin:
       url: "http://localhost:9411/api/v2/spans"
       sampler: "1.0F"
   config:
-    enable: true
+    enabled: true
     git:
       uri: git@github.com:xincao9/infra-framework.git
       dir: /tmp
