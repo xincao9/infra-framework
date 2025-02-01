@@ -19,7 +19,7 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         try {
             // 创建git 远程同步runner
-            GitSyncRunner.getInstance();
+            GitSyncRunner.start();
         } catch (Throwable e) {
             log.error("GitSyncRunner.new", e);
             System.exit(1);

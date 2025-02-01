@@ -34,11 +34,10 @@ public class GitSyncRunner implements Runnable {
 
     private static GitSyncRunner instance;
 
-    public synchronized static GitSyncRunner getInstance() throws Throwable {
+    public synchronized static void start() throws Throwable {
         if (instance == null) {
             instance = new GitSyncRunner();
         }
-        return instance;
     }
 
     /**
@@ -64,11 +63,11 @@ public class GitSyncRunner implements Runnable {
         }
         this.uri = configEnv.get(ConfigConsts.INFRA_CONFIG_GIT_URI);
         String home = System.getenv("HOME");
-        this.dir = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, ".config").toString());
         this.appName = configEnv.get(ConfigConsts.INFRA_CONFIG_APP_NAME);
-        if (StringUtils.isAnyBlank(this.uri, this.dir, this.appName)) {
+        if (StringUtils.isAnyBlank(this.uri, this.appName)) {
             return;
         }
+        this.dir = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, ".config").toString());
         this.remote = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_REMOTE, "origin");
         this.remoteBranchName = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_REMOTE_BRANCH_NAME, "main");
         Path path = Paths.get(this.dir, this.appName);
