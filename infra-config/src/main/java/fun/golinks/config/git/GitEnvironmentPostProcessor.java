@@ -60,7 +60,7 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
             log.info("加载本地配置 {}", gson.toJson(configItems));
             mutablePropertySources.addFirst(new MapPropertySource(GitConsts.GIT_CONFIG, configItems));
         }
-        gitSyncRunner.setCallback(() -> {
+        gitSyncRunner.add(() -> {
             Map<String, Object> configItems1 = FileUtils.readConfig(path.toString());
             mutablePropertySources.remove(GitConsts.GIT_CONFIG);
             if (!configItems1.isEmpty()) {

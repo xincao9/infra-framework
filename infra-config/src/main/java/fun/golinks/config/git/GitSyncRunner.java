@@ -1,7 +1,6 @@
 package fun.golinks.config.git;
 
 import fun.golinks.config.ConfigConsts;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
@@ -14,6 +13,8 @@ import org.eclipse.jgit.lib.RepositoryBuilder;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -35,8 +36,7 @@ public class GitSyncRunner implements Runnable {
     private String remote;
     private String remoteBranchName;
 
-    @Setter
-    private Runnable callback;
+    private final List<Runnable> callbacks = new ArrayList<>();
 
     private static GitSyncRunner instance;
 
@@ -147,13 +147,17 @@ public class GitSyncRunner implements Runnable {
     public void run() {
         try {
             PullResult pullResult = pull();
-            if (pullResult.getMergeResult().getMergeStatus() == MergeResult.MergeStatus.FAST_FORWARD && callback != null) {
-                callback.run();
+            if (pullResult.getMergeResult().getMergeStatus() == MergeResult.MergeStatus.FAST_FORWARD && !callbacks.isEmpty()) {
+                callbacks.forEach(Runnable::run);
             }
         } catch (GitAPIException e) {
             log.warn("GitSyncRunner failure!", e);
         } catch (Throwable e) {
             log.error("GitSyncRunner error!", e);
         }
+    }
+
+    public void add(Runnable callback) {
+        this.callbacks.add(callback);
     }
 }
