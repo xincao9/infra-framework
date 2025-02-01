@@ -1,6 +1,8 @@
 package fun.golinks.config;
 
+import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -9,4 +11,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties(ConfigProperties.class)
 public class ConfigAutoConfiguration {
+
+    @Bean
+    public EnvironmentChangeListener environmentChangeListener(
+            ConfigurationPropertiesBindingPostProcessor postProcessor) {
+        return new EnvironmentChangeListener(postProcessor);
+    }
 }

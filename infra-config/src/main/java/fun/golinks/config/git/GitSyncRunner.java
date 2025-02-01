@@ -147,7 +147,8 @@ public class GitSyncRunner implements Runnable {
     public void run() {
         try {
             PullResult pullResult = pull();
-            if (pullResult.getMergeResult().getMergeStatus() == MergeResult.MergeStatus.FAST_FORWARD && !callbacks.isEmpty()) {
+            if (pullResult.getMergeResult().getMergeStatus() == MergeResult.MergeStatus.FAST_FORWARD
+                    && !callbacks.isEmpty()) {
                 callbacks.forEach(Runnable::run);
             }
         } catch (GitAPIException e) {
