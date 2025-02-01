@@ -28,11 +28,12 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
             return;
         }
         String uri = configEnv.get(ConfigConsts.INFRA_CONFIG_GIT_URI);
-        String dir = configEnv.get(ConfigConsts.INFRA_CONFIG_GIT_DIR);
         String appName = configEnv.get(ConfigConsts.INFRA_CONFIG_APP_NAME);
-        if (StringUtils.isAnyBlank(uri, dir, appName)) {
+        if (StringUtils.isAnyBlank(uri, appName)) {
             return;
         }
+        String home = System.getenv("HOME");
+        String dir = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, "./config").toString());
         String repo = StringUtils.substringAfterLast(uri, "/");
         repo = StringUtils.substringBefore(repo, ".git");
         Path path = Paths.get(Objects.requireNonNull(dir), appName, repo);

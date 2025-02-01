@@ -54,7 +54,8 @@ public class GitSyncRunner implements Runnable {
             return;
         }
         this.uri = configEnv.get(ConfigConsts.INFRA_CONFIG_GIT_URI);
-        this.dir = configEnv.get(ConfigConsts.INFRA_CONFIG_GIT_DIR);
+        String home = System.getenv("HOME");
+        this.dir = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, ".config").toString());
         this.appName = configEnv.get(ConfigConsts.INFRA_CONFIG_APP_NAME);
         if (StringUtils.isAnyBlank(this.uri, this.dir, this.appName)) {
             return;

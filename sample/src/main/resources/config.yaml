@@ -5,6 +5,5 @@ infra:
     type: git
     git:
       uri: git@github.com:xincao9/sample-config-repo.git
-      dir: /Users/caoxin/.config
       remote: origin
       remote-branch-name: main
