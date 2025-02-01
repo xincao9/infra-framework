@@ -1,5 +1,6 @@
-package fun.golinks.config;
+package fun.golinks.config.git;
 
+import fun.golinks.config.ConfigConsts;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.SpringApplication;
@@ -34,23 +35,23 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
             return;
         }
         String type = configEnv.get(ConfigConsts.INFRA_CONFIG_TYPE);
-        if (!Objects.equals(type, ConfigConsts.GIT)) {
+        if (!Objects.equals(type, GitConsts.GIT)) {
             return;
         }
-        String uri = configEnv.get(ConfigConsts.INFRA_CONFIG_GIT_URI);
+        String uri = configEnv.get(GitConsts.INFRA_CONFIG_GIT_URI);
         String appName = configEnv.get(ConfigConsts.INFRA_CONFIG_APP_NAME);
         if (StringUtils.isAnyBlank(uri, appName)) {
             return;
         }
         String home = System.getenv("HOME");
-        String dir = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, ".config").toString());
+        String dir = configEnv.getOrDefault(GitConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, ".config").toString());
         String repo = StringUtils.substringAfterLast(uri, "/");
         repo = StringUtils.substringBefore(repo, ".git");
         Path path = Paths.get(Objects.requireNonNull(dir), appName, repo);
         Map<String, Object> configItems = FileUtils.readConfig(path.toString());
         if (!configItems.isEmpty()) {
             configItems.putAll(configEnv);
-            environment.getPropertySources().addFirst(new MapPropertySource(ConfigConsts.GIT_CONFIG, configItems));
+            environment.getPropertySources().addFirst(new MapPropertySource(GitConsts.GIT_CONFIG, configItems));
         }
 
     }

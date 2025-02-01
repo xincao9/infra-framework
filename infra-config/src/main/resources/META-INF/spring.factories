@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=fun.golinks.config.ConfigAutoConfiguration
-org.springframework.boot.env.EnvironmentPostProcessor=fun.golinks.config.GitEnvironmentPostProcessor
+org.springframework.boot.env.EnvironmentPostProcessor=fun.golinks.config.git.GitEnvironmentPostProcessor

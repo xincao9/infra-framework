@@ -1,4 +1,4 @@
-package fun.golinks.config;
+package fun.golinks.config.git;
 
 import lombok.Data;
 import lombok.ToString;

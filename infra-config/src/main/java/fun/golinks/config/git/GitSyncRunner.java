@@ -1,5 +1,6 @@
-package fun.golinks.config;
+package fun.golinks.config.git;
 
+import fun.golinks.config.ConfigConsts;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
@@ -58,18 +59,18 @@ public class GitSyncRunner implements Runnable {
             return;
         }
         String type = configEnv.get(ConfigConsts.INFRA_CONFIG_TYPE);
-        if (!Objects.equals(type, ConfigConsts.GIT) && StringUtils.isNotBlank(type)) {
+        if (!Objects.equals(type, GitConsts.GIT) && StringUtils.isNotBlank(type)) {
             return;
         }
-        this.uri = configEnv.get(ConfigConsts.INFRA_CONFIG_GIT_URI);
+        this.uri = configEnv.get(GitConsts.INFRA_CONFIG_GIT_URI);
         String home = System.getenv("HOME");
         this.appName = configEnv.get(ConfigConsts.INFRA_CONFIG_APP_NAME);
         if (StringUtils.isAnyBlank(this.uri, this.appName)) {
             return;
         }
-        this.dir = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, ".config").toString());
-        this.remote = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_REMOTE, "origin");
-        this.remoteBranchName = configEnv.getOrDefault(ConfigConsts.INFRA_CONFIG_GIT_REMOTE_BRANCH_NAME, "main");
+        this.dir = configEnv.getOrDefault(GitConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, ".config").toString());
+        this.remote = configEnv.getOrDefault(GitConsts.INFRA_CONFIG_GIT_REMOTE, "origin");
+        this.remoteBranchName = configEnv.getOrDefault(GitConsts.INFRA_CONFIG_GIT_REMOTE_BRANCH_NAME, "main");
         Path path = Paths.get(this.dir, this.appName);
         boolean r = path.toFile().mkdirs();
         if (r) {

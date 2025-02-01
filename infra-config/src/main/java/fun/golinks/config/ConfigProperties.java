@@ -1,5 +1,6 @@
 package fun.golinks.config;
 
+import fun.golinks.config.git.GitConfig;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
