@@ -8,14 +8,30 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 
+/**
+ * 配置中心自动配置类
+ */
 @ConditionalOnProperty(prefix = "infra.config", name = "enable", havingValue = "true")
 @Configuration
 @EnableConfigurationProperties(ConfigProperties.class)
 public class ConfigAutoConfiguration {
 
+    /**
+     * 创建git 远程同步runner
+     *
+     * @param configProperties
+     *            配置属性类
+     * 
+     * @return git 远程同步runner
+     * 
+     * @throws GitAPIException
+     *             git api 异常
+     * @throws IOException
+     *             io 异常
+     */
     @ConditionalOnProperty(prefix = "infra.config", name = "type", havingValue = "git", matchIfMissing = true)
     @Bean
-    public GitRunner gitRunner(ConfigProperties configProperties) throws GitAPIException, IOException {
-        return new GitRunner(configProperties.getGit());
+    public GitSyncRunner gitSyncRunner(ConfigProperties configProperties) throws GitAPIException, IOException {
+        return new GitSyncRunner(configProperties.getGit());
     }
 }

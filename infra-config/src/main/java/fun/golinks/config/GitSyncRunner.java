@@ -13,14 +13,28 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * git 远程同步runner
+ */
 @Slf4j
-public class GitRunner implements Runnable {
+public class GitSyncRunner implements Runnable {
 
     private static final int TIMEOUT = 300;
     private final GitConfig gitConfig;
     private final Git git;
 
-    public GitRunner(GitConfig gitConfig) throws GitAPIException, IOException {
+    /**
+     * 构造器
+     *
+     * @param gitConfig
+     *            git配置类
+     * 
+     * @throws GitAPIException
+     *             git api异常
+     * @throws IOException
+     *             io异常
+     */
+    public GitSyncRunner(GitConfig gitConfig) throws GitAPIException, IOException {
         this.gitConfig = gitConfig;
         this.git = createGit();
         pull();
@@ -40,15 +54,35 @@ public class GitRunner implements Runnable {
         return cloneRepository(repo);
     }
 
+    /**
+     * clone仓库
+     *
+     * @param repo
+     *            远程仓库
+     * 
+     * @return git对象
+     * 
+     * @throws GitAPIException
+     *             git api 异常
+     */
     private Git cloneRepository(String repo) throws GitAPIException {
         Path path = Paths.get(gitConfig.getDir(), repo);
         return Git.cloneRepository().setURI(gitConfig.getUri()).setDirectory(path.toFile()).setTimeout(TIMEOUT).call();
     }
 
+    /**
+     * 同步拉取
+     * 
+     * @throws GitAPIException
+     *             git api 异常
+     */
     private void pull() throws GitAPIException {
-        git.pull().setRemote("origin").setRemoteBranchName("main").call();
+        git.pull().setRemote(gitConfig.getRemote()).setRemoteBranchName(gitConfig.getRemoteBranchName()).call();
     }
 
+    /**
+     * run方法
+     */
     @Override
     public void run() {
         try {
