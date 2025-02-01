@@ -1,6 +1,6 @@
 spring:
   application:
-    name: application
+    name: sample
   redis:
     url: redis://:@127.0.0.1:6380
     host: localhost
