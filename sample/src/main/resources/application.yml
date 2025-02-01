@@ -32,8 +32,8 @@ infra:
   config:
     enabled: true
     git:
-      uri: git@github.com:xincao9/infra-framework.git
-      dir: /tmp
+      uri: git@github.com:xincao9/sample-config-repo.git
+      dir: ~/.config
       remote: origin
       remote-branch-name: main
 grpc:

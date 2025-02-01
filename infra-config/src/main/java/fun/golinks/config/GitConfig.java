@@ -13,12 +13,12 @@ public class GitConfig {
     /**
      * 地址
      */
-    private String uri = "git@github.com:xincao9/infra-framework.git";
+    private String uri = "git@github.com:xincao9/sample-config-repo.git";
 
     /**
      * 目录
      */
-    private String dir = "/tmp";
+    private String dir = "~/.config";
 
     /**
      * 远程

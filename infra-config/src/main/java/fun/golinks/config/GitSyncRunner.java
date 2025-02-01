@@ -7,6 +7,8 @@ import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
+import org.springframework.beans.factory.annotation.Value;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,11 +23,36 @@ import java.util.concurrent.TimeUnit;
 public class GitSyncRunner implements Runnable {
 
     private static final int TIMEOUT = 300;
+    private static final int DELAY = 30;
     private final GitConfig gitConfig;
-    private final Git git;
+    private final String application;
+    private Git git;
 
     /**
      * 构造器
+     *
+     * @param gitConfig
+     *            git配置类
+     *
+     * @throws GitAPIException
+     *             git api异常
+     * @throws IOException
+     *             io异常
+     */
+    public GitSyncRunner(GitConfig gitConfig, @Value("${spring.application.name}") String application)
+            throws Throwable {
+        this.gitConfig = gitConfig;
+        this.application = application;
+        Path path = Paths.get(gitConfig.getDir(), application);
+        boolean r = path.toFile().mkdirs();
+        if (r) {
+            log.info("create dir {} success!", path);
+        }
+        init(gitConfig);
+    }
+
+    /**
+     * 初始化方法
      *
      * @param gitConfig
      *            git配置类
@@ -35,19 +62,21 @@ public class GitSyncRunner implements Runnable {
      * @throws IOException
      *             io异常
      */
-    public GitSyncRunner(GitConfig gitConfig) throws GitAPIException, IOException {
-        this.gitConfig = gitConfig;
-        this.git = createGit();
-        PullResult pullResult = pull();
-        log.info("GitSyncRunner git {} pull {}", gitConfig, pullResult);
-        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(this, 30, 30, TimeUnit.SECONDS);
-    }
-
-    private Git createGit() throws GitAPIException, IOException {
+    private void init(GitConfig gitConfig) throws GitAPIException, IOException {
         String repo = StringUtils.substringAfterLast(gitConfig.getUri(), "/");
         repo = StringUtils.substringBefore(repo, ".git");
-        Path path = Paths.get(gitConfig.getDir(), repo, ".git");
+        this.git = createGit(repo);
+        this.run();
+        ScheduledExecutorService scheduledExecutorService = Executors
+                .newSingleThreadScheduledExecutor(r -> new Thread(r, "GitSyncRunner"));
+        scheduledExecutorService.scheduleAtFixedRate(this, DELAY, DELAY, TimeUnit.SECONDS);
+        String configDir = Paths.get(gitConfig.getDir(), repo).toString();
+        System.setProperty("spring.config.additional-location", "file:" + configDir);
+    }
+
+    private Git createGit(String repo) throws GitAPIException, IOException {
+        Path path = Paths.get(gitConfig.getDir(), application, repo, ".git");
+        log.info("path = {}", path);
         if (path.toFile().exists()) {
             Repository repository = new RepositoryBuilder().setGitDir(path.toFile()).readEnvironment().findGitDir()
                     .build();
@@ -61,20 +90,20 @@ public class GitSyncRunner implements Runnable {
      *
      * @param repo
      *            远程仓库
-     * 
+     *
      * @return git对象
-     * 
+     *
      * @throws GitAPIException
      *             git api 异常
      */
     private Git cloneRepository(String repo) throws GitAPIException {
-        Path path = Paths.get(gitConfig.getDir(), repo);
+        Path path = Paths.get(gitConfig.getDir(), application, repo);
         return Git.cloneRepository().setURI(gitConfig.getUri()).setDirectory(path.toFile()).setTimeout(TIMEOUT).call();
     }
 
     /**
      * 同步拉取
-     * 
+     *
      * @throws GitAPIException
      *             git api 异常
      */
@@ -89,11 +118,11 @@ public class GitSyncRunner implements Runnable {
     public void run() {
         try {
             PullResult pullResult = pull();
-            log.info("git {} pull {}", gitConfig, pullResult);
+            log.info("GitSyncRunner gitConfig {} pullResult {}", gitConfig, pullResult);
         } catch (GitAPIException e) {
-            log.warn("git {} pull failure", gitConfig);
+            log.warn("GitSyncRunner gitConfig {} failure!", gitConfig, e);
         } catch (Throwable e) {
-            log.error("git {} pull error", gitConfig);
+            log.error("GitSyncRunner gitConfig {} error!", gitConfig, e);
         }
     }
 }

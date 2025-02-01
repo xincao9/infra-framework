@@ -1,6 +1,7 @@
 package fun.golinks.config;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -21,9 +22,9 @@ public class ConfigAutoConfiguration {
      *
      * @param configProperties
      *            配置属性类
-     * 
+     *
      * @return git 远程同步runner
-     * 
+     *
      * @throws GitAPIException
      *             git api 异常
      * @throws IOException
@@ -31,7 +32,8 @@ public class ConfigAutoConfiguration {
      */
     @ConditionalOnProperty(prefix = "infra.config", name = "type", havingValue = "git", matchIfMissing = true)
     @Bean
-    public GitSyncRunner gitSyncRunner(ConfigProperties configProperties) throws GitAPIException, IOException {
-        return new GitSyncRunner(configProperties.getGit());
+    public GitSyncRunner gitSyncRunner(ConfigProperties configProperties,
+            @Value("${spring.application.name}") String application) throws Throwable {
+        return new GitSyncRunner(configProperties.getGit(), application);
     }
 }
