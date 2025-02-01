@@ -18,7 +18,7 @@ public class GitConfig {
     /**
      * 目录
      */
-    private String dir = "~/.config";
+    private String dir = "${HOME}/.config";
 
     /**
      * 远程
