@@ -2,7 +2,6 @@ package fun.golinks.config.git;
 
 public class GitConsts {
 
-    public static final String CONFIG_FILE = "/config.yaml";
     public static final String GIT_CONFIG = "git-config";
     public static final String INFRA_CONFIG_GIT_DIR = "infra.config.git.dir";
     public static final String INFRA_CONFIG_GIT_URI = "infra.config.git.uri";

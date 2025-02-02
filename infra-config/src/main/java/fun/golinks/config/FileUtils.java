@@ -1,4 +1,4 @@
-package fun.golinks.config.git;
+package fun.golinks.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
@@ -69,7 +69,7 @@ public class FileUtils {
     }
 
     public static Map<String, String> readConfig() {
-        Map<Object, Object> configMap = FileUtils.readYaml(new ClassPathResource(GitConsts.CONFIG_FILE));
+        Map<Object, Object> configMap = FileUtils.readYaml(new ClassPathResource(ConfigConsts.CONFIG_FILE));
         if (configMap.isEmpty()) {
             return Collections.emptyMap();
         }

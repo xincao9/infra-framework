@@ -1,6 +1,8 @@
 package fun.golinks.config;
 
-import fun.golinks.config.git.GitBeanPostProcessor;
+import fun.golinks.config.git.GitAutoConfiguration;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,15 +12,12 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableConfigurationProperties(ConfigProperties.class)
+@ImportAutoConfiguration(GitAutoConfiguration.class)
+@ConditionalOnProperty(prefix = "infra.config", name = "enabled", havingValue = "true")
 public class ConfigAutoConfiguration {
 
     @Bean
     public ContextUtils contextUtils() {
         return new ContextUtils();
-    }
-
-    @Bean
-    public GitBeanPostProcessor gitBeanPostProcessor() {
-        return new GitBeanPostProcessor();
     }
 }
