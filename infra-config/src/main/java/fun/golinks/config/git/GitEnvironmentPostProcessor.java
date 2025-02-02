@@ -65,7 +65,7 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
      * TODO 配置变更可以刷新，ConfigurationProperties类，目前 考虑只刷新配置变更的相关Bean
      */
     public void refresh(Map<String, Object> configItems) {
-        if (ContextUtils.AC == null) {
+        if (ContextUtils.AC == null) { // 加载是AC为NULL，之后修改时非NULL
             return;
         }
         /*
