@@ -54,6 +54,9 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
         }
     }
 
+    /**
+     * TODO 配置变更可以刷新，ConfigurationProperties类，目前，重新加载所有的Bean，需要修改为只刷新匹配前缀的Bean
+     */
     public void refresh() {
         if (ContextUtils.AC == null) {
             return;
