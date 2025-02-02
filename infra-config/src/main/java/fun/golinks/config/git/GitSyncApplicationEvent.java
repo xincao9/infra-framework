@@ -5,6 +5,9 @@ import org.springframework.context.ApplicationEvent;
 
 import java.util.Map;
 
+/**
+ * git配置同步事件
+ */
 @Getter
 public class GitSyncApplicationEvent extends ApplicationEvent {
 
