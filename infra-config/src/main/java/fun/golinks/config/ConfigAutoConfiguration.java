@@ -1,5 +1,6 @@
 package fun.golinks.config;
 
+import fun.golinks.config.git.GitBeanPostProcessor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,5 +15,10 @@ public class ConfigAutoConfiguration {
     @Bean
     public ContextUtils contextUtils() {
         return new ContextUtils();
+    }
+
+    @Bean
+    public GitBeanPostProcessor gitBeanPostProcessor() {
+        return new GitBeanPostProcessor();
     }
 }

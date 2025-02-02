@@ -3,19 +3,24 @@ package fun.golinks.config.git;
 import com.google.gson.Gson;
 import fun.golinks.config.ConfigConsts;
 import fun.golinks.config.ContextUtils;
+import fun.golinks.config.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
 import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.util.ClassUtils;
 
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,6 +28,7 @@ import java.util.Objects;
 public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
     private final Gson gson = new Gson();
+    private final ConversionService conversionService = new DefaultConversionService();
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
@@ -62,6 +68,29 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
         if (ContextUtils.AC == null) {
             return;
         }
+        /*
+         * 刷新@Value标记的属性
+         */
+        List<Pair<String, Pair<Object, Field>>> valueAnnotationRuntime = ContextUtils.AC
+                .getBean(GitBeanPostProcessor.class).getValueAnnotationRuntime();
+        for (Pair<String, Pair<Object, Field>> pair : valueAnnotationRuntime) {
+            Object value = configItems.get(pair.getO1());
+            if (value == null) {
+                continue;
+            }
+            Object bean = pair.getO2().getO1();
+            Field field = pair.getO2().getO2();
+            field.setAccessible(true);
+            try {
+                value = conversionService.convert(value, field.getType());
+                field.set(bean, value);
+            } catch (IllegalAccessException e) {
+                log.error("refresh @Value({})", pair.getO1(), e);
+            }
+        }
+        /*
+         * 刷新@ConfigurationProperties标记的配置属性类
+         */
         ConfigurationPropertiesBindingPostProcessor postProcessor = ContextUtils.AC
                 .getBean(ConfigurationPropertiesBindingPostProcessor.class);
         Map<String, Object> beans = ContextUtils.AC.getBeansWithAnnotation(ConfigurationProperties.class);
