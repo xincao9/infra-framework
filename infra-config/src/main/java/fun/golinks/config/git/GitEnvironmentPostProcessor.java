@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
 import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -53,12 +54,10 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
     private void update(Path path, Map<String, String> configEnv, MutablePropertySources mutablePropertySources) {
         Map<String, Object> configItems = FileUtils.readConfig(path.toString());
         mutablePropertySources.remove(GitConsts.GIT_CONFIG);
-        if (!configItems.isEmpty()) {
-            configItems.putAll(configEnv);
-            log.info("加载本地配置 {}", gson.toJson(configItems));
-            mutablePropertySources.addFirst(new MapPropertySource(GitConsts.GIT_CONFIG, configItems));
-            refresh(configItems);
-        }
+        configItems.putAll(configEnv);
+        log.info("加载本地配置 {}", gson.toJson(configItems));
+        mutablePropertySources.addFirst(new MapPropertySource(GitConsts.GIT_CONFIG, configItems));
+        refresh(configItems);
     }
 
     /**
@@ -116,6 +115,8 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
                 }
             }
         });
+        ContextUtils.AC.getBean(ApplicationEventPublisher.class)
+                .publishEvent(new GitSyncApplicationEvent(this, configItems));
     }
 
     private Path getPath(Map<String, String> configEnv) {
