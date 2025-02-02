@@ -10,6 +10,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>infra-config</artifactId>
+    <properties>
+        <org.eclipse.jgit.pgm.version>7.1.0.202411261347-r</org.eclipse.jgit.pgm.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -22,7 +25,24 @@
         <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit.pgm</artifactId>
-            <version>7.1.0.202411261347-r</version>
+            <version>${org.eclipse.jgit.pgm.version}</version>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
