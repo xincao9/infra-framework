@@ -50,8 +50,10 @@ public class GitSyncRunner implements Runnable {
     /**
      * 构造器
      *
-     * @throws GitAPIException git api异常
-     * @throws IOException     io异常
+     * @throws GitAPIException
+     *             git api异常
+     * @throws IOException
+     *             io异常
      */
     private GitSyncRunner() throws Throwable {
         Map<String, String> configEnv = FileUtils.readConfig();
@@ -80,8 +82,10 @@ public class GitSyncRunner implements Runnable {
     /**
      * 初始化方法
      *
-     * @throws GitAPIException git api异常
-     * @throws IOException     io异常
+     * @throws GitAPIException
+     *             git api异常
+     * @throws IOException
+     *             io异常
      */
     private void init() throws GitAPIException, IOException {
         this.git = createGit();
@@ -105,7 +109,9 @@ public class GitSyncRunner implements Runnable {
      * clone仓库
      *
      * @return git对象
-     * @throws GitAPIException git api 异常
+     * 
+     * @throws GitAPIException
+     *             git api 异常
      */
     private Git cloneRepository() throws GitAPIException {
         Path path = Paths.get(this.dir, this.appName, this.repo);
@@ -115,7 +121,8 @@ public class GitSyncRunner implements Runnable {
     /**
      * 同步拉取
      *
-     * @throws GitAPIException git api 异常
+     * @throws GitAPIException
+     *             git api 异常
      */
     private PullResult pull() throws GitAPIException {
         return this.git.pull().setRemote(this.remote).setRemoteBranchName(this.remoteBranchName).call();
