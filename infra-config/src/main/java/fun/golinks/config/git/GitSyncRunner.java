@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 public class GitSyncRunner implements Runnable {
 
     private static final int TIMEOUT = 600;
-    private static final int DELAY = 30;
     private Git git;
     private String uri;
     private String appName;
@@ -36,6 +35,7 @@ public class GitSyncRunner implements Runnable {
     private String dir;
     private String remote;
     private String remoteBranchName;
+    private Integer delaySeconds;
 
     private final List<Runnable> callbacks = new ArrayList<>();
 
@@ -72,6 +72,7 @@ public class GitSyncRunner implements Runnable {
         this.dir = configEnv.getOrDefault(GitConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, ".config").toString());
         this.remote = configEnv.getOrDefault(GitConsts.INFRA_CONFIG_GIT_REMOTE, "origin");
         this.remoteBranchName = configEnv.getOrDefault(GitConsts.INFRA_CONFIG_GIT_REMOTE_BRANCH_NAME, "main");
+        this.delaySeconds = Integer.parseInt(configEnv.getOrDefault(GitConsts.INFRA_CONFIG_GIT_DELAY_SECONDS, "30"));
         Path path = Paths.get(this.dir, this.appName);
         boolean r = path.toFile().mkdirs();
         if (r) {
@@ -93,7 +94,7 @@ public class GitSyncRunner implements Runnable {
         this.run();
         ScheduledExecutorService scheduledExecutorService = Executors
                 .newSingleThreadScheduledExecutor(r -> new Thread(r, "GitSyncRunner"));
-        scheduledExecutorService.scheduleAtFixedRate(this, DELAY, DELAY, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(this, delaySeconds, delaySeconds, TimeUnit.SECONDS);
     }
 
     private Git createGit() throws GitAPIException, IOException {
