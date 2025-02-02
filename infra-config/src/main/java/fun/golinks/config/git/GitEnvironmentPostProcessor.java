@@ -2,9 +2,12 @@ package fun.golinks.config.git;
 
 import com.google.gson.Gson;
 import fun.golinks.config.ConfigConsts;
+import fun.golinks.config.ContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
@@ -47,7 +50,18 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
             configItems.putAll(configEnv);
             log.info("加载本地配置 {}", gson.toJson(configItems));
             mutablePropertySources.addFirst(new MapPropertySource(GitConsts.GIT_CONFIG, configItems));
+            refresh();
         }
+    }
+
+    public void refresh() {
+        if (ContextUtils.AC == null) {
+            return;
+        }
+        ConfigurationPropertiesBindingPostProcessor postProcessor = ContextUtils.AC
+                .getBean(ConfigurationPropertiesBindingPostProcessor.class);
+        Map<String, Object> beans = ContextUtils.AC.getBeansWithAnnotation(ConfigurationProperties.class);
+        beans.forEach((beanName, bean) -> postProcessor.postProcessBeforeInitialization(bean, beanName));
     }
 
     private Path getPath(Map<String, String> configEnv) {
