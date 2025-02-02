@@ -56,7 +56,7 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
     }
 
     /**
-     * TODO 配置变更可以刷新，ConfigurationProperties类，目前，重新加载所有的Bean，需要修改为只刷新匹配前缀的Bean
+     * TODO 配置变更可以刷新，ConfigurationProperties类，目前 考虑只刷新配置变更的相关Bean
      */
     public void refresh(Map<String, Object> configItems) {
         if (ContextUtils.AC == null) {
@@ -68,6 +68,9 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
         beans.forEach((beanName, bean) -> {
             Class<?> clazz = ClassUtils.getUserClass(bean);
             ConfigurationProperties configurationProperties = clazz.getAnnotation(ConfigurationProperties.class);
+            if (configurationProperties == null) {
+                return;
+            }
             String prefix = configurationProperties.prefix();
             if (StringUtils.isBlank(prefix)) {
                 prefix = configurationProperties.value();
