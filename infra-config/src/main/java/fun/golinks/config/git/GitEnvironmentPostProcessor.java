@@ -12,6 +12,7 @@ import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
+import org.springframework.util.ClassUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,21 +51,39 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
             configItems.putAll(configEnv);
             log.info("加载本地配置 {}", gson.toJson(configItems));
             mutablePropertySources.addFirst(new MapPropertySource(GitConsts.GIT_CONFIG, configItems));
-            refresh();
+            refresh(configItems);
         }
     }
 
     /**
      * TODO 配置变更可以刷新，ConfigurationProperties类，目前，重新加载所有的Bean，需要修改为只刷新匹配前缀的Bean
      */
-    public void refresh() {
+    public void refresh(Map<String, Object> configItems) {
         if (ContextUtils.AC == null) {
             return;
         }
         ConfigurationPropertiesBindingPostProcessor postProcessor = ContextUtils.AC
                 .getBean(ConfigurationPropertiesBindingPostProcessor.class);
         Map<String, Object> beans = ContextUtils.AC.getBeansWithAnnotation(ConfigurationProperties.class);
-        beans.forEach((beanName, bean) -> postProcessor.postProcessBeforeInitialization(bean, beanName));
+        beans.forEach((beanName, bean) -> {
+            Class<?> clazz = ClassUtils.getUserClass(bean);
+            ConfigurationProperties configurationProperties = clazz.getAnnotation(ConfigurationProperties.class);
+            String prefix = configurationProperties.prefix();
+            if (StringUtils.isBlank(prefix)) {
+                prefix = configurationProperties.value();
+            }
+            if (StringUtils.isBlank(prefix)) {
+                postProcessor.postProcessBeforeInitialization(bean, beanName);
+                return;
+            }
+            for (Map.Entry<String, Object> entry : configItems.entrySet()) {
+                String key = entry.getKey();
+                if (StringUtils.startsWith(key, prefix)) {
+                    postProcessor.postProcessBeforeInitialization(bean, beanName);
+                    break;
+                }
+            }
+        });
     }
 
     private Path getPath(Map<String, String> configEnv) {
