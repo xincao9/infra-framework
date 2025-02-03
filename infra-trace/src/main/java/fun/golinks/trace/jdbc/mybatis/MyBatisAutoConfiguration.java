@@ -2,12 +2,10 @@ package fun.golinks.trace.jdbc.mybatis;
 
 import brave.Tracing;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * mybatis 配置类
  */
-@Configuration
 public class MyBatisAutoConfiguration {
 
     /**

@@ -5,7 +5,6 @@ import fun.golinks.core.interceptor.WebHandlerMethodReturnValueHandler;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
@@ -13,7 +12,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
 @ImportAutoConfiguration(CoreAutoConfiguration.WebConfigImporter.class)
 public class CoreAutoConfiguration {
 

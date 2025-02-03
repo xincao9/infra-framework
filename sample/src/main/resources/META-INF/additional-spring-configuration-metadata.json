@@ -1,49 +1,64 @@
-{ "properties": [ {
-  "name": "infra.config.git.remote-branch-name",
-  "type": "java.lang.String",
-  "description": "Description for infra.config.git.remote-branch-name."
-},{
-  "name": "infra.config.git.remote",
-  "type": "java.lang.String",
-  "description": "Description for infra.config.git.remote."
-},{
-  "name": "infra.config.git.uri",
-  "type": "java.lang.String",
-  "description": "Description for infra.config.git.uri."
-},{
-  "name": "infra.config.git.dir",
-  "type": "java.lang.String",
-  "description": "Description for infra.config.git.dir."
-},{
-  "name": "infra.trace.zipkin.url",
-  "type": "java.lang.String",
-  "description": "Description for infra.trace.zipkin.url."
-},{
-  "name": "infra.trace.zipkin.sampler",
-  "type": "java.lang.String",
-  "description": "Description for infra.trace.zipkin.sampler."
-},{
-  "name": "grpc.pure.app-name",
-  "type": "java.lang.String",
-  "description": "Description for grpc.pure.app-name."
-},{
-  "name": "grpc.pure.server.port",
-  "type": "java.lang.String",
-  "description": "Description for grpc.pure.server.port."
-},{
-  "name": "grpc.pure.discovery.type",
-  "type": "java.lang.String",
-  "description": "Description for grpc.pure.discovery.type."
-},{
-  "name": "grpc.pure.discovery.nacos.address",
-  "type": "java.lang.String",
-  "description": "Description for grpc.pure.discovery.nacos.address."
-},{
-  "name": "grpc.pure.discovery.nacos.username",
-  "type": "java.lang.String",
-  "description": "Description for grpc.pure.discovery.nacos.username."
-},{
-  "name": "grpc.pure.discovery.nacos.password",
-  "type": "java.lang.String",
-  "description": "Description for grpc.pure.discovery.nacos.password."
-}] }
+{
+  "properties": [
+    {
+      "name": "infra.config.git.remote-branch-name",
+      "type": "java.lang.String",
+      "description": "Description for infra.config.git.remote-branch-name."
+    },
+    {
+      "name": "infra.config.git.remote",
+      "type": "java.lang.String",
+      "description": "Description for infra.config.git.remote."
+    },
+    {
+      "name": "infra.config.git.uri",
+      "type": "java.lang.String",
+      "description": "Description for infra.config.git.uri."
+    },
+    {
+      "name": "infra.config.git.dir",
+      "type": "java.lang.String",
+      "description": "Description for infra.config.git.dir."
+    },
+    {
+      "name": "infra.trace.zipkin.url",
+      "type": "java.lang.String",
+      "description": "Description for infra.trace.zipkin.url."
+    },
+    {
+      "name": "infra.trace.zipkin.sampler",
+      "type": "java.lang.String",
+      "description": "Description for infra.trace.zipkin.sampler."
+    },
+    {
+      "name": "grpc.pure.app-name",
+      "type": "java.lang.String",
+      "description": "Description for grpc.pure.app-name."
+    },
+    {
+      "name": "grpc.pure.server.port",
+      "type": "java.lang.String",
+      "description": "Description for grpc.pure.server.port."
+    },
+    {
+      "name": "grpc.pure.discovery.type",
+      "type": "java.lang.String",
+      "description": "Description for grpc.pure.discovery.type."
+    },
+    {
+      "name": "grpc.pure.discovery.nacos.address",
+      "type": "java.lang.String",
+      "description": "Description for grpc.pure.discovery.nacos.address."
+    },
+    {
+      "name": "grpc.pure.discovery.nacos.username",
+      "type": "java.lang.String",
+      "description": "Description for grpc.pure.discovery.nacos.username."
+    },
+    {
+      "name": "grpc.pure.discovery.nacos.password",
+      "type": "java.lang.String",
+      "description": "Description for grpc.pure.discovery.nacos.password."
+    }
+  ]
+}

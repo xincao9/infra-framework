@@ -2,6 +2,7 @@ package fun.golinks.core.interceptor;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.net.HttpHeaders;
 import com.google.common.util.concurrent.RateLimiter;
 import fun.golinks.core.annotate.RateLimited;
 import fun.golinks.core.consts.StatusEnums;
@@ -16,21 +17,43 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Enumeration;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class WebHandlerInterceptor implements HandlerInterceptor {
 
     private static final int STATUS = 200;
+    private static final String METHODS = "GET, POST, PUT, DELETE, OPTIONS";
+    private static final String OPTIONS = "OPTIONS";
+    private static final String HOST = "host";
     private final Cache<Method, RateLimiter> methodRateLimiterCache = CacheBuilder.newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES).maximumSize(1000).build();
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        if (rateLimiter(response, handler))
+        logRequestDetails(request);
+        if (rateLimiter(response, handler)) {
+            return false;
+        }
+        if (cors(request, response))
             return false;
         return true;
+    }
+
+    private static boolean cors(HttpServletRequest request, HttpServletResponse response) {
+        String method = request.getMethod();
+        String host = request.getHeader(HOST);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, host);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, METHODS);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "*");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+        if (Objects.equals(method, OPTIONS)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -80,5 +103,32 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
             response.setStatus(STATUS);
             response.getWriter().write(JsonUtils.toJsonString(R.failed(StatusEnums.SYSTEM_EXCEPTION)));
         }
+    }
+
+    private void logRequestDetails(HttpServletRequest request) {
+        StringBuilder requestDetails = new StringBuilder();
+        // Basic request information
+        requestDetails.append("Request-URI: ").append(request.getRequestURI()).append(", ");
+        requestDetails.append("Remote-Address: ").append(request.getRemoteAddr()).append(", ");
+        // Headers information
+        requestDetails.append("Headers: [");
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            requestDetails.append(headerName).append(": ").append(headerValue).append("; ");
+        }
+        requestDetails.append("], ");
+        // Parameters information
+        requestDetails.append("Parameters: [");
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String paramName = parameterNames.nextElement();
+            String paramValue = request.getParameter(paramName);
+            requestDetails.append(paramName).append(": ").append(paramValue).append("; ");
+        }
+        requestDetails.append("]");
+        // Log request details
+        log.info(requestDetails.toString());
     }
 }

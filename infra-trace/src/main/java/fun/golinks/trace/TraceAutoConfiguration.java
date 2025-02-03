@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import zipkin2.reporter.brave.AsyncZipkinSpanHandler;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
@@ -21,7 +20,6 @@ import zipkin2.reporter.okhttp3.OkHttpSender;
  * trace配置类（核心类）
  */
 @ConditionalOnProperty(prefix = "infra.trace", name = "enabled", havingValue = "true", matchIfMissing = true)
-@Configuration
 @EnableConfigurationProperties(TraceProperties.class)
 @ImportAutoConfiguration({ TraceAutoConfiguration.ServletAutoConfigurationImporter.class,
         TraceAutoConfiguration.GrpcAutoConfigurationImporter.class,

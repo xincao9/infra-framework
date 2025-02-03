@@ -37,7 +37,7 @@ public class MyBatisBraveInterceptor implements Interceptor {
 
     /**
      * 构造器
-     * 
+     *
      * @param tracing
      *            追踪
      */
