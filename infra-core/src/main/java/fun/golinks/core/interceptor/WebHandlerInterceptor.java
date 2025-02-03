@@ -1,5 +1,7 @@
 package fun.golinks.core.interceptor;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.RateLimiter;
 import fun.golinks.core.annotate.RateLimited;
 import fun.golinks.core.consts.StatusEnums;
@@ -13,15 +15,15 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class WebHandlerInterceptor implements HandlerInterceptor {
 
     private static final String CONTENT_TYPE_APPLICATION_JSON = "content-type:application/json";
     private static final int STATUS = 200;
-    private final Map<Method, RateLimiter> methodRateLimiterMap = new ConcurrentHashMap<>();
+    private final Cache<Method, RateLimiter> methodRateLimiterCache = CacheBuilder.newBuilder()
+            .expireAfterWrite(30, TimeUnit.MINUTES).maximumSize(1000).build();
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -31,10 +33,10 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
             RateLimited rateLimited = handlerMethod.getMethodAnnotation(RateLimited.class);
             Method method = handlerMethod.getMethod();
             if (rateLimited != null) {
-                RateLimiter rateLimiter = methodRateLimiterMap.get(handlerMethod.getMethod());
+                RateLimiter rateLimiter = methodRateLimiterCache.getIfPresent(handlerMethod.getMethod());
                 if (rateLimiter == null || rateLimited.permitsPerSecond() > 0) {
                     rateLimiter = RateLimiter.create(rateLimited.permitsPerSecond());
-                    methodRateLimiterMap.put(method, rateLimiter);
+                    methodRateLimiterCache.put(method, rateLimiter);
                 }
                 if (!rateLimiter.tryAcquire()) {
                     response.setStatus(STATUS);
