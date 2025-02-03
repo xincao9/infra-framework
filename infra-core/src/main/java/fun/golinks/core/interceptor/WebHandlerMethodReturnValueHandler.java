@@ -24,6 +24,9 @@ public class WebHandlerMethodReturnValueHandler implements HandlerMethodReturnVa
         }
         mavContainer.setRequestHandled(true);
         HttpServletResponse httpServletResponse = webRequest.getNativeResponse(HttpServletResponse.class);
+        if (httpServletResponse == null) {
+            return;
+        }
         httpServletResponse.setContentType("application/json; charset=UTF-8");
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.getWriter().write(JsonUtils.toJsonString(R.ok(returnValue)));

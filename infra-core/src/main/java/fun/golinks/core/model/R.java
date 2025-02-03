@@ -22,10 +22,10 @@ public class R<T> {
     }
 
     public static <T> R<T> ok(T body) {
-        return new R(StatusEnums.SUCCESS.getCode(), body, StatusEnums.SUCCESS.getMessage());
+        return new R<T>(StatusEnums.SUCCESS.getCode(), body, StatusEnums.SUCCESS.getMessage());
     }
 
     public static <T> R<T> failed(StatusEnums statusEnums) {
-        return new R(statusEnums.getCode(), null, statusEnums.getMessage());
+        return new R<T>(statusEnums.getCode(), null, statusEnums.getMessage());
     }
 }
