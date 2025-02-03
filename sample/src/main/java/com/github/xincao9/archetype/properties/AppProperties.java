@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties("info")
-public class InfoProperties {
+@ConfigurationProperties("app")
+public class AppProperties {
 
     /**
      * 应用名
      */
-    private String applicationName;
+    private String name;
     /**
      * 版本
      */

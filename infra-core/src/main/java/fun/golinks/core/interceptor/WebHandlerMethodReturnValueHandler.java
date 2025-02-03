@@ -23,7 +23,9 @@ public class WebHandlerMethodReturnValueHandler implements HandlerMethodReturnVa
             return;
         }
         mavContainer.setRequestHandled(true);
-        webRequest.getNativeResponse(HttpServletResponse.class).getWriter()
-                .write(JsonUtils.toJsonString(R.ok(returnValue)));
+        HttpServletResponse httpServletResponse = webRequest.getNativeResponse(HttpServletResponse.class);
+        httpServletResponse.setContentType("application/json; charset=UTF-8");
+        httpServletResponse.setCharacterEncoding("UTF-8");
+        httpServletResponse.getWriter().write(JsonUtils.toJsonString(R.ok(returnValue)));
     }
 }
