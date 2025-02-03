@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class WebHandlerInterceptor implements HandlerInterceptor {
 
-    private static final String CONTENT_TYPE_APPLICATION_JSON = "content-type:application/json";
     private static final int STATUS = 200;
     private final Cache<Method, RateLimiter> methodRateLimiterCache = CacheBuilder.newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES).maximumSize(1000).build();
@@ -32,15 +31,14 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             RateLimited rateLimited = handlerMethod.getMethodAnnotation(RateLimited.class);
             Method method = handlerMethod.getMethod();
-            if (rateLimited != null) {
+            if (rateLimited != null && rateLimited.permitsPerSecond() > 0) {
                 RateLimiter rateLimiter = methodRateLimiterCache.getIfPresent(handlerMethod.getMethod());
-                if (rateLimiter == null || rateLimited.permitsPerSecond() > 0) {
+                if (rateLimiter == null) {
                     rateLimiter = RateLimiter.create(rateLimited.permitsPerSecond());
                     methodRateLimiterCache.put(method, rateLimiter);
                 }
                 if (!rateLimiter.tryAcquire()) {
                     response.setStatus(STATUS);
-                    response.setContentType(CONTENT_TYPE_APPLICATION_JSON);
                     response.getWriter().write(JsonUtils.toJsonString(R.failed(StatusEnums.RATE_LIMIT_EXCEEDED)));
                     return false;
                 }
@@ -60,7 +58,6 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
             throws Exception {
         if (ex != null) {
             response.setStatus(STATUS);
-            response.setContentType(CONTENT_TYPE_APPLICATION_JSON);
             response.getWriter().write(JsonUtils.toJsonString(R.failed(StatusEnums.SYSTEM_EXCEPTION)));
         }
     }

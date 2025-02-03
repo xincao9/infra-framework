@@ -5,6 +5,7 @@ import com.github.xincao9.archetype.invoker.GreeterInvoker;
 import com.github.xincao9.archetype.service.SysUserService;
 import com.github.xincao9.infra.archetype.GreeterSayRequest;
 import com.github.xincao9.infra.archetype.GreeterSayResponse;
+import fun.golinks.core.annotate.RateLimited;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ public class GreeterController {
     @Resource
     private GreeterInvoker greeterInvoker;
 
+    @RateLimited(permitsPerSecond = 1)
     @GetMapping("say")
     public String say(@RequestParam("name") String name) throws Throwable {
         SysUser sysUser = sysUserService.findByName(name);
