@@ -5,6 +5,9 @@
     <groupId>fun.golinks</groupId>
     <artifactId>infra-framework</artifactId>
     <packaging>pom</packaging>
+    <version>0.0.4-SNAPSHOT</version>
+    <name>infra-framework</name>
+    <description>Java后端，基础框架</description>
     <modules>
         <module>infra-bom</module>
         <module>infra-core</module>
@@ -12,9 +15,6 @@
         <module>infra-trace</module>
         <module>sample</module>
     </modules>
-    <version>0.0.4-SNAPSHOT</version>
-    <name>infra-framework</name>
-    <description>Java后端，基础框架</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
