@@ -12,7 +12,7 @@
         <module>infra-trace</module>
         <module>sample</module>
     </modules>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
     <name>infra-framework</name>
     <description>Java后端，基础框架</description>
     <properties>

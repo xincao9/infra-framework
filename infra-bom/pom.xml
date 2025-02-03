@@ -5,7 +5,7 @@
     <groupId>fun.golinks</groupId>
     <artifactId>infra-bom</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
     <name>infra-bom</name>
     <description>Java后端，基础框架</description>
     <properties>
@@ -17,11 +17,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>2.7.18</spring-boot.version>
         <grpc-pure-spring-boot-starter.version>1.0.4</grpc-pure-spring-boot-starter.version>
-        <infra-trace.version>0.0.3-SNAPSHOT</infra-trace.version>
-        <infra-config.version>0.0.3-SNAPSHOT</infra-config.version>
-        <infra-core.version>0.0.3-SNAPSHOT</infra-core.version>
+        <infra-trace.version>0.0.3</infra-trace.version>
+        <infra-config.version>0.0.3</infra-config.version>
+        <infra-core.version>0.0.3</infra-core.version>
         <mybatis-plus-boot-starter.version>3.5.10.1</mybatis-plus-boot-starter.version>
         <redis-server.version>0.3.1</redis-server.version>
+        <fastjson2.version>2.0.52</fastjson2.version>
+        <guava.version>33.3.1-jre</guava.version>
     </properties>
     <url>https://github.com/xincao9/infra-framework</url>
     <developers>
@@ -95,6 +97,16 @@
                 <groupId>com.github.microwww</groupId>
                 <artifactId>redis-server</artifactId>
                 <version>${redis-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
