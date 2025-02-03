@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +28,25 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+        if (rateLimiter(response, handler))
+            return false;
+        return true;
+    }
+
+    /**
+     * 判断限流
+     *
+     * @param response
+     *            响应
+     * @param handler
+     *            处理器
+     * 
+     * @return
+     * 
+     * @throws IOException
+     *             IO异常
+     */
+    private boolean rateLimiter(HttpServletResponse response, Object handler) throws IOException {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             RateLimited rateLimited = handlerMethod.getMethodAnnotation(RateLimited.class);
@@ -40,11 +60,11 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
                 if (!rateLimiter.tryAcquire()) {
                     response.setStatus(STATUS);
                     response.getWriter().write(JsonUtils.toJsonString(R.failed(StatusEnums.RATE_LIMIT_EXCEEDED)));
-                    return false;
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 
     @Override

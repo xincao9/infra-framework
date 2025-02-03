@@ -3,6 +3,11 @@ package fun.golinks.core.model;
 import fun.golinks.core.consts.StatusEnums;
 import lombok.Getter;
 
+/**
+ * 统一mvc返回接口
+ *
+ * @param <T>
+ */
 @Getter
 public class R<T> {
 

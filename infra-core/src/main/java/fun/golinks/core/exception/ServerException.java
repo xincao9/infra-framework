@@ -1,5 +1,8 @@
 package fun.golinks.core.exception;
 
+/**
+ * 服务端异常
+ */
 public class ServerException extends Exception {
 
     public ServerException() {
