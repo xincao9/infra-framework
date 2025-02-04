@@ -5,9 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>fun.golinks</groupId>
-        <artifactId>infra-bom</artifactId>
+        <artifactId>infra-framework</artifactId>
         <version>0.0.4-SNAPSHOT</version>
-        <relativePath/>
     </parent>
     <groupId>com.github.xincao9.archetype</groupId>
     <artifactId>sample</artifactId>
