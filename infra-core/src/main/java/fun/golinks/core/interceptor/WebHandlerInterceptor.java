@@ -7,7 +7,8 @@ import com.google.common.util.concurrent.RateLimiter;
 import fun.golinks.core.annotate.RateLimited;
 import fun.golinks.core.consts.StatusEnums;
 import fun.golinks.core.model.R;
-import fun.golinks.core.util.JsonUtils;
+import fun.golinks.core.utils.JsonUtils;
+import fun.golinks.core.utils.MDCUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -31,18 +32,6 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
     private final Cache<Method, RateLimiter> methodRateLimiterCache = CacheBuilder.newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES).maximumSize(1000).build();
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
-        logRequestDetails(request);
-        if (rateLimiter(response, handler)) {
-            return false;
-        }
-        if (cors(request, response))
-            return false;
-        return true;
-    }
-
     private static boolean cors(HttpServletRequest request, HttpServletResponse response) {
         String method = request.getMethod();
         String host = request.getHeader(HOST);
@@ -54,6 +43,18 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
+        logRequestDetails(request);
+        if (rateLimiter(response, handler)) {
+            return false;
+        }
+        if (cors(request, response))
+            return false;
+        return true;
     }
 
     /**
@@ -106,6 +107,8 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
     }
 
     private void logRequestDetails(HttpServletRequest request) {
+        String traceId = request.getHeader(MDCUtils.TRACE_ID);
+        MDCUtils.setTraceId(traceId);
         StringBuilder requestDetails = new StringBuilder();
         // Basic request information
         requestDetails.append("Request-URI: ").append(request.getRequestURI()).append(", ");

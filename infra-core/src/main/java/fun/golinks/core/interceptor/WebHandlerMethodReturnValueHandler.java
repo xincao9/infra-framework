@@ -1,7 +1,7 @@
 package fun.golinks.core.interceptor;
 
 import fun.golinks.core.model.R;
-import fun.golinks.core.util.JsonUtils;
+import fun.golinks.core.utils.JsonUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;

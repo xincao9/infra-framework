@@ -1,4 +1,4 @@
-package fun.golinks.core.util;
+package fun.golinks.core.utils;
 
 import com.alibaba.fastjson2.JSON;
 

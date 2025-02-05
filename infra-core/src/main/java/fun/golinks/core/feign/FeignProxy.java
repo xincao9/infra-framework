@@ -4,13 +4,15 @@ import com.alibaba.fastjson2.JSONObject;
 import com.google.common.base.Charsets;
 import feign.Feign;
 import feign.Logger;
+import feign.Request;
 import feign.Util;
 import fun.golinks.core.annotate.FeignClient;
 import fun.golinks.core.exception.FeignClientException;
-import fun.golinks.core.util.JsonUtils;
+import fun.golinks.core.utils.JsonUtils;
+import fun.golinks.core.utils.MDCUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import feign.Request;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,7 +39,10 @@ public class FeignProxy {
                 byte[] bytes = Util.toByteArray(response.body().asInputStream());
                 return JSONObject.parseObject(new String(bytes, Charsets.UTF_8), type);
             }
-        }).encoder((o, type, requestTemplate) -> requestTemplate.body(JsonUtils.toJsonString(o))).logger(new Logger() {
+        }).encoder((o, type, requestTemplate) -> {
+            requestTemplate.header(MDCUtils.TRACE_ID, MDCUtils.getTraceId());
+            requestTemplate.body(JsonUtils.toJsonString(o));
+        }).logger(new Logger() {
             @Override
             protected void log(String configKey, String format, Object... args) {
                 log.info("[{}]{}", configKey, String.format(format, args));

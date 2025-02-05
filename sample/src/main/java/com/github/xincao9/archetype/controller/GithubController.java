@@ -20,6 +20,6 @@ public class GithubController {
 
     @GetMapping("contributors")
     public List<Contributor> contributors() throws FeignClientException {
-        return gitHubClient.contributors("xincao9", "infra-framework", new Request.Options(1000, 100));
+        return gitHubClient.contributors("xincao9", "infra-framework", new Request.Options(1000, 500));
     }
 }
