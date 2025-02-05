@@ -36,41 +36,8 @@
         <redis-server.version>0.3.1</redis-server.version>
         <fastjson2.version>2.0.52</fastjson2.version>
         <guava.version>33.3.1-jre</guava.version>
+        <feign-core.version>11.0</feign-core.version>
     </properties>
-    <url>https://github.com/xincao9/infra-framework</url>
-    <developers>
-        <developer>
-            <email>xincao9@gmail.com</email>
-            <name>xin.cao</name>
-            <roles>
-                <role>owner</role>
-            </roles>
-            <url>https://github.com/xincao9</url>
-            <organization>xincao9</organization>
-            <organizationUrl>https://github.com/xincao9/</organizationUrl>
-        </developer>
-    </developers>
-    <organization>
-        <name>Personal</name>
-        <url>https://github.com/xincao9</url>
-    </organization>
-    <issueManagement>
-        <system>Github Issues</system>
-        <url>https://github.com/xincao9/infra-framework/issues</url>
-    </issueManagement>
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <scm>
-        <tag>master</tag>
-        <url>git@github.com:xincao9/infra-framework.git</url>
-        <connection>scm:git:git@github.com:xincao9/infra-framework.git</connection>
-        <developerConnection>scm:git:git@github.com:xincao9/infra-framework.git</developerConnection>
-    </scm>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -113,8 +80,47 @@
                 <artifactId>fastjson2</artifactId>
                 <version>${fastjson2.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-core</artifactId>
+                <version>${feign-core.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+    <url>https://github.com/xincao9/infra-framework</url>
+    <developers>
+        <developer>
+            <email>xincao9@gmail.com</email>
+            <name>xin.cao</name>
+            <roles>
+                <role>owner</role>
+            </roles>
+            <url>https://github.com/xincao9</url>
+            <organization>xincao9</organization>
+            <organizationUrl>https://github.com/xincao9/</organizationUrl>
+        </developer>
+    </developers>
+    <organization>
+        <name>Personal</name>
+        <url>https://github.com/xincao9</url>
+    </organization>
+    <issueManagement>
+        <system>Github Issues</system>
+        <url>https://github.com/xincao9/infra-framework/issues</url>
+    </issueManagement>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <tag>master</tag>
+        <url>git@github.com:xincao9/infra-framework.git</url>
+        <connection>scm:git:git@github.com:xincao9/infra-framework.git</connection>
+        <developerConnection>scm:git:git@github.com:xincao9/infra-framework.git</developerConnection>
+    </scm>
     <build>
         <extensions>
             <extension>
