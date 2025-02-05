@@ -1,6 +1,6 @@
-package com.github.xincao9.archetype.rpc;
+package com.github.xincao9.archetype.rpc.impl;
 
-import com.github.xincao9.archetype.consumer.GreeterConsumer;
+import com.github.xincao9.archetype.rpc.consumer.GreeterConsumer;
 import com.github.xincao9.infra.archetype.GreeterRPCServiceGrpc;
 import com.github.xincao9.infra.archetype.GreeterSayRequest;
 import com.github.xincao9.infra.archetype.GreeterSayResponse;

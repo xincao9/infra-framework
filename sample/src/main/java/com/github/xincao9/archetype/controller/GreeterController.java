@@ -1,7 +1,7 @@
 package com.github.xincao9.archetype.controller;
 
 import com.github.xincao9.archetype.entity.SysUser;
-import com.github.xincao9.archetype.invoker.GreeterInvoker;
+import com.github.xincao9.archetype.rpc.invoker.GreeterInvoker;
 import com.github.xincao9.archetype.service.SysUserService;
 import com.github.xincao9.infra.archetype.GreeterSayRequest;
 import com.github.xincao9.infra.archetype.GreeterSayResponse;

@@ -1,6 +1,6 @@
-package com.github.xincao9.archetype.saas;
+package com.github.xincao9.archetype.client;
 
-import com.github.xincao9.archetype.dto.Contributor;
+import com.github.xincao9.archetype.client.dto.Contributor;
 import feign.Param;
 import feign.RequestLine;
 import fun.golinks.core.annotate.FeignClient;
@@ -8,7 +8,7 @@ import fun.golinks.core.annotate.FeignClient;
 import java.util.List;
 
 @FeignClient(baseUrl = "https://api.github.com")
-public interface GitHub {
+public interface GitHubClient {
 
     @RequestLine("GET /repos/{owner}/{repo}/contributors")
     List<Contributor> contributors(@Param("owner") String owner, @Param("repo") String repo);

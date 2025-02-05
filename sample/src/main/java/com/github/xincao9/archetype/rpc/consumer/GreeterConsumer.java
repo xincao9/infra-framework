@@ -1,4 +1,4 @@
-package com.github.xincao9.archetype.consumer;
+package com.github.xincao9.archetype.rpc.consumer;
 
 import com.github.xincao9.infra.archetype.GreeterSayRequest;
 import com.github.xincao9.infra.archetype.GreeterSayResponse;

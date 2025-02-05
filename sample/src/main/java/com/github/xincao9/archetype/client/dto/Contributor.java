@@ -1,4 +1,4 @@
-package com.github.xincao9.archetype.dto;
+package com.github.xincao9.archetype.client.dto;
 
 import lombok.Data;
 
