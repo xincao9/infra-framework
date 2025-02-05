@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+/**
+ * 演示，读取配置中心
+ */
 @RequestMapping("app")
 @RestController
 public class AppController {

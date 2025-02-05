@@ -7,4 +7,4 @@ infra:
       uri: https://github.com/xincao9/sample-config-repo.git
       remote: origin
       remote-branch-name: main
-      delay-seconds: 30
+      delay-seconds: 30 # 单位秒，根据需要设置

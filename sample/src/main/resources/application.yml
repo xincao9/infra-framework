@@ -2,14 +2,14 @@ spring:
   application:
     name: sample
   redis:
-    url: redis://:@127.0.0.1:6380
+    url: redis://:@127.0.0.1:6380 # 和 host，port, username, password配置效果一样
     host: localhost
     username: ''
     password: ''
     port: 6380
   datasource:
-    driverClassName: org.h2.Driver
-    url: jdbc:h2:file:/tmp/sample
+    driverClassName: org.h2.Driver # 根据所需数据库修改
+    url: jdbc:h2:file:/tmp/sample # 根据所需数据库修改
     username: root
     password: 123456
   sql:
@@ -25,7 +25,7 @@ server:
   port: 8080
 infra:
   trace:
-    enabled: true
+    enabled: false # 是否开启trace
     zipkin:
       url: "http://localhost:9411/api/v2/spans"
       sampler: "1.0F"
@@ -35,7 +35,7 @@ grpc:
     server:
       port: 9999
     discovery:
-      type: nacos
+      type: direct # direct 直连，nacos 使用nacos作为注册中心
       nacos:
         address: 127.0.0.1:8848
         username: nacos

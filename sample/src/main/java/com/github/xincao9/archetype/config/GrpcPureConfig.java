@@ -6,10 +6,16 @@ import io.grpc.ManagedChannel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * grpc客户端配置类
+ */
 @Configuration
 public class GrpcPureConfig {
 
-    private static final String GREETER_APP_URL = "nacos://greeter";
+    /**
+     * nacos注册中心请使用 nacos://{应用名} 格式定义target
+     */
+    private static final String GREETER_APP_URL = "127.0.0.1:9999";
 
     @Bean
     public GreeterRPCServiceGrpc.GreeterRPCServiceBlockingStub greeterRPCServiceBlockingStub(

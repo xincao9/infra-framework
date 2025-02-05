@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * 演示，调用三方http接口的方式
+ */
 @RequestMapping("github")
 @RestController
 public class GithubController {

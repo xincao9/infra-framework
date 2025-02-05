@@ -5,6 +5,9 @@ import com.github.xincao9.infra.archetype.GreeterSayResponse;
 import fun.golinks.grpc.pure.util.GrpcConsumer;
 import org.springframework.stereotype.Component;
 
+/**
+ * 每个grpc service 实现对应一个Consumer类
+ */
 @Component
 public class GreeterConsumer {
 

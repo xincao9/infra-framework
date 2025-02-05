@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 
+/**
+ * mock redis 开发前删掉这个类
+ */
 @Slf4j
 @Configuration
 public class RedisServerConfig {

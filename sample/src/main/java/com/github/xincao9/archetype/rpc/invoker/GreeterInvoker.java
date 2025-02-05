@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+/**
+ * 每个grpc service 调用对应一个Invoker类
+ */
 @Component
 public class GreeterInvoker {
 
