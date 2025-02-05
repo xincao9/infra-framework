@@ -30,7 +30,8 @@ public class FeignProxy {
                 byte[] bytes = Util.toByteArray(response.body().asInputStream());
                 return JSONObject.parseObject(new String(bytes, Charsets.UTF_8), type);
             }
-        }).encoder((o, type, requestTemplate) -> requestTemplate.body(JsonUtils.toJsonString(o))).target(clazz, feignClient.baseUrl());
+        }).encoder((o, type, requestTemplate) -> requestTemplate.body(JsonUtils.toJsonString(o))).target(clazz,
+                feignClient.baseUrl());
         cached.put(clazz, obj);
         return obj;
     }
