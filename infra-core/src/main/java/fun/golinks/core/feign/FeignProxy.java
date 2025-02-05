@@ -10,13 +10,16 @@ import fun.golinks.core.exception.FeignClientException;
 import fun.golinks.core.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-
+import feign.Request;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class FeignProxy {
 
+    private static final int CONNECT_TIMEOUT_MILLIS = 1000;
+    private static final int READ_TIMEOUT_MILLIS = 1000;
+    private static final Request.Options OPTIONS = new Request.Options(CONNECT_TIMEOUT_MILLIS, READ_TIMEOUT_MILLIS);
     private final Map<Class<?>, Object> cached = new ConcurrentHashMap<>();
 
     public <T> T getOrCreate(Class<T> clazz) throws FeignClientException {
@@ -39,7 +42,7 @@ public class FeignProxy {
             protected void log(String configKey, String format, Object... args) {
                 log.info("[{}]{}", configKey, String.format(format, args));
             }
-        }).logLevel(Logger.Level.BASIC).target(clazz, feignClient.baseUrl());
+        }).logLevel(Logger.Level.BASIC).options(OPTIONS).target(clazz, feignClient.baseUrl());
         cached.put(clazz, obj);
         return obj;
     }
