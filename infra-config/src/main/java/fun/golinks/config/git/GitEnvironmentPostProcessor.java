@@ -7,6 +7,7 @@ import fun.golinks.config.FileUtils;
 import fun.golinks.config.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
@@ -119,8 +120,12 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
         /*
          * git配置同步事件触发
          */
-        ContextUtils.AC.getBean(ApplicationEventPublisher.class)
-                .publishEvent(new GitSyncApplicationEvent(this, configItems));
+        try {
+            ApplicationEventPublisher applicationEventPublisher = ContextUtils.AC.getBean(ApplicationEventPublisher.class);
+            applicationEventPublisher.publishEvent(new GitSyncApplicationEvent(this, configItems));
+        } catch (NoSuchBeanDefinitionException e) {
+            log.debug("applicationEventPublisher.publishEvent(GitSyncApplicationEvent)", e);
+        }
     }
 
     private Path getPath(Map<String, String> configEnv) {
