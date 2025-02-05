@@ -121,7 +121,8 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
          * git配置同步事件触发
          */
         try {
-            ApplicationEventPublisher applicationEventPublisher = ContextUtils.AC.getBean(ApplicationEventPublisher.class);
+            ApplicationEventPublisher applicationEventPublisher = ContextUtils.AC
+                    .getBean(ApplicationEventPublisher.class);
             applicationEventPublisher.publishEvent(new GitSyncApplicationEvent(this, configItems));
         } catch (NoSuchBeanDefinitionException e) {
             log.debug("applicationEventPublisher.publishEvent(GitSyncApplicationEvent)", e);
