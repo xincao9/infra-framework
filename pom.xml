@@ -18,7 +18,6 @@
         <module>infra-core</module>
         <module>infra-config</module>
         <module>infra-trace</module>
-        <module>sample</module>
     </modules>
     <properties>
         <java.version>8</java.version>
