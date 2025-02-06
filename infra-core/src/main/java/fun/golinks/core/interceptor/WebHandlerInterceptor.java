@@ -33,12 +33,11 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
             .expireAfterWrite(30, TimeUnit.MINUTES).maximumSize(1000).build();
 
     private static boolean cors(HttpServletRequest request, HttpServletResponse response) {
-        String method = request.getMethod();
-        String host = request.getHeader(HOST);
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, host);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, METHODS);
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "*");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+        String method = request.getMethod();
         if (Objects.equals(method, OPTIONS)) {
             return true;
         }
