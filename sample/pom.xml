@@ -6,7 +6,7 @@
     <parent>
         <groupId>fun.golinks</groupId>
         <artifactId>infra-framework</artifactId>
-        <version>0.0.4-SNAPSHOT</version>
+        <version>1.0.4</version>
     </parent>
     <groupId>com.github.xincao9.archetype</groupId>
     <artifactId>sample</artifactId>
@@ -74,6 +74,18 @@
                     </execution>
                 </executions>
                 <version>${spring-boot.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
