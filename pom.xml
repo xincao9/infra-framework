@@ -28,7 +28,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>2.7.18</spring-boot.version>
-        <grpc-pure-spring-boot-starter.version>1.0.4</grpc-pure-spring-boot-starter.version>
+        <grpc-pure-spring-boot-starter.version>1.0.5</grpc-pure-spring-boot-starter.version>
         <infra-trace.version>${project.version}</infra-trace.version>
         <infra-config.version>${project.version}</infra-config.version>
         <infra-core.version>${project.version}</infra-core.version>
