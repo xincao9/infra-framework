@@ -10,7 +10,7 @@
     </parent>
     <groupId>fun.golinks</groupId>
     <artifactId>infra-framework</artifactId>
-    <version>1.0.4</version>
+    <version>0.0.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>infra-framework</name>
     <description>Java后端，基础框架</description>
@@ -36,6 +36,7 @@
         <fastjson2.version>2.0.52</fastjson2.version>
         <guava.version>33.3.1-jre</guava.version>
         <feign-core.version>11.0</feign-core.version>
+        <springdoc-openapi-ui.version>1.8.0</springdoc-openapi-ui.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -83,6 +84,11 @@
                 <groupId>io.github.openfeign</groupId>
                 <artifactId>feign-core</artifactId>
                 <version>${feign-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc-openapi-ui.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

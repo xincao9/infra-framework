@@ -52,3 +52,5 @@ management:
       enabled: false
   server:
     port: 7777
+springdoc:
+  use-management-port: true
