@@ -1,10 +1,10 @@
 package fun.golinks.config.git;
 
-import com.google.gson.Gson;
 import fun.golinks.config.ConfigConsts;
 import fun.golinks.config.ContextUtils;
 import fun.golinks.config.FileUtils;
 import fun.golinks.config.Pair;
+import fun.golinks.core.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -30,7 +30,6 @@ import java.util.Objects;
 @Slf4j
 public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
-    private final Gson gson = new Gson();
     private final ConversionService conversionService = new DefaultConversionService();
 
     @Override
@@ -57,7 +56,7 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
         Map<String, Object> configItems = FileUtils.readConfig(path.toString());
         mutablePropertySources.remove(GitConsts.GIT_CONFIG);
         configItems.putAll(configEnv);
-        log.info("加载本地配置 {}", gson.toJson(configItems));
+        log.info("Load local configuration {}", JsonUtils.toJsonString(configItems));
         mutablePropertySources.addFirst(new MapPropertySource(GitConsts.GIT_CONFIG, configItems));
         refresh(configItems);
     }
