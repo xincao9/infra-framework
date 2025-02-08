@@ -1,7 +1,6 @@
 package fun.golinks.core.utils;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.TypeReference;
 
 import java.lang.reflect.Type;
 

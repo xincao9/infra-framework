@@ -1,5 +1,8 @@
 package com.github.xincao9.archetype.config;
 
+import fun.golinks.core.consts.StatusEnums;
+import fun.golinks.core.model.R;
+import fun.golinks.core.utils.JsonUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,13 +17,14 @@ import java.util.Map;
 public class ControllerAdviceConfig {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        R r = new R(StatusEnums.BAD_REQUEST.getCode(), null, errors);
+        return new ResponseEntity<>(JsonUtils.toJsonString(r), HttpStatus.OK);
     }
 }

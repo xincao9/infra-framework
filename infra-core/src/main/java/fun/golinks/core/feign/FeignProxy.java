@@ -1,7 +1,10 @@
 package fun.golinks.core.feign;
 
 import com.google.common.base.Charsets;
-import feign.*;
+import feign.Feign;
+import feign.Logger;
+import feign.Request;
+import feign.Util;
 import fun.golinks.core.annotate.FeignClient;
 import fun.golinks.core.exception.FeignClientException;
 import fun.golinks.core.utils.JsonUtils;

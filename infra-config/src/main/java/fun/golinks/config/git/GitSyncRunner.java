@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 public class GitSyncRunner implements Runnable {
 
     private static final int TIMEOUT = 600;
+    private static GitSyncRunner instance;
+    private final List<Runnable> callbacks = new ArrayList<>();
     private Git git;
     private String uri;
     private String appName;
@@ -36,17 +38,6 @@ public class GitSyncRunner implements Runnable {
     private String remote;
     private String remoteBranchName;
     private Integer delaySeconds;
-
-    private final List<Runnable> callbacks = new ArrayList<>();
-
-    private static GitSyncRunner instance;
-
-    public synchronized static GitSyncRunner start() throws Throwable {
-        if (instance == null) {
-            instance = new GitSyncRunner();
-        }
-        return instance;
-    }
 
     /**
      * 构造器
@@ -79,6 +70,13 @@ public class GitSyncRunner implements Runnable {
             log.info("create dir {} success!", path);
         }
         init();
+    }
+
+    public synchronized static GitSyncRunner start() throws Throwable {
+        if (instance == null) {
+            instance = new GitSyncRunner();
+        }
+        return instance;
     }
 
     /**

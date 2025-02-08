@@ -13,9 +13,9 @@ public class R<T> {
 
     private final int code;
     private final T body;
-    private final String message;
+    private final Object message;
 
-    public R(int code, T body, String message) {
+    public R(int code, T body, Object message) {
         this.code = code;
         this.body = body;
         this.message = message;

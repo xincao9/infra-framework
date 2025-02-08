@@ -1,23 +1,29 @@
 package com.github.xincao9.archetype.controller;
 
 import com.github.xincao9.archetype.entity.SysUser;
+import com.github.xincao9.archetype.model.GreeterSayRequestModel;
 import com.github.xincao9.archetype.rpc.invoker.GreeterInvoker;
 import com.github.xincao9.archetype.service.SysUserService;
 import com.github.xincao9.infra.archetype.GreeterSayRequest;
 import com.github.xincao9.infra.archetype.GreeterSayResponse;
 import fun.golinks.core.annotate.RateLimited;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * 演示，一般的业务流程
  */
 @RestController
 @RequestMapping("greeter")
+@Validated
 public class GreeterController {
 
     @Resource
@@ -25,11 +31,15 @@ public class GreeterController {
     @Resource
     private GreeterInvoker greeterInvoker;
 
-    @RateLimited(permitsPerSecond = 1)
-    @GetMapping("say")
-    public String say(@RequestParam("name") String name) throws Throwable {
+    @Operation(summary = "Say a greeting", description = "This endpoint says a greeting based on the name provided")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input") })
+    @RateLimited(permitsPerSecond = 10)
+    @PostMapping("say")
+    public String say(@Valid @RequestBody GreeterSayRequestModel greeterSayRequestModel) throws Throwable {
         // 读取数据库
-        SysUser sysUser = sysUserService.findByName(name);
+        SysUser sysUser = sysUserService.findByName(greeterSayRequestModel.getName());
         if (sysUser == null) {
             return null;
         }
