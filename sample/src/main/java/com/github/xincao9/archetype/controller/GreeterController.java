@@ -9,6 +9,7 @@ import com.github.xincao9.infra.archetype.GreeterSayRequest;
 import com.github.xincao9.infra.archetype.GreeterSayResponse;
 import fun.golinks.core.annotate.RateLimited;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,11 +35,11 @@ public class GreeterController {
 
     @Operation(summary = "Say a greeting", description = "This endpoint says a greeting based on the name provided")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input") })
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = GreeterSayResponseModel.class))) })
     @RateLimited(permitsPerSecond = 10)
     @PostMapping("say")
-    public GreeterSayResponseModel say(@Valid @RequestBody GreeterSayRequestModel greeterSayRequestModel)
+    public GreeterSayResponseModel say(
+            @Parameter(description = "Request model containing the name to greet", required = true) @Valid @RequestBody GreeterSayRequestModel greeterSayRequestModel)
             throws Throwable {
         // 读取数据库
         SysUser sysUser = sysUserService.findByName(greeterSayRequestModel.getName());
