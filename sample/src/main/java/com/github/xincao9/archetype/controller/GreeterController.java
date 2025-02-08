@@ -2,6 +2,7 @@ package com.github.xincao9.archetype.controller;
 
 import com.github.xincao9.archetype.entity.SysUser;
 import com.github.xincao9.archetype.model.GreeterSayRequestModel;
+import com.github.xincao9.archetype.model.GreeterSayResponseModel;
 import com.github.xincao9.archetype.rpc.invoker.GreeterInvoker;
 import com.github.xincao9.archetype.service.SysUserService;
 import com.github.xincao9.infra.archetype.GreeterSayRequest;
@@ -37,7 +38,8 @@ public class GreeterController {
             @ApiResponse(responseCode = "400", description = "Invalid input") })
     @RateLimited(permitsPerSecond = 10)
     @PostMapping("say")
-    public String say(@Valid @RequestBody GreeterSayRequestModel greeterSayRequestModel) throws Throwable {
+    public GreeterSayResponseModel say(@Valid @RequestBody GreeterSayRequestModel greeterSayRequestModel)
+            throws Throwable {
         // 读取数据库
         SysUser sysUser = sysUserService.findByName(greeterSayRequestModel.getName());
         if (sysUser == null) {
@@ -46,6 +48,6 @@ public class GreeterController {
         // 调用grpc服务
         GreeterSayRequest request = GreeterSayRequest.newBuilder().setName(sysUser.getEmail()).build();
         GreeterSayResponse response = greeterInvoker.sayInvoker.apply(request);
-        return response.getMessage();
+        return new GreeterSayResponseModel(response.getMessage());
     }
 }
