@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 /**
  * 演示，一般的业务流程
@@ -30,7 +31,7 @@ public class GreeterController {
 
     @RateLimited(permitsPerSecond = 1)
     @GetMapping("say")
-    public String say(@Valid @RequestParam("name") String name) throws Throwable {
+    public String say(@Valid @NotBlank @RequestParam("name") String name) throws Throwable {
         // 读取数据库
         SysUser sysUser = sysUserService.findByName(name);
         if (sysUser == null) {

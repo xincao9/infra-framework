@@ -17,13 +17,9 @@ public interface GitHubClient {
     /**
      * 查看贡献者
      *
-     * @param owner
-     *            拥有者
-     * @param repo
-     *            仓库
-     * @param options
-     *            不修改默认调用参数时，可以不用这个参数
-     * 
+     * @param owner   拥有者
+     * @param repo    仓库
+     * @param options 不修改默认调用参数时，可以不用这个参数
      * @return 贡献者
      */
     @RequestLine("GET /repos/{owner}/{repo}/contributors")
