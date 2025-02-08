@@ -17,7 +17,6 @@ import org.springframework.util.ClassUtils;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
-import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +63,11 @@ public class CoreAutoConfiguration {
     @ImportAutoConfiguration(WebConfig.class)
     public static class WebConfigImporter implements InitializingBean {
 
-        @Resource
-        private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
+        private final RequestMappingHandlerAdapter requestMappingHandlerAdapter;
+
+        public WebConfigImporter(RequestMappingHandlerAdapter requestMappingHandlerAdapter) {
+            this.requestMappingHandlerAdapter = requestMappingHandlerAdapter;
+        }
 
         @Override
         public void afterPropertiesSet() throws Exception {

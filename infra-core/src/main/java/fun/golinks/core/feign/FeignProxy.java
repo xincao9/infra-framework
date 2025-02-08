@@ -1,11 +1,7 @@
 package fun.golinks.core.feign;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.google.common.base.Charsets;
-import feign.Feign;
-import feign.Logger;
-import feign.Request;
-import feign.Util;
+import feign.*;
 import fun.golinks.core.annotate.FeignClient;
 import fun.golinks.core.exception.FeignClientException;
 import fun.golinks.core.utils.JsonUtils;
@@ -37,17 +33,18 @@ public class FeignProxy {
                 return null;
             } else {
                 byte[] bytes = Util.toByteArray(response.body().asInputStream());
-                return JSONObject.parseObject(new String(bytes, Charsets.UTF_8), type);
+                return JsonUtils.parseObject(new String(bytes, Charsets.UTF_8), type);
             }
         }).encoder((o, type, requestTemplate) -> {
-            requestTemplate.header(MDCUtils.TRACE_ID, MDCUtils.getTraceId());
             requestTemplate.body(JsonUtils.toJsonString(o));
         }).logger(new Logger() {
             @Override
             protected void log(String configKey, String format, Object... args) {
                 log.info("[{}]{}", configKey, String.format(format, args));
             }
-        }).logLevel(Logger.Level.BASIC).options(OPTIONS).target(clazz, feignClient.baseUrl());
+        }).logLevel(Logger.Level.BASIC)
+                .requestInterceptor(requestTemplate -> requestTemplate.header(MDCUtils.TRACE_ID, MDCUtils.getTraceId()))
+                .options(OPTIONS).target(clazz, feignClient.baseUrl());
         cached.put(clazz, obj);
         return obj;
     }

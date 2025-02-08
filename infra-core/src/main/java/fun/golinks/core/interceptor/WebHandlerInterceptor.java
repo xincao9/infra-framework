@@ -28,7 +28,6 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
     private static final int STATUS = 200;
     private static final String METHODS = "GET, POST, PUT, DELETE, OPTIONS";
     private static final String OPTIONS = "OPTIONS";
-    private static final String HOST = "host";
     private final Cache<Method, RateLimiter> methodRateLimiterCache = CacheBuilder.newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES).maximumSize(1000).build();
 
