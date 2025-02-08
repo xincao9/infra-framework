@@ -6,7 +6,6 @@ import com.github.xincao9.archetype.service.SysUserService;
 import com.github.xincao9.infra.archetype.GreeterSayRequest;
 import com.github.xincao9.infra.archetype.GreeterSayResponse;
 import fun.golinks.core.annotate.RateLimited;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +18,6 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("greeter")
-@ApiResponse
 public class GreeterController {
 
     @Resource
