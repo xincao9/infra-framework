@@ -100,7 +100,7 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
             throws Exception {
         if (ex != null) {
             response.setStatus(STATUS);
-            response.getWriter().write(JsonUtils.toJsonString(R.failed(StatusEnums.SYSTEM_EXCEPTION)));
+            response.getWriter().write(JsonUtils.toJsonString(R.failed(StatusEnums.INTERNAL_SERVER_ERROR)));
         }
     }
 
