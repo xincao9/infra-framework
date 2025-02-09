@@ -21,3 +21,7 @@
 ## [infra-archetype](https://github.com/xincao9/infra-archetype)
 
 **原型模板**：用于快速生成基础设施项目
+
+## [Infra Starter](https://golinks.fun/)
+
+![infra-starter.png](infra-starter.png)
