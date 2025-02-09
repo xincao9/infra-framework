@@ -1,4 +1,4 @@
-package com.github.xincao9.archetype.rpc.invoker;
+package com.github.xincao9.archetype.invoker;
 
 import com.github.xincao9.infra.archetype.GreeterRPCServiceGrpc;
 import com.github.xincao9.infra.archetype.GreeterSayRequest;

@@ -1,4 +1,4 @@
-package com.github.xincao9.archetype.model;
+package com.github.xincao9.archetype.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
