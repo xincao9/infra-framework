@@ -14,6 +14,6 @@
 
 **简单专注**：拒绝臃肿的依赖，保持功能专一
 
-## infra-archetype
+## [infra-archetype](https://github.com/xincao9/infra-archetype)
 
 **原型模板**：用于快速生成基础设施项目
