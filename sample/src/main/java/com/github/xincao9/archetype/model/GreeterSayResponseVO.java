@@ -1,5 +1,6 @@
 package com.github.xincao9.archetype.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -7,5 +8,6 @@ import lombok.Data;
 @Data
 public class GreeterSayResponseVO {
 
+    @Schema(description = "问候消息")
     private String message;
 }

@@ -16,6 +16,14 @@ import java.util.Map;
 @ControllerAdvice
 public class ControllerAdviceConfig {
 
+    /**
+     * 针对jsr302 Java Bean Validator 抛出去的异常统一输出格式
+     *
+     * @param ex
+     *            异常
+     * 
+     * @return
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

@@ -9,13 +9,12 @@ import com.github.xincao9.infra.archetype.GreeterSayRequest;
 import com.github.xincao9.infra.archetype.GreeterSayResponse;
 import fun.golinks.core.annotate.RateLimited;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -26,6 +25,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("greeter")
 @Validated
+@Tag(name = "问候模块")
 public class GreeterController {
 
     @Resource
@@ -33,14 +33,10 @@ public class GreeterController {
     @Resource
     private GreeterInvoker greeterInvoker;
 
-    @Operation(summary = "Say a greeting", description = "This endpoint says a greeting based on the name provided")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = GreeterSayResponseVO.class))) })
+    @Operation(summary = "问候说话", description = "根据你输入的名字，返回对这个名字的问候消息")
     @RateLimited(permitsPerSecond = 10)
     @PostMapping("say")
-    public GreeterSayResponseVO say(
-            @Parameter(description = "Request model containing the name to greet", required = true) @Valid @RequestBody GreeterSayRequestVO greeterSayRequestVO)
-            throws Throwable {
+    public GreeterSayResponseVO say(@Valid @RequestBody GreeterSayRequestVO greeterSayRequestVO) throws Throwable {
         // 读取数据库
         SysUser sysUser = sysUserService.findByName(greeterSayRequestVO.getName());
         if (sysUser == null) {
