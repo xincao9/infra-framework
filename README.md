@@ -12,11 +12,11 @@
 
 ## [infra-config](https://github.com/xincao9/infra-framework/tree/main/infra-config)
 
-**简单专注**；无需为了集中配置管理，而增加新的中间件；依赖git对配置进行权限和版本管理；极少的代码量方便进行二次开发
+无需为了集中配置管理，而增加新的中间件；依赖git对配置进行权限和版本管理；极少的代码量方便进行二次开发
 
 ## [infra-trace](https://github.com/xincao9/infra-framework/tree/main/infra-trace)
 
-**简单专注**：拒绝臃肿的依赖，保持功能专一
+拒绝臃肿的依赖，保持功能专一
 
 ## [infra-archetype](https://github.com/xincao9/infra-archetype)
 
