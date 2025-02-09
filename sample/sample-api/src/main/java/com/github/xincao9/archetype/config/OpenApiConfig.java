@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(info = @Info(title = "infra-framework project", version = "v1"), servers = @Server(url = "/", description = "Default Server URL"), security = @SecurityRequirement(name = "Bearer Authentication"))
+@OpenAPIDefinition(info = @Info(title = "infra-framework project", version = "v1"), servers = @Server(url = "http://localhost:8080/", description = "Default Server URL"), security = @SecurityRequirement(name = "Bearer Authentication"))
 @SecurityScheme(name = "Bearer Authentication", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT")
 public class OpenApiConfig {
 
