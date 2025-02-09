@@ -5,7 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class GreeterSayResponseModel {
+public class GreeterSayResponseVO {
 
     private String message;
 }

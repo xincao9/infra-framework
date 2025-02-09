@@ -1,8 +1,8 @@
 package com.github.xincao9.archetype.controller;
 
 import com.github.xincao9.archetype.entity.SysUser;
-import com.github.xincao9.archetype.model.GreeterSayRequestModel;
-import com.github.xincao9.archetype.model.GreeterSayResponseModel;
+import com.github.xincao9.archetype.model.GreeterSayRequestVO;
+import com.github.xincao9.archetype.model.GreeterSayResponseVO;
 import com.github.xincao9.archetype.rpc.invoker.GreeterInvoker;
 import com.github.xincao9.archetype.service.SysUserService;
 import com.github.xincao9.infra.archetype.GreeterSayRequest;
@@ -35,20 +35,20 @@ public class GreeterController {
 
     @Operation(summary = "Say a greeting", description = "This endpoint says a greeting based on the name provided")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = GreeterSayResponseModel.class))) })
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = GreeterSayResponseVO.class))) })
     @RateLimited(permitsPerSecond = 10)
     @PostMapping("say")
-    public GreeterSayResponseModel say(
-            @Parameter(description = "Request model containing the name to greet", required = true) @Valid @RequestBody GreeterSayRequestModel greeterSayRequestModel)
+    public GreeterSayResponseVO say(
+            @Parameter(description = "Request model containing the name to greet", required = true) @Valid @RequestBody GreeterSayRequestVO greeterSayRequestVO)
             throws Throwable {
         // 读取数据库
-        SysUser sysUser = sysUserService.findByName(greeterSayRequestModel.getName());
+        SysUser sysUser = sysUserService.findByName(greeterSayRequestVO.getName());
         if (sysUser == null) {
             return null;
         }
         // 调用grpc服务
         GreeterSayRequest request = GreeterSayRequest.newBuilder().setName(sysUser.getEmail()).build();
         GreeterSayResponse response = greeterInvoker.sayInvoker.apply(request);
-        return new GreeterSayResponseModel(response.getMessage());
+        return new GreeterSayResponseVO(response.getMessage());
     }
 }
