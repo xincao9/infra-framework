@@ -46,9 +46,5 @@
             <groupId>com.github.microwww</groupId>
             <artifactId>redis-server</artifactId>
         </dependency>
-        <dependency>
-            <groupId>fun.golinks</groupId>
-            <artifactId>infra-core</artifactId>
-        </dependency>
     </dependencies>
 </project>

@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class GreeterSayRequestVO {
 
-    @Schema(description = "用户名", required = true, example = "Tom")
+    @Schema(description = "用户名", requiredMode = Schema.RequiredMode.REQUIRED, example = "Tom")
     @NotBlank
     private String name;
 }

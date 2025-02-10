@@ -1,4 +1,4 @@
-package com.github.xincao9.archetype.rpc.impl;
+package com.github.xincao9.archetype.rpc;
 
 import com.github.xincao9.archetype.rpc.consumer.GreeterConsumer;
 import com.github.xincao9.infra.archetype.GreeterRPCServiceGrpc;
@@ -13,7 +13,7 @@ import javax.annotation.Resource;
  * 演示，grpc服务实现方式
  */
 @Service
-public class GreeterRPCServiceImpl extends GreeterRPCServiceGrpc.GreeterRPCServiceImplBase {
+public class GreeterRPCServiceProvider extends GreeterRPCServiceGrpc.GreeterRPCServiceImplBase {
 
     @Resource
     private GreeterConsumer greeterConsumer;
