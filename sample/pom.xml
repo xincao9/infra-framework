@@ -6,15 +6,15 @@
     <parent>
         <groupId>fun.golinks</groupId>
         <artifactId>infra-framework</artifactId>
-        <version>0.0.5</version>
+        <version>0.0.6</version>
     </parent>
     <groupId>com.github.xincao9.archetype</groupId>
     <artifactId>sample</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>sample-api</module>
-        <module>sample-service</module>
         <module>sample-sdk</module>
+        <module>sample-service</module>
+        <module>sample-api</module>
     </modules>
     <dependencyManagement>
         <dependencies>

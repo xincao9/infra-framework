@@ -26,7 +26,8 @@ public class GithubController {
 
     @GetMapping("contributors")
     public String contributors() throws FeignClientException {
-        List<ContributorDTO> contributorDTOS = gitHubClient.contributors("xincao9", "infra-framework", new Request.Options(1000, 500));
+        List<ContributorDTO> contributorDTOS = gitHubClient.contributors("xincao9", "infra-framework",
+                new Request.Options(1000, 500));
         return JsonUtils.toJsonString(contributorDTOS);
     }
 }
