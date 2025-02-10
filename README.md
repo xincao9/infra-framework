@@ -1,6 +1,6 @@
 # infra-framework
 
-提供开箱即用的Java基础框架；
+开箱即用的Java基础框架；
 
 * [infra-core](https://github.com/xincao9/infra-framework/tree/main/infra-core)
 * [grpc-pure-spring-boot-starter](https://github.com/xincao9/grpc-pure-spring-boot-starter)
