@@ -1,6 +1,6 @@
 package com.github.xincao9.archetype.client;
 
-import com.github.xincao9.archetype.client.dto.Contributor;
+import com.github.xincao9.archetype.dto.ContributorDTO;
 import feign.Param;
 import feign.Request;
 import feign.RequestLine;
@@ -23,5 +23,5 @@ public interface GitHubClient {
      * @return 贡献者
      */
     @RequestLine("GET /repos/{owner}/{repo}/contributors")
-    List<Contributor> contributors(@Param("owner") String owner, @Param("repo") String repo, Request.Options options);
+    List<ContributorDTO> contributors(@Param("owner") String owner, @Param("repo") String repo, Request.Options options);
 }

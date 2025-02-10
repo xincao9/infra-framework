@@ -1,9 +1,9 @@
-package com.github.xincao9.archetype.client.dto;
+package com.github.xincao9.archetype.dto;
 
 import lombok.Data;
 
 @Data
-public class Contributor {
+public class ContributorDTO {
     private String login;
     private int contributions;
 }
