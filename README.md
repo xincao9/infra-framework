@@ -1,7 +1,5 @@
 # infra-framework
 
-开箱即用的Java基础框架
-
 ## 项目简介
 
 infra-framework 是一个开箱即用的Java基础框架，旨在提供常用功能，简化项目开发。框架包括以下子模块：
@@ -26,6 +24,7 @@ infra-framework 是一个开箱即用的Java基础框架，旨在提供常用功
 限流功能示例：
 
 ```java
+
 @RestController
 @RequestMapping("greeter")
 public class GreeterController {
@@ -50,6 +49,7 @@ public class GreeterController {
     }
 }
 ```
+
 ### infra-trace
 
 **简单专注**：拒绝臃肿的依赖，保持功能专一。
@@ -64,7 +64,8 @@ infra-trace 提供以下功能：
     * MyBatis 数据库调用追踪
     * gRPC 远程调用追踪
     * Redis 访问追踪
-    * 
+    *
+
 #### 配置文件
 
 在你的 `application.yml` 文件中添加以下配置：
