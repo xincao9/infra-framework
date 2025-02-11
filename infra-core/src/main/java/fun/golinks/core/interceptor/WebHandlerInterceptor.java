@@ -19,7 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -31,22 +33,24 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
     private final Cache<Method, RateLimiter> methodRateLimiterCache = CacheBuilder.newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES).maximumSize(1000).build();
 
-    private static boolean cors(HttpServletRequest request, HttpServletResponse response) {
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, METHODS);
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "*");
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-        String method = request.getMethod();
-        if (Objects.equals(method, OPTIONS)) {
-            return true;
-        }
-        return false;
+    private static final Set<String> IGNORE_HEADERS = new HashSet<>();
+
+    static {
+        IGNORE_HEADERS.add("connection");
+        IGNORE_HEADERS.add("accept-language");
+        IGNORE_HEADERS.add("accept-encoding");
+        IGNORE_HEADERS.add("sec-fetch-dest");
+        IGNORE_HEADERS.add("sec-fetch-mode");
+        IGNORE_HEADERS.add("sec-fetch-site");
+        IGNORE_HEADERS.add("sec-ch-ua-mobile");
+        IGNORE_HEADERS.add("sec-ch-ua");
+        IGNORE_HEADERS.add("sec-ch-ua-platform");
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        logRequestDetails(request);
+        logRequestDetails(request, null);
         if (rateLimiter(response, handler)) {
             return false;
         }
@@ -89,6 +93,15 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    private static boolean cors(HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, METHODS);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "*");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+        String method = request.getMethod();
+        return Objects.equals(method, OPTIONS);
+    }
+
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
             ModelAndView modelAndView) throws Exception {
@@ -99,29 +112,33 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
         if (ex != null) {
+            log.error(ex.getMessage(), ex);
             response.setStatus(STATUS);
             response.getWriter().write(JsonUtils.toJsonString(R.failed(StatusEnums.INTERNAL_SERVER_ERROR)));
         }
     }
 
-    private void logRequestDetails(HttpServletRequest request) {
+    private void logRequestDetails(HttpServletRequest request, Throwable ex) {
         String traceId = request.getHeader(MDCUtils.TRACE_ID);
         MDCUtils.setTraceId(traceId);
         StringBuilder requestDetails = new StringBuilder();
         // Basic request information
-        requestDetails.append("Request-URI: ").append(request.getRequestURI()).append(", ");
-        requestDetails.append("Remote-Address: ").append(request.getRemoteAddr()).append(", ");
+        requestDetails.append("|").append(request.getRequestURI()).append("|");
+        requestDetails.append(request.getRemoteAddr()).append("|");
         // Headers information
-        requestDetails.append("Headers: [");
+        requestDetails.append("[");
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
+            if (IGNORE_HEADERS.contains(headerName)) {
+                continue;
+            }
             String headerValue = request.getHeader(headerName);
             requestDetails.append(headerName).append(": ").append(headerValue).append("; ");
         }
-        requestDetails.append("], ");
+        requestDetails.append("]|");
         // Parameters information
-        requestDetails.append("Parameters: [");
+        requestDetails.append("[");
         Enumeration<String> parameterNames = request.getParameterNames();
         while (parameterNames.hasMoreElements()) {
             String paramName = parameterNames.nextElement();
@@ -130,6 +147,11 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
         }
         requestDetails.append("]");
         // Log request details
+        if (ex != null) {
+            log.error("{} error: ", requestDetails.toString(), ex);
+            return;
+        }
         log.info(requestDetails.toString());
+
     }
 }
