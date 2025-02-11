@@ -1,4 +1,4 @@
-package fun.golinks.core.model;
+package fun.golinks.core.vo;
 
 import fun.golinks.core.consts.StatusEnums;
 import lombok.Getter;

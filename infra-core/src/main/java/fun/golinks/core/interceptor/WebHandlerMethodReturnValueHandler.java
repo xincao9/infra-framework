@@ -1,6 +1,6 @@
 package fun.golinks.core.interceptor;
 
-import fun.golinks.core.model.R;
+import fun.golinks.core.vo.R;
 import fun.golinks.core.utils.JsonUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;

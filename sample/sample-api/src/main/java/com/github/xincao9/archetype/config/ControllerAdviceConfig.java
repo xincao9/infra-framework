@@ -1,7 +1,7 @@
 package com.github.xincao9.archetype.config;
 
 import fun.golinks.core.consts.StatusEnums;
-import fun.golinks.core.model.R;
+import fun.golinks.core.vo.R;
 import fun.golinks.core.utils.JsonUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

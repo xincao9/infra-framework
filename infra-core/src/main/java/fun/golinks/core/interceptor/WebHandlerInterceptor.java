@@ -6,7 +6,7 @@ import com.google.common.net.HttpHeaders;
 import com.google.common.util.concurrent.RateLimiter;
 import fun.golinks.core.annotate.RateLimited;
 import fun.golinks.core.consts.StatusEnums;
-import fun.golinks.core.model.R;
+import fun.golinks.core.vo.R;
 import fun.golinks.core.utils.JsonUtils;
 import fun.golinks.core.utils.MDCUtils;
 import lombok.extern.slf4j.Slf4j;
