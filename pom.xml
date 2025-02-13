@@ -10,7 +10,7 @@
     </parent>
     <groupId>fun.golinks</groupId>
     <artifactId>infra-framework</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>infra-framework</name>
     <description>Java后端，基础框架</description>
@@ -29,9 +29,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>2.7.18</spring-boot.version>
         <grpc-pure-spring-boot-starter.version>1.0.5</grpc-pure-spring-boot-starter.version>
-        <infra-trace.version>0.0.6</infra-trace.version>
-        <infra-config.version>0.0.6</infra-config.version>
-        <infra-core.version>0.0.6</infra-core.version>
+        <infra-trace.version>0.0.7-SNAPSHOT</infra-trace.version>
+        <infra-config.version>0.0.7-SNAPSHOT</infra-config.version>
+        <infra-core.version>0.0.7-SNAPSHOT</infra-core.version>
         <mybatis-plus-boot-starter.version>3.5.10.1</mybatis-plus-boot-starter.version>
         <redis-server.version>0.3.1</redis-server.version>
         <fastjson2.version>2.0.52</fastjson2.version>

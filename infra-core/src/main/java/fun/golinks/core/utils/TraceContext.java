@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MDCUtils {
+public class TraceContext {
 
     public static final String TRACE_ID = "trace-id";
 

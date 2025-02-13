@@ -8,7 +8,7 @@ import feign.Util;
 import fun.golinks.core.annotate.FeignClient;
 import fun.golinks.core.exception.FeignClientException;
 import fun.golinks.core.utils.JsonUtils;
-import fun.golinks.core.utils.MDCUtils;
+import fun.golinks.core.utils.TraceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,7 +46,8 @@ public class FeignProxy {
                 log.info("[{}]{}", configKey, String.format(format, args));
             }
         }).logLevel(Logger.Level.BASIC)
-                .requestInterceptor(requestTemplate -> requestTemplate.header(MDCUtils.TRACE_ID, MDCUtils.getTraceId()))
+                .requestInterceptor(
+                        requestTemplate -> requestTemplate.header(TraceContext.TRACE_ID, TraceContext.getTraceId()))
                 .options(OPTIONS).target(clazz, feignClient.baseUrl());
         cached.put(clazz, obj);
         return obj;

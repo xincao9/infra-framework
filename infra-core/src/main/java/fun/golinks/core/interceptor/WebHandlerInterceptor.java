@@ -8,7 +8,7 @@ import fun.golinks.core.annotate.RateLimited;
 import fun.golinks.core.consts.StatusEnums;
 import fun.golinks.core.vo.R;
 import fun.golinks.core.utils.JsonUtils;
-import fun.golinks.core.utils.MDCUtils;
+import fun.golinks.core.utils.TraceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -33,6 +33,9 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
     private final Cache<Method, RateLimiter> methodRateLimiterCache = CacheBuilder.newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES).maximumSize(1000).build();
 
+    /**
+     * 配置请求日志忽略的请求头信息
+     */
     private static final Set<String> IGNORE_HEADERS = new HashSet<>();
 
     static {
@@ -47,6 +50,20 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
         IGNORE_HEADERS.add("sec-ch-ua-platform");
     }
 
+    /**
+     * web请求的前置处理
+     *
+     * @param request
+     *            current HTTP request
+     * @param response
+     *            current HTTP response
+     * @param handler
+     *            chosen handler to execute, for type and/or instance evaluation
+     * 
+     * @return
+     * 
+     * @throws Exception
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
@@ -93,6 +110,16 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    /**
+     * 配置cors
+     *
+     * @param request
+     *            current HTTP request
+     * @param response
+     *            current HTTP response
+     * 
+     * @return
+     */
     private static boolean cors(HttpServletRequest request, HttpServletResponse response) {
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, METHODS);
@@ -108,6 +135,22 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
         HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
     }
 
+    /**
+     * 后置处理器
+     *
+     * @param request
+     *            current HTTP request
+     * @param response
+     *            current HTTP response
+     * @param handler
+     *            the handler (or {@link HandlerMethod}) that started asynchronous execution, for type and/or instance
+     *            examination
+     * @param ex
+     *            any exception thrown on handler execution, if any; this does not include exceptions that have been
+     *            handled through an exception resolver
+     * 
+     * @throws Exception
+     */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
@@ -118,9 +161,17 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
         }
     }
 
+    /**
+     * 打印请求日志
+     *
+     * @param request
+     *            current HTTP request
+     * @param ex
+     *            any exception thrown on handler execution
+     */
     private void logRequestDetails(HttpServletRequest request, Throwable ex) {
-        String traceId = request.getHeader(MDCUtils.TRACE_ID);
-        MDCUtils.setTraceId(traceId);
+        String traceId = request.getHeader(TraceContext.TRACE_ID);
+        TraceContext.setTraceId(traceId);
         StringBuilder requestDetails = new StringBuilder();
         // Basic request information
         requestDetails.append("|").append(request.getRequestURI()).append("|");
