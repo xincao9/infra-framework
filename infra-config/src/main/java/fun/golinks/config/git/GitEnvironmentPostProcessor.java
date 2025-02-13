@@ -35,9 +35,10 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         Map<String, String> configEnv = FileUtils.readConfig();
-        Path path = getPath(configEnv);
-        if (path == null)
+        Path path = tryGetPath(configEnv);
+        if (path == null) {
             return;
+        }
         GitSyncRunner gitSyncRunner;
         try {
             // 创建git 远程同步runner
@@ -61,11 +62,8 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
         refresh(configItems);
     }
 
-    /**
-     * TODO 配置变更可以刷新，ConfigurationProperties类，目前 考虑只刷新配置变更的相关Bean
-     */
     public void refresh(Map<String, Object> configItems) {
-        if (ContextUtils.AC == null) { // 加载是AC为NULL，之后修改时非NULL
+        if (ContextUtils.AC == null) { // 加载时AC为NULL，之后修改时非NULL
             return;
         }
         /*
@@ -112,7 +110,7 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
                 String key = entry.getKey();
                 if (StringUtils.startsWith(key, prefix)) {
                     postProcessor.postProcessBeforeInitialization(bean, beanName);
-                    break;
+                    return;
                 }
             }
         });
@@ -128,7 +126,7 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
         }
     }
 
-    private Path getPath(Map<String, String> configEnv) {
+    private Path tryGetPath(Map<String, String> configEnv) {
         if (configEnv.isEmpty()) {
             return null;
         }

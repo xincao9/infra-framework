@@ -3,13 +3,11 @@ package fun.golinks.config;
 import fun.golinks.config.git.GitAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 /**
  * 配置中心自动配置类
  */
-@EnableConfigurationProperties(ConfigProperties.class)
 @ImportAutoConfiguration(GitAutoConfiguration.class)
 @ConditionalOnProperty(prefix = "infra.config", name = "enabled", havingValue = "true")
 public class ConfigAutoConfiguration {
