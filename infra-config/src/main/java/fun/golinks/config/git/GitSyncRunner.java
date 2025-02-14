@@ -35,8 +35,6 @@ public class GitSyncRunner implements Runnable {
     private final List<Runnable> callbacks = new ArrayList<>();
     private Git git;
     private String uri;
-    private String username;
-    private String password;
     private String appName;
     private String repo;
     private String dir;
@@ -63,8 +61,12 @@ public class GitSyncRunner implements Runnable {
         if (StringUtils.isAnyBlank(this.uri, this.appName)) {
             return;
         }
-        this.username = configEnv.get(GitConsts.INFRA_CONFIG_GIT_USERNAME);
-        this.password = configEnv.get(GitConsts.INFRA_CONFIG_GIT_PASSWORD);
+        String username = configEnv.get(GitConsts.INFRA_CONFIG_GIT_USERNAME);
+        String password = configEnv.getOrDefault(GitConsts.INFRA_CONFIG_GIT_PASSWORD, "");
+        if (StringUtils.isNotBlank(username)) {
+            CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider(username, password);
+            CredentialsProvider.setDefault(credentialsProvider);
+        }
         this.repo = StringUtils.substringAfterLast(this.uri, "/");
         this.repo = StringUtils.substringBefore(this.repo, ".git");
         this.dir = configEnv.getOrDefault(GitConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, ".config").toString());
@@ -124,11 +126,6 @@ public class GitSyncRunner implements Runnable {
         Path path = Paths.get(this.dir, this.appName, this.repo);
         CloneCommand cloneCommand = Git.cloneRepository().setURI(this.uri).setDirectory(path.toFile())
                 .setTimeout(TIMEOUT);
-        if (StringUtils.isNotBlank(this.username)) {
-            CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider(this.username,
-                    this.password);
-            cloneCommand.setCredentialsProvider(credentialsProvider);
-        }
         return cloneCommand.call();
     }
 
