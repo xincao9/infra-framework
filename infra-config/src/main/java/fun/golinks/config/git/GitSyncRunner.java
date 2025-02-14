@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
@@ -20,9 +19,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * git 远程同步runner
@@ -139,6 +140,8 @@ public class GitSyncRunner implements Runnable {
         return this.git.pull().setRemote(this.remote).setRemoteBranchName(this.remoteBranchName).call();
     }
 
+    private final AtomicReference<String> version = new AtomicReference<>();
+
     /**
      * run方法
      */
@@ -146,8 +149,12 @@ public class GitSyncRunner implements Runnable {
     public void run() {
         try {
             PullResult pullResult = pull();
-            if (pullResult.getMergeResult().getMergeStatus() == MergeResult.MergeStatus.FAST_FORWARD
-                    && !this.callbacks.isEmpty()) {
+            String newVersion = pullResult.getMergeResult().getNewHead().getName();
+            if (Objects.equals(newVersion, this.version.get())) {
+                return;
+            }
+            version.set(newVersion);
+            if (!this.callbacks.isEmpty()) {
                 this.callbacks.forEach(Runnable::run);
             }
         } catch (GitAPIException e) {
