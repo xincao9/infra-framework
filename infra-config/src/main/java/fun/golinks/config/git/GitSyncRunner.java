@@ -4,12 +4,15 @@ import fun.golinks.config.ConfigConsts;
 import fun.golinks.config.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeResult;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -32,6 +35,8 @@ public class GitSyncRunner implements Runnable {
     private final List<Runnable> callbacks = new ArrayList<>();
     private Git git;
     private String uri;
+    private String username;
+    private String password;
     private String appName;
     private String repo;
     private String dir;
@@ -58,6 +63,8 @@ public class GitSyncRunner implements Runnable {
         if (StringUtils.isAnyBlank(this.uri, this.appName)) {
             return;
         }
+        this.username = configEnv.get(GitConsts.INFRA_CONFIG_GIT_USERNAME);
+        this.password = configEnv.get(GitConsts.INFRA_CONFIG_GIT_PASSWORD);
         this.repo = StringUtils.substringAfterLast(this.uri, "/");
         this.repo = StringUtils.substringBefore(this.repo, ".git");
         this.dir = configEnv.getOrDefault(GitConsts.INFRA_CONFIG_GIT_DIR, Paths.get(home, ".config").toString());
@@ -115,7 +122,14 @@ public class GitSyncRunner implements Runnable {
      */
     private Git cloneRepository() throws GitAPIException {
         Path path = Paths.get(this.dir, this.appName, this.repo);
-        return Git.cloneRepository().setURI(this.uri).setDirectory(path.toFile()).setTimeout(TIMEOUT).call();
+        CloneCommand cloneCommand = Git.cloneRepository().setURI(this.uri).setDirectory(path.toFile())
+                .setTimeout(TIMEOUT);
+        if (StringUtils.isNotBlank(this.username)) {
+            CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider(this.username,
+                    this.password);
+            cloneCommand.setCredentialsProvider(credentialsProvider);
+        }
+        return cloneCommand.call();
     }
 
     /**
