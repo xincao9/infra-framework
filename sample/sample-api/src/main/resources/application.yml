@@ -24,13 +24,14 @@ spring:
   quartz:
     job-store-type: jdbc # 可选 memory
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
     properties:
       org.quartz.scheduler.instanceName: ${spring.application.name}
       org.quartz.threadPool.threadCount: 5
       # 数据库相关配置
       org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
       org.quartz.jobStore.dataSource: myDS
+      org.quartz.dataSource.myDS.provider: hikaricp
       org.quartz.dataSource.myDS.driver: com.mysql.cj.jdbc.Driver #org.h2.Driver
       org.quartz.dataSource.myDS.URL: jdbc:mysql://localhost:3306/quartz #jdbc:h2:file:/tmp/quartz
       org.quartz.dataSource.myDS.user: root

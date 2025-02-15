@@ -55,10 +55,5 @@
             <groupId>com.github.microwww</groupId>
             <artifactId>redis-server</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.mchange</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.10.1</version>
-        </dependency>
     </dependencies>
 </project>
