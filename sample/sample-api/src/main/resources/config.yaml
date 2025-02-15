@@ -5,9 +5,9 @@ infra:
     type: git
     git:
       uri: https://github.com/xincao9/sample-config-repo.git
-#      认证配置
-#      username:
-#      password:
+      #      认证配置
+      #      username:
+      #      password:
       remote: origin
       remote-branch-name: main
       delay-seconds: 30 # 单位秒，根据需要设置

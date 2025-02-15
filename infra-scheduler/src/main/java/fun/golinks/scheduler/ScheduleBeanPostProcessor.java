@@ -9,9 +9,6 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.util.ClassUtils;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
 @Slf4j
 public class ScheduleBeanPostProcessor implements BeanPostProcessor, EnvironmentAware {
 
@@ -25,40 +22,21 @@ public class ScheduleBeanPostProcessor implements BeanPostProcessor, Environment
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         Class<?> clazz = ClassUtils.getUserClass(bean.getClass());
-        Method[] methods = clazz.getMethods();
-        if (methods.length == 0) {
-            return bean;
-        }
-        for (Method method : methods) {
-            if (!method.isAnnotationPresent(Schedule.class)) {
-                continue;
-            }
-            Schedule schedule = method.getAnnotation(Schedule.class);
-            String cron = schedule.cron();
+        if (clazz.isAnnotationPresent(JobRunner.class) && Job.class.isAssignableFrom(clazz)) {
+            JobRunner jobRunner = clazz.getAnnotation(JobRunner.class);
+            String cron = jobRunner.cron();
             if (StringUtils.isBlank(cron)) {
-                continue;
+                return bean;
             }
-            Class<?>[] parameterTypes = method.getParameterTypes();
-            if (parameterTypes.length == 1 && parameterTypes[0] != JobExecutionContext.class) {
-                throw new SchedulerBeansException(
-                        "The method annotated with @Schedule must have a parameter of type JobExecutionContext");
-            }
-            Job job = (Job) Proxy.newProxyInstance(ClassUtils.getDefaultClassLoader(), new Class[] { Job.class },
-                    (proxy, proxyMethod, args) -> {
-                        if (parameterTypes.length == 0) {
-                            return method.invoke(bean);
-                        }
-                        return method.invoke(bean, args);
-                    });
-            String name = schedule.name();
+            String name = jobRunner.name();
             if (StringUtils.isBlank(name)) {
-                name = method.getName();
+                name = beanName;
             }
-            String group = schedule.group();
+            String group = jobRunner.group();
             if (StringUtils.isBlank(group)) {
                 group = environment.getProperty("spring.application.name");
             }
-            JobDetail jobDetail = JobBuilder.newJob(job.getClass()).withIdentity(name, group).build();
+            JobDetail jobDetail = JobBuilder.newJob((Class<? extends Job>) clazz).withIdentity(name, group).build();
             Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name + "-trigger", group)
                     .withSchedule(CronScheduleBuilder.cronSchedule(cron)).build();
             try {
@@ -67,7 +45,7 @@ public class ScheduleBeanPostProcessor implements BeanPostProcessor, Environment
                 throw new SchedulerBeansException("scheduler", e);
             }
         }
-        return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
+        return bean;
     }
 
     @Override

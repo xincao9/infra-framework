@@ -28,6 +28,10 @@
         </dependency>
         <dependency>
             <groupId>fun.golinks</groupId>
+            <artifactId>infra-scheduler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fun.golinks</groupId>
             <artifactId>grpc-pure-spring-boot-starter</artifactId>
         </dependency>
         <dependency>

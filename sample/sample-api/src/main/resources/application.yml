@@ -21,6 +21,11 @@ spring:
     console:
       path: /h2-console
       enabled: true
+  quartz:
+    job-store-type: memory  # 可选 jdbc（持久化到数据库）
+    properties:
+      org.quartz.scheduler.instanceName: ${spring.application.name}
+      org.quartz.threadPool.threadCount: 5
 server:
   port: 8080
 infra:
