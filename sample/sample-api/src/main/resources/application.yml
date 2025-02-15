@@ -8,10 +8,10 @@ spring:
     password: ''
     port: 6380
   datasource:
-    driverClassName: org.h2.Driver # 根据所需数据库修改
-    url: jdbc:h2:file:/tmp/sample # 根据所需数据库修改
+    driverClassName: com.mysql.cj.jdbc.Driver # org.h2.Driver
+    url: jdbc:mysql://localhost:3306/sample # jdbc:h2:file:/tmp/sample
     username: root
-    password: 123456
+    password:
   sql:
     init:
       schema-locations: classpath:db/schema-h2.sql
@@ -31,10 +31,10 @@ spring:
       # 数据库相关配置
       org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
       org.quartz.jobStore.dataSource: myDS
-      org.quartz.dataSource.myDS.driver: org.h2.Driver # com.mysql.cj.jdbc.Driver
-      org.quartz.dataSource.myDS.URL: jdbc:h2:file:/tmp/quartz # jdbc:mysql://localhost:3306/quartz
+      org.quartz.dataSource.myDS.driver: com.mysql.cj.jdbc.Driver #org.h2.Driver
+      org.quartz.dataSource.myDS.URL: jdbc:mysql://localhost:3306/quartz #jdbc:h2:file:/tmp/quartz
       org.quartz.dataSource.myDS.user: root
-      org.quartz.dataSource.myDS.password: 123456
+      org.quartz.dataSource.myDS.password:
       # 集群相关配置
       org.quartz.jobStore.isClustered: true
       org.quartz.jobStore.clusterCheckinInterval: 20000

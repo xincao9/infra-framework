@@ -59,6 +59,11 @@
       "name": "grpc.pure.discovery.nacos.password",
       "type": "java.lang.String",
       "description": "Description for grpc.pure.discovery.nacos.password."
+    },
+    {
+      "name": "infra.trace.enabled",
+      "type": "java.lang.String",
+      "description": "Description for infra.trace.enabled."
     }
   ]
 }
