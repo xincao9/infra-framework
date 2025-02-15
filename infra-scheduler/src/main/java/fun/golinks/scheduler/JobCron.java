@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 @Component
-public @interface JobRunner {
+public @interface JobCron {
 
     /**
      * cron 表达式

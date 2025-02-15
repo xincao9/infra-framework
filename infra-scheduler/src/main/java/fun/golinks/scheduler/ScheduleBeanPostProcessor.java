@@ -22,17 +22,17 @@ public class ScheduleBeanPostProcessor implements BeanPostProcessor, Environment
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         Class<?> clazz = ClassUtils.getUserClass(bean.getClass());
-        if (clazz.isAnnotationPresent(JobRunner.class) && Job.class.isAssignableFrom(clazz)) {
-            JobRunner jobRunner = clazz.getAnnotation(JobRunner.class);
-            String cron = jobRunner.cron();
+        if (clazz.isAnnotationPresent(JobCron.class) && Job.class.isAssignableFrom(clazz)) {
+            JobCron jobCron = clazz.getAnnotation(JobCron.class);
+            String cron = jobCron.cron();
             if (StringUtils.isBlank(cron)) {
                 return bean;
             }
-            String name = jobRunner.name();
+            String name = jobCron.name();
             if (StringUtils.isBlank(name)) {
                 name = beanName;
             }
-            String group = jobRunner.group();
+            String group = jobCron.group();
             if (StringUtils.isBlank(group)) {
                 group = environment.getProperty("spring.application.name");
             }
