@@ -37,10 +37,10 @@ public class ScheduleBeanPostProcessor implements BeanPostProcessor, Environment
                 group = environment.getProperty("spring.application.name");
             }
             JobDetail jobDetail = JobBuilder.newJob((Class<? extends Job>) clazz).withIdentity(name, group).build();
-            Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name + "-trigger", group)
+            Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name + "-trigger", group).forJob(jobDetail)
                     .withSchedule(CronScheduleBuilder.cronSchedule(cron)).build();
             try {
-                scheduler.scheduleJob(jobDetail, trigger);
+                scheduler.scheduleJob(trigger);
             } catch (SchedulerException e) {
                 throw new SchedulerBeansException("scheduler", e);
             }

@@ -22,10 +22,23 @@ spring:
       path: /h2-console
       enabled: true
   quartz:
-    job-store-type: memory  # 可选 jdbc（持久化到数据库）
+    job-store-type: jdbc # 可选 memory
+    jdbc:
+      initialize-schema: always
     properties:
       org.quartz.scheduler.instanceName: ${spring.application.name}
       org.quartz.threadPool.threadCount: 5
+      # 数据库相关配置
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+      org.quartz.jobStore.dataSource: myDS
+      org.quartz.dataSource.myDS.driver: org.h2.Driver # com.mysql.cj.jdbc.Driver
+      org.quartz.dataSource.myDS.URL: jdbc:h2:file:/tmp/quartz # jdbc:mysql://localhost:3306/quartz
+      org.quartz.dataSource.myDS.user: root
+      org.quartz.dataSource.myDS.password: 123456
+      # 集群相关配置
+      org.quartz.jobStore.isClustered: true
+      org.quartz.jobStore.clusterCheckinInterval: 20000
+      org.quartz.scheduler.instanceId: AUTO
 server:
   port: 8080
 infra:
