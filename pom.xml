@@ -10,7 +10,7 @@
     </parent>
     <groupId>fun.golinks</groupId>
     <artifactId>infra-framework</artifactId>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>${infra-framework.version}</version>
     <packaging>pom</packaging>
     <name>infra-framework</name>
     <description>Java后端，基础框架</description>
@@ -27,12 +27,9 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <infra-framework.version>0.0.7-SNAPSHOT</infra-framework.version>
         <spring-boot.version>2.7.18</spring-boot.version>
         <grpc-pure-spring-boot-starter.version>1.0.5</grpc-pure-spring-boot-starter.version>
-        <infra-core.version>0.0.7-SNAPSHOT</infra-core.version>
-        <infra-config.version>0.0.7-SNAPSHOT</infra-config.version>
-        <infra-trace.version>0.0.7-SNAPSHOT</infra-trace.version>
-        <infra-scheduler.version>0.0.7-SNAPSHOT</infra-scheduler.version>
         <mybatis-plus-boot-starter.version>3.5.10.1</mybatis-plus-boot-starter.version>
         <redis-server.version>0.3.1</redis-server.version>
         <fastjson2.version>2.0.52</fastjson2.version>
@@ -50,22 +47,22 @@
             <dependency>
                 <groupId>fun.golinks</groupId>
                 <artifactId>infra-core</artifactId>
-                <version>${infra-core.version}</version>
+                <version>${infra-framework.version}</version>
             </dependency>
             <dependency>
                 <groupId>fun.golinks</groupId>
                 <artifactId>infra-config</artifactId>
-                <version>${infra-config.version}</version>
+                <version>${infra-framework.version}</version>
             </dependency>
             <dependency>
                 <groupId>fun.golinks</groupId>
                 <artifactId>infra-trace</artifactId>
-                <version>${infra-trace.version}</version>
+                <version>${infra-framework.version}</version>
             </dependency>
             <dependency>
                 <groupId>fun.golinks</groupId>
                 <artifactId>infra-scheduler</artifactId>
-                <version>${infra-scheduler.version}</version>
+                <version>${infra-framework.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
