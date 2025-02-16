@@ -8,7 +8,7 @@
         <artifactId>sample</artifactId>
         <version>0.0.7-SNAPSHOT</version>
     </parent>
-    <artifactId>sample-service</artifactId>
+    <artifactId>sample-biz</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.github.xincao9.archetype</groupId>

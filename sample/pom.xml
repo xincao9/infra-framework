@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>sample-sdk</module>
-        <module>sample-service</module>
+        <module>sample-biz</module>
         <module>sample-api</module>
     </modules>
     <dependencyManagement>
@@ -25,7 +25,7 @@
             </dependency>
             <dependency>
                 <groupId>com.github.xincao9.archetype</groupId>
-                <artifactId>sample-service</artifactId>
+                <artifactId>sample-biz</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
