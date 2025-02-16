@@ -10,7 +10,7 @@
     </parent>
     <groupId>fun.golinks</groupId>
     <artifactId>infra-framework</artifactId>
-    <version>${infra-framework.version}</version>
+    <version>0.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>infra-framework</name>
     <description>Java后端，基础框架</description>
