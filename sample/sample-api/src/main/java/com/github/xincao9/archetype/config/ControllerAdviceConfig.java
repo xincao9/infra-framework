@@ -32,7 +32,7 @@ public class ControllerAdviceConfig {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        R r = new R(StatusEnums.BAD_REQUEST.getCode(), null, errors);
+        R<?> r = new R<>(StatusEnums.BAD_REQUEST.getCode(), null, errors);
         return new ResponseEntity<>(JsonUtils.toJsonString(r), HttpStatus.OK);
     }
 }

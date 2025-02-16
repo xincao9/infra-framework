@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: infrastructure # infrastructure 环境必须选择；spring.profiles.active: infrastructure,prod
   application:
     name: sample
   redis:
@@ -21,33 +23,8 @@ spring:
     console:
       path: /h2-console
       enabled: true
-  quartz:
-    job-store-type: jdbc # 可选 memory
-    jdbc:
-      initialize-schema: never
-    properties:
-      org.quartz.scheduler.instanceName: ${spring.application.name}
-      org.quartz.threadPool.threadCount: 5
-      # 数据库相关配置
-      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-      org.quartz.jobStore.dataSource: myDS
-      org.quartz.dataSource.myDS.provider: hikaricp
-      org.quartz.dataSource.myDS.driver: com.mysql.cj.jdbc.Driver #org.h2.Driver
-      org.quartz.dataSource.myDS.URL: jdbc:mysql://localhost:3306/quartz #jdbc:h2:file:/tmp/quartz
-      org.quartz.dataSource.myDS.user: root
-      org.quartz.dataSource.myDS.password:
-      # 集群相关配置
-      org.quartz.jobStore.isClustered: true
-      org.quartz.jobStore.clusterCheckinInterval: 20000
-      org.quartz.scheduler.instanceId: AUTO
 server:
   port: 8080
-infra:
-  trace:
-    enabled: false # 是否开启trace
-    zipkin:
-      url: "http://localhost:9411/api/v2/spans"
-      sampler: "1.0F"
 grpc:
   pure:
     app-name: greeter
@@ -59,17 +36,3 @@ grpc:
         address: 127.0.0.1:8848
         username: nacos
         password: nacos
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-      base-path: /management
-  endpoint:
-    health:
-      show-details: "always"
-      enabled: false
-  server:
-    port: 7777
-springdoc:
-  use-management-port: true
