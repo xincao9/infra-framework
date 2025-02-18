@@ -1,4 +1,4 @@
-package fun.golinks.registry;
+package fun.golinks.registry.nacos;
 
 import lombok.Data;
 

@@ -1,14 +1,16 @@
-package fun.golinks.registry;
+package fun.golinks.registry.nacos;
 
-import com.alibaba.nacos.api.NacosFactory;
-import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
+import fun.golinks.registry.consts.SystemConsts;
 import fun.golinks.registry.util.IpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.SmartLifecycle;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,22 +27,16 @@ public class NacosSmartLifecycle implements SmartLifecycle {
     private final ScheduledExecutorService scheduledExecutorService = Executors
             .newSingleThreadScheduledExecutor(r -> new Thread(r, "NacosSmartLifecycle"));
 
-    public NacosSmartLifecycle(RegistryProperties registryProperties) throws Throwable {
-        this.appName = registryProperties.getAppName();
-        this.port = registryProperties.getServer().getPort();
-        NacosConfig nacosConfig = registryProperties.getDiscovery().getNacos();
-        Properties properties = new Properties();
-        properties.put(PropertyKeyConst.SERVER_ADDR, nacosConfig.getAddress());
-        properties.put(PropertyKeyConst.USERNAME, nacosConfig.getUsername());
-        properties.put(PropertyKeyConst.PASSWORD, nacosConfig.getPassword());
-        properties.put(PropertyKeyConst.NAMESPACE, nacosConfig.getNamespace());
-        this.namingService = NacosFactory.createNamingService(properties);
+    public NacosSmartLifecycle(String appName, Integer port, NacosNamingService nacosNamingService) {
+        this.appName = appName;
+        this.port = port;
+        this.namingService = nacosNamingService.getNamingService();
     }
 
     @Override
     public void start() {
         if (!running.compareAndSet(false, true)) {
-            log.info("ServerRegister has been started!");
+            log.info("NacosSmartLifecycle has been started!");
             return;
         }
         if (!register()) {
@@ -79,12 +75,12 @@ public class NacosSmartLifecycle implements SmartLifecycle {
         while (retry > 0) {
             try {
                 namingService.registerInstance(serverName, instance);
-                log.info("RPC instance successfully registered with Nacos {} => {}:{}", serverName, instance.getIp(),
+                log.info("server instance successfully registered with Nacos {} => {}:{}", serverName, instance.getIp(),
                         instance.getPort());
                 return true;
             } catch (Throwable e) {
                 finalException = e;
-                log.warn("RPC instance registration failed for Nacos", e);
+                log.warn("server instance registration failed for Nacos", e);
             }
             retry--;
             try {
@@ -94,7 +90,7 @@ public class NacosSmartLifecycle implements SmartLifecycle {
                 Thread.currentThread().interrupt();
             }
         }
-        log.error("RPC instance registration failed for Nacos", finalException);
+        log.error("server instance registration failed for Nacos", finalException);
         return false;
     }
 
@@ -113,7 +109,7 @@ public class NacosSmartLifecycle implements SmartLifecycle {
     @Override
     public void stop() {
         if (!running.compareAndSet(true, false)) {
-            log.info("Failed to close ServerRegister!");
+            log.info("Failed to close NacosSmartLifecycle!");
             return;
         }
         try {

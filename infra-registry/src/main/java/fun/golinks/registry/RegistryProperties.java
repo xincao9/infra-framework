@@ -1,5 +1,6 @@
 package fun.golinks.registry;
 
+import fun.golinks.registry.nacos.NacosConfig;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -11,40 +12,28 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class RegistryProperties {
 
     /**
+     * 类型 (默认值：NONE)
+     */
+    private static final String DEFAULT_TYPE = "NONE";
+
+    /**
      * 应用名
      */
     private String appName;
 
     /**
-     * 发现中心配置
+     * 监听端口
      */
-    private DiscoveryConfig discovery = new DiscoveryConfig();
+    private Integer port;
 
     /**
-     * 服务配置
+     * 类型
      */
-    private ServerConfig server = new ServerConfig();
+    private String type = DEFAULT_TYPE;
 
-    @Data
-    public static class DiscoveryConfig {
-        /**
-         * 类型 (默认值：direct)
-         */
-        private static final String DEFAULT_TYPE = "direct";
+    /**
+     * Nacos 配置
+     */
+    private NacosConfig nacos = new NacosConfig();
 
-        private String type = DEFAULT_TYPE;
-
-        /**
-         * Nacos 配置
-         */
-        private NacosConfig nacos = new NacosConfig();
-    }
-
-    @Data
-    public static class ServerConfig {
-        /**
-         * 监听端口
-         */
-        private Integer port = 9999;
-    }
 }
