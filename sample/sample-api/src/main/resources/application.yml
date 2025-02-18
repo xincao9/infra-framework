@@ -31,8 +31,9 @@ grpc:
     server:
       port: 9999
     discovery:
-      type: direct # direct 直连，nacos 使用nacos作为注册中心
+      type: nacos # direct 直连，nacos 使用nacos作为注册中心
       nacos:
         address: 127.0.0.1:8848
         username: nacos
         password: nacos
+        namespace: grpc

@@ -64,6 +64,11 @@
       "name": "infra.trace.enabled",
       "type": "java.lang.String",
       "description": "Description for infra.trace.enabled."
+    },
+    {
+      "name": "grpc.pure.discovery.nacos.namespace",
+      "type": "java.lang.String",
+      "description": "Description for grpc.pure.discovery.nacos.namespace."
     }
   ]
 }
