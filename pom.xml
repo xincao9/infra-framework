@@ -57,6 +57,11 @@
             </dependency>
             <dependency>
                 <groupId>fun.golinks</groupId>
+                <artifactId>infra-registry</artifactId>
+                <version>${infra-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fun.golinks</groupId>
                 <artifactId>infra-trace</artifactId>
                 <version>${infra-framework.version}</version>
             </dependency>

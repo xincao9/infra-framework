@@ -15,7 +15,7 @@ public class GrpcPureConfig {
     /**
      * nacos注册中心请使用 nacos://{应用名} 格式定义target
      */
-    private static final String GREETER_APP_URL = "127.0.0.1:9999";
+    private static final String GREETER_APP_URL = "nacos://greeter";
 
     @Bean
     public GreeterRPCServiceGrpc.GreeterRPCServiceBlockingStub greeterRPCServiceBlockingStub(

@@ -5,6 +5,16 @@ infra:
     zipkin:
       url: "http://localhost:9411/api/v2/spans"
       sampler: "1.0F"
+  registry:
+    enabled: true # 是否开启服务注册
+    type: nacos
+    nacos:
+      address: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      namespace: http
+    app-name: ${spring.application.name}
+    port: ${server.port}
 spring:
   quartz:
     job-store-type: jdbc # 可选 memory

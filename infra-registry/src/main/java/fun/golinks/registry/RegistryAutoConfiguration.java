@@ -11,17 +11,18 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+@ConditionalOnProperty(prefix = "infra.registry", name = "enabled", havingValue = "true")
 @EnableConfigurationProperties(RegistryProperties.class)
-@ImportAutoConfiguration(RegistryAutoConfiguration.NacosDiscoveryConfiguration.class)
+@ImportAutoConfiguration(RegistryAutoConfiguration.NacosConfiguration.class)
 public class RegistryAutoConfiguration {
 
     @ConditionalOnProperty(prefix = "infra.registry", name = "type", havingValue = "nacos")
-    public static class NacosDiscoveryConfiguration {
+    public static class NacosConfiguration {
 
         private final String applicationName;
         private final Integer port;
 
-        public NacosDiscoveryConfiguration(@Value("${spring.application.name}") String applicationName,
+        public NacosConfiguration(@Value("${spring.application.name}") String applicationName,
                 @Value("${server.port}") Integer port) {
             this.applicationName = applicationName;
             this.port = port;

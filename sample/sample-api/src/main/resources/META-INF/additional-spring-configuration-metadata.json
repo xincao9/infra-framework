@@ -69,6 +69,46 @@
       "name": "grpc.pure.discovery.nacos.namespace",
       "type": "java.lang.String",
       "description": "Description for grpc.pure.discovery.nacos.namespace."
+    },
+    {
+      "name": "infra.registry.type",
+      "type": "java.lang.String",
+      "description": "Description for infra.registry.type."
+    },
+    {
+      "name": "infra.registry.nacos.address",
+      "type": "java.lang.String",
+      "description": "Description for infra.registry.nacos.address."
+    },
+    {
+      "name": "infra.registry.nacos.username",
+      "type": "java.lang.String",
+      "description": "Description for infra.registry.nacos.username."
+    },
+    {
+      "name": "infra.registry.nacos.password",
+      "type": "java.lang.String",
+      "description": "Description for infra.registry.nacos.password."
+    },
+    {
+      "name": "infra.registry.app-name",
+      "type": "java.lang.String",
+      "description": "Description for infra.registry.app-name."
+    },
+    {
+      "name": "infra.registry.port",
+      "type": "java.lang.String",
+      "description": "Description for infra.registry.port."
+    },
+    {
+      "name": "infra.registry.nacos.namespace",
+      "type": "java.lang.String",
+      "description": "Description for infra.registry.nacos.namespace."
+    },
+    {
+      "name": "infra.registry.enabled",
+      "type": "java.lang.String",
+      "description": "Description for infra.registry.enabled."
     }
   ]
 }

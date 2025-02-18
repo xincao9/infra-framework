@@ -12,9 +12,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class RegistryProperties {
 
     /**
-     * 类型 (默认值：NONE)
+     * 开关
      */
-    private static final String DEFAULT_TYPE = "NONE";
+    private Boolean enabled = false;
+
+    /**
+     * 类型 (默认值：nacos)
+     */
+    private static final String DEFAULT_TYPE = "nacos";
 
     /**
      * 应用名
