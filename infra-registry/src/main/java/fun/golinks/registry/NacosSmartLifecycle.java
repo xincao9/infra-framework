@@ -34,7 +34,7 @@ public class NacosSmartLifecycle implements SmartLifecycle {
         properties.put(PropertyKeyConst.USERNAME, nacosConfig.getUsername());
         properties.put(PropertyKeyConst.PASSWORD, nacosConfig.getPassword());
         properties.put(PropertyKeyConst.NAMESPACE, nacosConfig.getNamespace());
-        namingService = NacosFactory.createNamingService(properties);
+        this.namingService = NacosFactory.createNamingService(properties);
     }
 
     @Override
@@ -114,11 +114,17 @@ public class NacosSmartLifecycle implements SmartLifecycle {
     public void stop() {
         if (!running.compareAndSet(true, false)) {
             log.info("Failed to close ServerRegister!");
+            return;
+        }
+        try {
+            namingService.shutDown();
+        } catch (Throwable e) {
+            log.warn("Failed to shutdown Nacos", e);
         }
     }
 
     @Override
     public boolean isRunning() {
-        return false;
+        return running.get();
     }
 }
