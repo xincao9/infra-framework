@@ -13,7 +13,7 @@
     <version>0.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>infra-framework</name>
-    <description>Java后端，基础框架</description>
+    <description>一个开箱即用的Java基础框架，旨在提供常用功能，简化项目开发</description>
     <modules>
         <module>infra-core</module>
         <module>infra-config</module>
@@ -34,9 +34,9 @@
         <mybatis-plus-boot-starter.version>3.5.10.1</mybatis-plus-boot-starter.version>
         <redis-server.version>0.3.1</redis-server.version>
         <fastjson2.version>2.0.52</fastjson2.version>
-        <guava.version>33.3.1-jre</guava.version>
         <feign-core.version>11.0</feign-core.version>
         <springdoc-openapi-ui.version>1.8.0</springdoc-openapi-ui.version>
+        <guava.version>33.3.1-jre</guava.version>
         <grpc.version>1.69.0</grpc.version>
         <protobuf-java.version>3.25.5</protobuf-java.version>
         <proto-google-common-protos.version>2.48.0</proto-google-common-protos.version>
@@ -84,11 +84,6 @@
                 <version>${redis-server.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.alibaba.fastjson2</groupId>
                 <artifactId>fastjson2</artifactId>
                 <version>${fastjson2.version}</version>
@@ -103,6 +98,13 @@
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${springdoc-openapi-ui.version}</version>
             </dependency>
+            <!--            google-->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <!--            grpc 依赖-->
             <dependency>
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-netty-shaded</artifactId>
@@ -120,17 +122,12 @@
             </dependency>
             <dependency>
                 <groupId>io.grpc</groupId>
-                <artifactId>grpc-services</artifactId>
+                <artifactId>grpc-core</artifactId>
                 <version>${grpc.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-util</artifactId>
-                <version>${grpc.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-core</artifactId>
                 <version>${grpc.version}</version>
             </dependency>
             <dependency>
@@ -148,6 +145,11 @@
                         <artifactId>protobuf-javalite</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-services</artifactId>
+                <version>${grpc.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.protobuf</groupId>
