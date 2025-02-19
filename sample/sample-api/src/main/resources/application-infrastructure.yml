@@ -1,4 +1,16 @@
 # 基础设施配置
+grpc:
+  pure:
+    app-name: ${spring.application.name}
+    server:
+      port: 9999
+    discovery:
+      type: nacos # direct 直连，nacos 使用nacos作为注册中心
+      nacos:
+        address: 127.0.0.1:8848
+        username: nacos
+        password: nacos
+        namespace: grpc
 infra:
   trace:
     enabled: false # 是否开启trace
