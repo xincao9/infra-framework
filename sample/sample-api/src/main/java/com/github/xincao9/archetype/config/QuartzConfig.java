@@ -2,6 +2,7 @@ package com.github.xincao9.archetype.config;
 
 import com.github.xincao9.archetype.job.MyJob;
 import com.zaxxer.hikari.HikariDataSource;
+import org.jetbrains.annotations.NotNull;
 import org.quartz.*;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
@@ -33,9 +34,6 @@ public class QuartzConfig implements BeanClassLoaderAware {
     /**
      * 初始化quartz使用
      *
-     * @param quartzProperties
-     * 
-     * @return
      */
     @QuartzDataSource
     @Bean
@@ -51,7 +49,7 @@ public class QuartzConfig implements BeanClassLoaderAware {
     }
 
     @Override
-    public void setBeanClassLoader(ClassLoader classLoader) {
+    public void setBeanClassLoader(@NotNull ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 }

@@ -21,8 +21,7 @@ public class ControllerAdviceConfig {
      *
      * @param ex
      *            异常
-     * 
-     * @return
+     *
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
