@@ -16,18 +16,19 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("ALL")
 @Slf4j
-public class FeignProxy<T> {
+public class FeignProxy {
 
     private static final int CONNECT_TIMEOUT_MILLIS = 1000;
     private static final int READ_TIMEOUT_MILLIS = 1000;
     private static final Request.Options OPTIONS = new Request.Options(CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS,
             READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS, true);
-    private final Map<Class<T>, T> cached = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Object> cached = new ConcurrentHashMap<>();
 
-    public T getOrCreate(Class<T> clazz) throws FeignClientException {
+    public <T> T getOrCreate(Class<T> clazz) throws FeignClientException {
         if (cached.containsKey(clazz)) {
-            return cached.get(clazz);
+            return (T) cached.get(clazz);
         }
         FeignClient feignClient = clazz.getAnnotation(FeignClient.class);
         if (feignClient == null || StringUtils.isBlank(feignClient.baseUrl())) {

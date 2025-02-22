@@ -2,6 +2,7 @@ package fun.golinks.core.feign;
 
 import fun.golinks.core.annotate.FeginResource;
 import fun.golinks.core.exception.FeignClientException;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeansException;
@@ -20,7 +21,8 @@ public class FeginResourceBeanPostProcessor implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName)
+            throws BeansException {
         Class<?> clazz = ClassUtils.getUserClass(bean);
         Field[] fields = clazz.getDeclaredFields();
         if (ArrayUtils.isEmpty(fields)) {
