@@ -134,28 +134,54 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    /**
+     * 验证用户角色是否具有访问指定接口的权限。
+     *
+     * @param response
+     *            HttpServletResponse对象，用于在验证失败时发送响应。
+     * @param handler
+     *            当前请求的处理方法对象，用于获取方法上的注解信息。
+     * @param claims
+     *            用户认证信息，包含用户的角色等数据。
+     * 
+     * @return 如果用户具有访问权限，返回true；否则返回false。
+     * 
+     * @throws IOException
+     *             当发送响应时发生IO异常时抛出。
+     */
     private boolean validateRole(HttpServletResponse response, Object handler, Claims claims) throws IOException {
+        // 检查handler是否为HandlerMethod类型
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
+            // 获取方法上的PreAuthorizeRole注解
             PreAuthorizeRole preAuthorizeRole = handlerMethod.getMethodAnnotation(PreAuthorizeRole.class);
-            Method method = handlerMethod.getMethod();
-            if (preAuthorizeRole == null) { // 接口不需要认证
+
+            // 如果方法上没有PreAuthorizeRole注解，表示接口不需要认证，直接返回true
+            if (preAuthorizeRole == null) {
                 return true;
             }
-            if (claims == null) { // 接口需要认证，但是没有用户认证信息
+
+            // 如果接口需要认证，但claims为空，表示没有用户认证信息，发送403响应并返回false
+            if (claims == null) {
                 sendForbidenResponse(response);
                 return false;
             }
+
+            // 获取注解中定义的角色和用户的实际角色
             RoleEnums roleEnums = preAuthorizeRole.value();
             String role = claims.get(SystemConsts.ROLE_KEY, String.class);
             RoleEnums userRole = RoleEnums.fromFlag(role);
+
+            // 检查用户角色是否包含在允许的角色列表中
             if (RoleEnums.contain(userRole, roleEnums)) {
                 return true;
             } else {
+                // 如果用户角色不在允许的列表中，发送403响应并返回false
                 sendForbidenResponse(response);
                 return false;
             }
         }
+        // 如果handler不是HandlerMethod类型，直接返回true
         return true;
     }
 

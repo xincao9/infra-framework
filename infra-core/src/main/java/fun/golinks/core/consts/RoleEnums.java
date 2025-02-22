@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Getter
 public enum RoleEnums {
-    DEFAULT(1, "default", "游客"), NORMAL(1 << 1 + DEFAULT.no, "normal", "普通用户"), VIP(1 << 2 + NORMAL.no, "vip", "VIP用户"),
+    TOURIST(1, "tourist", "游客"), NORMAL(1 << 1 + TOURIST.no, "normal", "普通用户"), VIP(1 << 2 + NORMAL.no, "vip", "VIP用户"),
     ADMIN(1 << 3 + VIP.no, "admin", "管理员");
 
     /**
@@ -33,14 +33,14 @@ public enum RoleEnums {
 
     public static RoleEnums fromFlag(String flag) {
         if (StringUtils.isBlank(flag)) {
-            return NORMAL;
+            return TOURIST;
         }
         for (RoleEnums roleEnums : RoleEnums.values()) {
             if (Objects.equals(flag, roleEnums.getFlag())) {
                 return roleEnums;
             }
         }
-        return NORMAL;
+        return TOURIST;
     }
 
     /**
