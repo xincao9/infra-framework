@@ -51,7 +51,6 @@ public class ScheduleBeanPostProcessor implements BeanPostProcessor, Environment
         return bean;
     }
 
-
     @Override
     public void setEnvironment(@NonNull Environment environment) {
         this.environment = environment;

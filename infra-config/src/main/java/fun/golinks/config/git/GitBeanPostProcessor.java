@@ -2,6 +2,7 @@ package fun.golinks.config.git;
 
 import fun.golinks.config.Pair;
 import lombok.Getter;
+import lombok.NonNull;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
@@ -19,12 +20,13 @@ public class GitBeanPostProcessor implements BeanPostProcessor {
     private final List<Pair<String, Pair<Object, Field>>> valueAnnotationRuntime = new CopyOnWriteArrayList<>();
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName)
+            throws BeansException {
         return bean;
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
         Class<?> clazz = ClassUtils.getUserClass(bean);
         Field[] fields = clazz.getDeclaredFields();
         if (ArrayUtils.isEmpty(fields)) {
