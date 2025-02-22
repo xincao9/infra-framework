@@ -32,6 +32,6 @@ public class ControllerAdviceConfig {
             errors.put(fieldName, errorMessage);
         });
         R<?> r = new R<>(StatusEnums.BAD_REQUEST.getCode(), null, errors);
-        return new ResponseEntity<>(JsonUtils.toJsonString(r), HttpStatus.OK);
+        return new ResponseEntity<>(JsonUtils.toJson(r), HttpStatus.OK);
     }
 }

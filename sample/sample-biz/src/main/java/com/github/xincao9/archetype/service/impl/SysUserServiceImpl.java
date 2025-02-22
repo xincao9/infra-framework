@@ -30,7 +30,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public SysUser findByName(String name) {
         String value = stringRedisTemplate.opsForValue().get(name);
         if (StringUtils.isNotBlank(value)) {
-            return JsonUtils.parseObject(value, SysUser.class);
+            return JsonUtils.toBean(value, SysUser.class);
         }
         LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(SysUser::getName, name);
@@ -38,7 +38,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (sysUser == null) {
             return null;
         }
-        stringRedisTemplate.opsForValue().set(name, JsonUtils.toJsonString(sysUser), 1, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(name, JsonUtils.toJson(sysUser), 1, TimeUnit.MINUTES);
         return sysUser;
     }
 }

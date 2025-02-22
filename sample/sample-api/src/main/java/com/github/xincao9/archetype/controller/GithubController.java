@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 演示，调用三方http接口的方式
@@ -27,7 +28,7 @@ public class GithubController {
     @GetMapping("contributors")
     public String contributors() throws FeignClientException {
         List<ContributorDTO> contributorDTOS = gitHubClient.contributors("xincao9", "infra-framework",
-                new Request.Options(1000, 500));
-        return JsonUtils.toJsonString(contributorDTOS);
+                new Request.Options(1000, TimeUnit.MILLISECONDS, 500, TimeUnit.MILLISECONDS, true));
+        return JsonUtils.toJson(contributorDTOS);
     }
 }
