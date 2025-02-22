@@ -4,7 +4,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.net.HttpHeaders;
 import com.google.common.util.concurrent.RateLimiter;
+import fun.golinks.core.annotate.PreAuthorizeRole;
 import fun.golinks.core.annotate.RateLimited;
+import fun.golinks.core.consts.RoleEnums;
 import fun.golinks.core.consts.StatusEnums;
 import fun.golinks.core.consts.SystemConsts;
 import fun.golinks.core.properties.JwtProperties;
@@ -35,7 +37,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class WebHandlerInterceptor implements HandlerInterceptor {
 
-    private static final int STATUS = 200;
     private static final String METHODS = "GET, POST, PUT, DELETE, OPTIONS";
     private static final String OPTIONS = "OPTIONS";
     private final Cache<Method, RateLimiter> methodRateLimiterCache = CacheBuilder.newBuilder()
@@ -87,23 +88,18 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
         String authHeader = request.getHeader(SystemConsts.AUTH_HEADER);
         // 如果 Authorization 头为空或不以 "Bearer " 开头，则直接继续执行过滤器链
         if (StringUtils.isBlank(authHeader) || !authHeader.startsWith("Bearer ")) {
-            return true;
+            return validateRole(response, handler, null);
         }
         // 从 Authorization 头中提取 JWT 令牌
         String token = authHeader.substring(7); // 移除 "Bearer " 前缀
         // 解析 JWT 令牌并获取其中的声明信息
         Claims claims = jwtProperties.parseToken(token);
         if (claims == null) {
-            // 如果解析失败，返回未授权的响应
-            response.setStatus(StatusEnums.SUCCESS.getCode());
-            try (PrintWriter writer = response.getWriter()) { // 使用 try-with-resources 确保资源关闭
-                writer.write(JsonUtils.toJson(R.failed(StatusEnums.UNAUTHORIZED)));
-            }
+            sendForbidenResponse(response);
             return false;
-        } else {
-            ClaimsUtils.setClaims(claims);
         }
-        return true;
+        ClaimsUtils.setClaims(claims);
+        return validateRole(response, handler, claims);
     }
 
     /**
@@ -129,13 +125,47 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
                     methodRateLimiterCache.put(method, rateLimiter);
                 }
                 if (!rateLimiter.tryAcquire()) {
-                    response.setStatus(StatusEnums.SUCCESS.getCode());
+                    response.setStatus(StatusEnums.RATE_LIMIT_EXCEEDED.getCode());
                     response.getWriter().write(JsonUtils.toJson(R.failed(StatusEnums.RATE_LIMIT_EXCEEDED)));
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    private boolean validateRole(HttpServletResponse response, Object handler, Claims claims) throws IOException {
+        if (handler instanceof HandlerMethod) {
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            PreAuthorizeRole preAuthorizeRole = handlerMethod.getMethodAnnotation(PreAuthorizeRole.class);
+            Method method = handlerMethod.getMethod();
+            if (preAuthorizeRole == null) { // 接口不需要认证
+                return true;
+            }
+            if (claims == null) { // 接口需要认证，但是没有用户认证信息
+                sendForbidenResponse(response);
+                return false;
+            }
+            RoleEnums roleEnums = preAuthorizeRole.value();
+            String role = claims.get(SystemConsts.ROLE_KEY, String.class);
+            RoleEnums userRole = RoleEnums.fromFlag(role);
+            if (RoleEnums.contain(userRole, roleEnums)) {
+                return true;
+            } else {
+                sendForbidenResponse(response);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void sendForbidenResponse(HttpServletResponse response) throws IOException {
+        response.setStatus(StatusEnums.FORBIDDEN.getCode()); // 设置正确的HTTP状态码
+        try (PrintWriter writer = response.getWriter()) { // 使用 try-with-resources 确保资源关闭
+            writer.write(JsonUtils.toJson(R.failed(StatusEnums.FORBIDDEN)));
+        } catch (IOException e) {
+            log.error("sendForbidenResponse", e);
+        }
     }
 
     /**
@@ -184,7 +214,7 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
         ClaimsUtils.removeClaims();
         if (ex != null) {
             log.error(ex.getMessage(), ex);
-            response.setStatus(StatusEnums.SUCCESS.getCode());
+            response.setStatus(StatusEnums.INTERNAL_SERVER_ERROR.getCode());
             response.getWriter().write(JsonUtils.toJson(R.failed(StatusEnums.INTERNAL_SERVER_ERROR)));
         }
     }
