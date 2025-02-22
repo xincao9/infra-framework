@@ -15,21 +15,18 @@ public @interface JobCron {
     /**
      * cron 表达式
      *
-     * @return
      */
     String cron();
 
     /**
      * 名字
      *
-     * @return
      */
     String name() default "";
 
     /**
      * 组名
      *
-     * @return
      */
     String group() default "";
 }

@@ -1,29 +1,27 @@
 package fun.golinks.scheduler;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.util.ClassUtils;
 
 @Slf4j
-public class ScheduleBeanPostProcessor implements BeanPostProcessor, EnvironmentAware, ApplicationContextAware {
+public class ScheduleBeanPostProcessor implements BeanPostProcessor, EnvironmentAware {
 
     private final Scheduler scheduler;
     private Environment environment;
-    private ApplicationContext applicationContext;
 
     public ScheduleBeanPostProcessor(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, @NonNull String beanName) throws BeansException {
         Class<?> clazz = ClassUtils.getUserClass(bean.getClass());
         if (clazz.isAnnotationPresent(JobCron.class) && Job.class.isAssignableFrom(clazz)) {
             JobCron jobCron = clazz.getAnnotation(JobCron.class);
@@ -39,7 +37,9 @@ public class ScheduleBeanPostProcessor implements BeanPostProcessor, Environment
             if (StringUtils.isBlank(group)) {
                 group = environment.getProperty("spring.application.name");
             }
-            JobDetail jobDetail = JobBuilder.newJob((Class<? extends Job>) clazz).withIdentity(name, group).build();
+            @SuppressWarnings("unchecked")
+            Class<? extends Job> jobClass = (Class<? extends Job>) clazz;
+            JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(name, group).build();
             Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name + "-trigger", group).forJob(jobDetail)
                     .withSchedule(CronScheduleBuilder.cronSchedule(cron)).build();
             try {
@@ -51,21 +51,13 @@ public class ScheduleBeanPostProcessor implements BeanPostProcessor, Environment
         return bean;
     }
 
+
     @Override
-    public void setEnvironment(Environment environment) {
+    public void setEnvironment(@NonNull Environment environment) {
         this.environment = environment;
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
-
     public static class SchedulerBeansException extends BeansException {
-
-        public SchedulerBeansException(String msg) {
-            super(msg);
-        }
 
         public SchedulerBeansException(String msg, Throwable cause) {
             super(msg, cause);
