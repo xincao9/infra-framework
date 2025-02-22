@@ -9,15 +9,15 @@ import java.lang.reflect.Type;
  */
 public class JsonUtils {
 
-    public static <T> String toJsonString(T o) {
+    public static <T> String toJson(T o) {
         return JSON.toJSONString(o);
     }
 
-    public static <T> T parseObject(String text, Class<T> clazz) {
+    public static <T> T toBean(String text, Class<T> clazz) {
         return JSON.parseObject(text, clazz);
     }
 
-    public static <T> T parseObject(String text, Type objectType) {
+    public static <T> T toBean(String text, Type objectType) {
         return JSON.parseObject(text, objectType);
     }
 }

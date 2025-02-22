@@ -57,7 +57,7 @@ public class GitEnvironmentPostProcessor implements EnvironmentPostProcessor {
         Map<String, Object> configItems = FileUtils.readConfig(path.toString());
         mutablePropertySources.remove(GitConsts.GIT_CONFIG);
         configItems.putAll(configEnv);
-        log.info("Load local configuration {}", JsonUtils.toJsonString(configItems));
+        log.info("Load local configuration {}", JsonUtils.toJson(configItems));
         mutablePropertySources.addFirst(new MapPropertySource(GitConsts.GIT_CONFIG, configItems));
         refresh(configItems);
     }

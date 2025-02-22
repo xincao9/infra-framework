@@ -40,6 +40,7 @@
         <grpc.version>1.69.0</grpc.version>
         <protobuf-java.version>3.25.5</protobuf-java.version>
         <proto-google-common-protos.version>2.48.0</proto-google-common-protos.version>
+        <jjwt.version>0.12.6</jjwt.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -166,6 +167,25 @@
                         <artifactId>api-common</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <!-- JWT 处理 -->
+            <!-- JWT API -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <!-- JWT 实现 -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <!-- JSON 解析（推荐 Jackson） -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

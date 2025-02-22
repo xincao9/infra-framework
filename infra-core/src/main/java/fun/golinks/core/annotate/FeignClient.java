@@ -14,8 +14,7 @@ public @interface FeignClient {
 
     /**
      * 定义基础url
-     * 
-     * @return
+     *
      */
     String baseUrl();
 }

@@ -2,6 +2,7 @@ package fun.golinks.core.interceptor;
 
 import fun.golinks.core.vo.R;
 import fun.golinks.core.utils.JsonUtils;
+import lombok.NonNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
@@ -12,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 public class WebHandlerMethodReturnValueHandler implements HandlerMethodReturnValueHandler {
 
     @Override
-    public boolean supportsReturnType(MethodParameter returnType) {
+    public boolean supportsReturnType(@NonNull MethodParameter returnType) {
         return true;
     }
 
     @Override
-    public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest) throws Exception {
+    public void handleReturnValue(Object returnValue, @NonNull MethodParameter returnType,
+            @NonNull ModelAndViewContainer mavContainer, @NonNull NativeWebRequest webRequest) throws Exception {
         if (returnValue instanceof R) {
             return;
         }
@@ -29,6 +30,6 @@ public class WebHandlerMethodReturnValueHandler implements HandlerMethodReturnVa
         }
         httpServletResponse.setContentType("application/json; charset=UTF-8");
         httpServletResponse.setCharacterEncoding("UTF-8");
-        httpServletResponse.getWriter().write(JsonUtils.toJsonString(R.ok(returnValue)));
+        httpServletResponse.getWriter().write(JsonUtils.toJson(R.ok(returnValue)));
     }
 }

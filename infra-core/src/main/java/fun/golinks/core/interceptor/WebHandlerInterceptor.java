@@ -6,10 +6,16 @@ import com.google.common.net.HttpHeaders;
 import com.google.common.util.concurrent.RateLimiter;
 import fun.golinks.core.annotate.RateLimited;
 import fun.golinks.core.consts.StatusEnums;
-import fun.golinks.core.vo.R;
+import fun.golinks.core.consts.SystemConsts;
+import fun.golinks.core.properties.JwtProperties;
+import fun.golinks.core.utils.ClaimsUtils;
 import fun.golinks.core.utils.JsonUtils;
 import fun.golinks.core.utils.TraceContext;
+import fun.golinks.core.vo.R;
+import io.jsonwebtoken.Claims;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -24,6 +31,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("ALL")
 @Slf4j
 public class WebHandlerInterceptor implements HandlerInterceptor {
 
@@ -50,6 +58,12 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
         IGNORE_HEADERS.add("sec-ch-ua-platform");
     }
 
+    private final JwtProperties jwtProperties;
+
+    public WebHandlerInterceptor(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+    }
+
     /**
      * web请求的前置处理
      *
@@ -59,20 +73,36 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
      *            current HTTP response
      * @param handler
      *            chosen handler to execute, for type and/or instance evaluation
-     * 
-     * @return
-     * 
-     * @throws Exception
      */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
-        logRequestDetails(request, null);
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+            @NonNull Object handler) throws Exception {
+        logRequestDetails(request, null); // 确保 handler 不为 null
         if (rateLimiter(response, handler)) {
             return false;
         }
-        if (cors(request, response))
+        if (cors(request, response)) {
             return false;
+        }
+        String authHeader = request.getHeader(SystemConsts.AUTH_HEADER);
+        // 如果 Authorization 头为空或不以 "Bearer " 开头，则直接继续执行过滤器链
+        if (StringUtils.isBlank(authHeader) || !authHeader.startsWith("Bearer ")) {
+            return true;
+        }
+        // 从 Authorization 头中提取 JWT 令牌
+        String token = authHeader.substring(7); // 移除 "Bearer " 前缀
+        // 解析 JWT 令牌并获取其中的声明信息
+        Claims claims = jwtProperties.parseToken(token);
+        if (claims == null) {
+            // 如果解析失败，返回未授权的响应
+            response.setStatus(StatusEnums.SUCCESS.getCode());
+            try (PrintWriter writer = response.getWriter()) { // 使用 try-with-resources 确保资源关闭
+                writer.write(JsonUtils.toJson(R.failed(StatusEnums.UNAUTHORIZED)));
+            }
+            return false;
+        } else {
+            ClaimsUtils.setClaims(claims);
+        }
         return true;
     }
 
@@ -83,8 +113,6 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
      *            响应
      * @param handler
      *            处理器
-     * 
-     * @return
      * 
      * @throws IOException
      *             IO异常
@@ -101,8 +129,8 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
                     methodRateLimiterCache.put(method, rateLimiter);
                 }
                 if (!rateLimiter.tryAcquire()) {
-                    response.setStatus(STATUS);
-                    response.getWriter().write(JsonUtils.toJsonString(R.failed(StatusEnums.RATE_LIMIT_EXCEEDED)));
+                    response.setStatus(StatusEnums.SUCCESS.getCode());
+                    response.getWriter().write(JsonUtils.toJson(R.failed(StatusEnums.RATE_LIMIT_EXCEEDED)));
                     return true;
                 }
             }
@@ -132,7 +160,6 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
             ModelAndView modelAndView) throws Exception {
-        HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
     }
 
     /**
@@ -154,10 +181,11 @@ public class WebHandlerInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
+        ClaimsUtils.removeClaims();
         if (ex != null) {
             log.error(ex.getMessage(), ex);
-            response.setStatus(STATUS);
-            response.getWriter().write(JsonUtils.toJsonString(R.failed(StatusEnums.INTERNAL_SERVER_ERROR)));
+            response.setStatus(StatusEnums.SUCCESS.getCode());
+            response.getWriter().write(JsonUtils.toJson(R.failed(StatusEnums.INTERNAL_SERVER_ERROR)));
         }
     }
 

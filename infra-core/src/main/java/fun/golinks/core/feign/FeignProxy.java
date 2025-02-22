@@ -14,18 +14,20 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class FeignProxy {
+public class FeignProxy<T> {
 
     private static final int CONNECT_TIMEOUT_MILLIS = 1000;
     private static final int READ_TIMEOUT_MILLIS = 1000;
-    private static final Request.Options OPTIONS = new Request.Options(CONNECT_TIMEOUT_MILLIS, READ_TIMEOUT_MILLIS);
-    private final Map<Class<?>, Object> cached = new ConcurrentHashMap<>();
+    private static final Request.Options OPTIONS = new Request.Options(CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS,
+            READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS, true);
+    private final Map<Class<T>, T> cached = new ConcurrentHashMap<>();
 
-    public <T> T getOrCreate(Class<T> clazz) throws FeignClientException {
+    public T getOrCreate(Class<T> clazz) throws FeignClientException {
         if (cached.containsKey(clazz)) {
-            return (T) cached.get(clazz);
+            return cached.get(clazz);
         }
         FeignClient feignClient = clazz.getAnnotation(FeignClient.class);
         if (feignClient == null || StringUtils.isBlank(feignClient.baseUrl())) {
@@ -36,10 +38,10 @@ public class FeignProxy {
                 return null;
             } else {
                 byte[] bytes = Util.toByteArray(response.body().asInputStream());
-                return JsonUtils.parseObject(new String(bytes, Charsets.UTF_8), type);
+                return JsonUtils.toBean(new String(bytes, Charsets.UTF_8), type);
             }
         }).encoder((o, type, requestTemplate) -> {
-            requestTemplate.body(JsonUtils.toJsonString(o));
+            requestTemplate.body(JsonUtils.toJson(o));
         }).logger(new Logger() {
             @Override
             protected void log(String configKey, String format, Object... args) {
