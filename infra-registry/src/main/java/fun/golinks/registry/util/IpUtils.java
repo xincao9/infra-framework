@@ -35,10 +35,10 @@ public class IpUtils {
             InetAddress candidateAddress = null; // 遍历所有的网络接口
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
-                NetworkInterface face = (NetworkInterface) interfaces.nextElement(); // 在所有的接口下再遍历IP
-                Enumeration<InetAddress> inetAddrs = face.getInetAddresses();
-                while (inetAddrs.hasMoreElements()) {
-                    InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
+                NetworkInterface face = interfaces.nextElement(); // 在所有的接口下再遍历IP
+                Enumeration<InetAddress> inetAddress = face.getInetAddresses();
+                while (inetAddress.hasMoreElements()) {
+                    InetAddress inetAddr = inetAddress.nextElement();
                     if (!inetAddr.isLoopbackAddress()) { // 排除loopback类型地址
                         if (inetAddr.isSiteLocalAddress()) { // 如果是site-local地址，就是它了
                             return inetAddr.getHostAddress();
