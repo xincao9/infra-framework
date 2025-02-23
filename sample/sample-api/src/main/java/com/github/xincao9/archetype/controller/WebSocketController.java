@@ -9,7 +9,7 @@ public class WebSocketController {
 
     @MessageMapping("/chat") // Handles messages sent to /app/chat
     @SendTo("/topic/messages") // Sends the return value to /topic/messages
-    public String sendMessage(String message) {
+    public String chat(String message) {
         return "Echo: " + message;
     }
 }
