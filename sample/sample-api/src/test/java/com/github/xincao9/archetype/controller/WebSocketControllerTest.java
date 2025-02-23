@@ -24,6 +24,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("ALL")
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WebSocketControllerTest {
@@ -62,6 +63,18 @@ public class WebSocketControllerTest {
                 messageQueue.add((String) payload);
             }
         });
+
+        stompSession.subscribe("/user/queue/messages", new StompFrameHandler() {
+            @Override
+            public @NonNull Type getPayloadType(@NonNull StompHeaders headers) {
+                return String.class;
+            }
+
+            @Override
+            public void handleFrame(@NonNull StompHeaders headers, Object payload) {
+                messageQueue.add((String) payload);
+            }
+        });
     }
 
     @AfterEach
@@ -72,14 +85,26 @@ public class WebSocketControllerTest {
     }
 
     @Test
-    public void testChat() throws Exception {
+    public void testChatBroadcast() throws Exception {
         // 发送消息
         String message = "Hello, WebSocket!";
-        stompSession.send("/app/chat", message);
-        log.info("send message：{}",message);
+        stompSession.send("/app/chat/broadcast", message);
+        log.info("Broadcast send message：{}", message);
         // 等待并验证接收到的消息
         String receivedMessage = messageQueue.poll(5, TimeUnit.SECONDS);
-        log.info("received-message: {}", receivedMessage);
-        Assertions.assertEquals("Echo: " + message, receivedMessage);
+        log.info("Broadcast received message: {}", receivedMessage);
+        Assertions.assertEquals("Broadcast Echo: " + message, receivedMessage);
+    }
+
+    @Test
+    public void testChatPrivate() throws Exception {
+        // 发送消息
+        String message = "Hello, WebSocket!";
+        stompSession.send("/app/chat/private", message);
+        log.info("ChatPrivate send message：{}", message);
+        // 等待并验证接收到的消息
+        String receivedMessage = messageQueue.poll(5, TimeUnit.SECONDS);
+        log.info("ChatPrivate received message: {}", receivedMessage);
+        Assertions.assertEquals("ChatPrivate Echo: " + message, receivedMessage);
     }
 }
