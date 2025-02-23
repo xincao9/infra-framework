@@ -47,7 +47,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
             @Override
             public boolean beforeHandshake(@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response,
-                    @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes) throws Exception {
+                    @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes) {
                 // 从请求中获取 userId 参数
                 if (request instanceof ServletServerHttpRequest) {
                     ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
