@@ -7,8 +7,8 @@ import java.util.Objects;
 
 @Getter
 public enum RoleEnums {
-    TOURIST(1, "tourist", "游客"), NORMAL(1 << 1 + TOURIST.no, "normal", "普通用户"), VIP(1 << 2 + NORMAL.no, "vip", "VIP用户"),
-    ADMIN(1 << 3 + VIP.no, "admin", "管理员");
+    TOURIST(1, "tourist", "游客"), NORMAL((1 << 1) + 1, "normal", "普通用户"), VIP((1 << 2) + (1 << 1) + 1, "vip", "VIP用户"),
+    ADMIN((1 << 3) + (1 << 2) + (1 << 1) + 1, "admin", "管理员");
 
     /**
      * 编号

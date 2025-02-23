@@ -7,7 +7,8 @@ import com.github.xincao9.archetype.vo.GreeterSayRequestVO;
 import com.github.xincao9.archetype.vo.GreeterSayResponseVO;
 import com.github.xincao9.infra.archetype.GreeterSayRequest;
 import com.github.xincao9.infra.archetype.GreeterSayResponse;
-import fun.golinks.core.annotate.RateLimited;
+import fun.golinks.core.annotate.PreAuthorizeRole;
+import fun.golinks.core.consts.RoleEnums;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +35,7 @@ public class GreeterController {
     private GreeterInvoker greeterInvoker;
 
     @Operation(summary = "问候说话", description = "根据你输入的名字，返回对这个名字的问候消息")
-    @RateLimited(permitsPerSecond = 10)
+    @PreAuthorizeRole(RoleEnums.TOURIST)
     @PostMapping("say")
     public GreeterSayResponseVO say(@Valid @RequestBody GreeterSayRequestVO greeterSayRequestVO) throws Throwable {
         // 读取数据库
