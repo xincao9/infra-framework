@@ -4,7 +4,6 @@ import com.github.xincao9.archetype.client.GitHubClient;
 import com.github.xincao9.archetype.dto.ContributorDTO;
 import feign.Request;
 import fun.golinks.core.annotate.FeginResource;
-import fun.golinks.core.exception.FeignClientException;
 import fun.golinks.core.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,63 +1,81 @@
 package com.github.xincao9.archetype.controller;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.messaging.converter.StringMessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
+import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
-import java.net.URI;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
-@Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WebSocketControllerTest {
 
     @LocalServerPort
-    private int port;
+    private int port; // 随机端口
 
-    @Test
-    public void testWebSocketConnection() throws Exception {
-        StandardWebSocketClient client = new StandardWebSocketClient();
-        SampleSocketHandler handler = new SampleSocketHandler();
-        URI uri = new URI(String.format("ws://127.0.0.1:%d/app/chat", port));
-        ListenableFuture<WebSocketSession> listenableFuture = client.doHandshake(handler, null, uri);
-        listenableFuture.addCallback(
-                session -> {
-                    log.info("connection success!");
-                },
-                throwable -> {
-                    log.info("connection failed!");
-                }
-        );
-        WebSocketSession session = listenableFuture.get();
-        session.sendMessage(new TextMessage("Hello Server"));
-        int read = System.in.read();
-        log.info("{}", read);
-        session.close();
+    private StompSession stompSession;
+    private BlockingQueue<String> messageQueue;
+
+    @BeforeEach
+    public void setup() throws Exception {
+        // 初始化 WebSocketStompClient
+        WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(
+                Collections.singletonList(new WebSocketTransport(new StandardWebSocketClient()))
+        ));
+        stompClient.setMessageConverter(new StringMessageConverter());
+
+        // 初始化消息队列
+        messageQueue = new LinkedBlockingQueue<>();
+
+        // 连接到 WebSocket 服务器
+        String url = "ws://localhost:" + port + "/ws";
+        stompSession = stompClient.connect(url, new StompSessionHandlerAdapter() {}).get(1, TimeUnit.SECONDS);
+
+        // 订阅消息
+        stompSession.subscribe("/topic/messages", new StompFrameHandler() {
+            @Override
+            public @NonNull Type getPayloadType(@NonNull StompHeaders headers) {
+                return String.class;
+            }
+
+            @Override
+            public void handleFrame(@NonNull StompHeaders headers, Object payload) {
+                messageQueue.add((String) payload);
+            }
+        });
     }
 
-    @Slf4j
-    private static class SampleSocketHandler extends TextWebSocketHandler {
-
-        @Override
-        public void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) {
-            log.info("{}", message.getPayload());
+    @AfterEach
+    public void tearDown() throws Exception {
+        if (stompSession != null) {
+            stompSession.disconnect();
         }
+    }
 
-        @Override
-        public void afterConnectionEstablished(@NonNull WebSocketSession session) {
-            log.info("afterConnectionEstablished");
-        }
+    @Test
+    public void testWebSocketCommunication() throws Exception {
+        // 发送消息
+        String message = "Hello, WebSocket!";
+        stompSession.send("/app/chat", message);
 
-        @Override
-        public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
-            log.info("afterConnectionClosed");
-        }
+        // 等待并验证接收到的消息
+        String receivedMessage = messageQueue.poll(5, TimeUnit.SECONDS);
+        Assertions.assertEquals("Echo: " + message, receivedMessage);
     }
 }
