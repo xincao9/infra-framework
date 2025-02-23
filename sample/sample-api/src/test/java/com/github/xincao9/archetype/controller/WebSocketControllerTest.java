@@ -89,11 +89,11 @@ public class WebSocketControllerTest {
         // 发送消息
         String message = "Hello, WebSocket!";
         stompSession.send("/app/chat/broadcast", message);
-        log.info("Broadcast send message：{}", message);
+        log.info("ChatBroadcast send message：{}", message);
         // 等待并验证接收到的消息
         String receivedMessage = messageQueue.poll(5, TimeUnit.SECONDS);
-        log.info("Broadcast received message: {}", receivedMessage);
-        Assertions.assertEquals("Broadcast Echo: " + message, receivedMessage);
+        log.info("ChatBroadcast received message: {}", receivedMessage);
+        Assertions.assertEquals("ChatBroadcast Echo: " + message, receivedMessage);
     }
 
     @Test
