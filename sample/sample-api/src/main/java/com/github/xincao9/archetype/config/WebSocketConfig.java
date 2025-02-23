@@ -1,10 +1,18 @@
 package com.github.xincao9.archetype.config;
 
+import lombok.NonNull;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.server.HandshakeInterceptor;
+
+import java.util.Map;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -35,7 +43,29 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 注册"/ws"端点，并启用SockJS支持，以便在不支持WebSocket的浏览器中回退到其他协议。
-        registry.addEndpoint("/ws").withSockJS();
+        registry.addEndpoint("/ws").addInterceptors(new HandshakeInterceptor() {
+
+            @Override
+            public boolean beforeHandshake(@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response,
+                    @NonNull WebSocketHandler wsHandler, @NonNull Map<String, Object> attributes) throws Exception {
+                // 从请求中获取 userId 参数
+                if (request instanceof ServletServerHttpRequest) {
+                    ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
+                    String userId = servletRequest.getServletRequest().getParameter("userId");
+                    if (userId != null) {
+                        // 将 userId 保存到 WebSocket 会话属性中
+                        attributes.put("userId", userId);
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public void afterHandshake(@NonNull ServerHttpRequest request, @NonNull ServerHttpResponse response,
+                    @NonNull WebSocketHandler wsHandler, Exception exception) {
+
+            }
+        }).withSockJS();
     }
 
 }

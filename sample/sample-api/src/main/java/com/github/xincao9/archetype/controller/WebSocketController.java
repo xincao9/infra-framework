@@ -1,7 +1,6 @@
 package com.github.xincao9.archetype.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -15,7 +14,6 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Controller
 public class WebSocketController {
 
-    private final Map<String, WebSocketSession> sessionMap = new ConcurrentHashMap<>();
+    private final Map<String, WebSocketSession> userIdSessionMap = new ConcurrentHashMap<>();
 
     @Resource
     private SimpMessagingTemplate messagingTemplate;
@@ -51,49 +49,55 @@ public class WebSocketController {
      */
     @MessageMapping("/chat/toUser")
     @SendToUser("/queue/messages")
-    public void chatToUser(String name, String message) {
-        WebSocketSession webSocketSession = sessionMap.get(name);
+    public void chatToUser(String userId, String message) {
+        WebSocketSession webSocketSession = userIdSessionMap.get(userId);
         if (webSocketSession == null) {
-            log.warn("User {} not found in session map.", name);
+            log.warn("User {} not found in session map.", userId);
             return;
         }
         try {
             webSocketSession.sendMessage(new TextMessage("ChatToUser Echo: " + message));
-            log.info("Message sent to user {}: {}", name, message);
+            log.info("Message sent to user {}: {}", userId, message);
         } catch (IOException e) {
-            log.error("Failed to send message to user {}: {}", name, message, e);
+            log.error("Failed to send message to user {}: {}", userId, message, e);
         } catch (IllegalStateException e) {
-            log.error("Session is not open for user {}: {}", name, message, e);
+            log.error("Session is not open for user {}: {}", userId, message, e);
         }
     }
 
+    @SuppressWarnings("ALL")
     @EventListener
     public void handleSessionConnectedEvent(SessionConnectedEvent event) {
-        Principal principal = event.getUser();
-        if (principal == null) {
-            return;
-        }
-        String name = principal.getName();
-        if (StringUtils.isBlank(name)) {
-            return;
-        }
         Object source = event.getSource();
         if (source instanceof WebSocketSession) {
             WebSocketSession session = (WebSocketSession) event.getSource();
-            sessionMap.put(name, session);
+            if (session == null) {
+                return;
+            }
+            Object object = session.getAttributes().get("userId");
+            if (object == null) {
+                return;
+            }
+            String userId = String.valueOf(object);
+            userIdSessionMap.put(userId, session);
         }
     }
 
+    @SuppressWarnings("ALL")
     @EventListener
     public void handleSessionDisconnectEvent(SessionDisconnectEvent event) {
-        Principal principal = event.getUser();
-        if (principal == null) {
-            return;
+        Object source = event.getSource();
+        if (source instanceof WebSocketSession) {
+            WebSocketSession session = (WebSocketSession) event.getSource();
+            if (session == null) {
+                return;
+            }
+            Object object = session.getAttributes().get("userId");
+            if (object == null) {
+                return;
+            }
+            String userId = String.valueOf(object);
+            userIdSessionMap.remove(userId);
         }
-        String name = principal.getName();
-        if (StringUtils.isBlank(name)) {
-            return;
-        }
-        sessionMap.remove(name);
     }
 }
