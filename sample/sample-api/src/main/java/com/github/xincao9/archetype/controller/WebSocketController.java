@@ -1,7 +1,7 @@
 package com.github.xincao9.archetype.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SendToUser;
@@ -40,22 +40,21 @@ public class WebSocketController {
     /**
      * 向指定用户发送消息
      */
-    @MessageMapping("/chat/toUser")
+    @MessageMapping("/chat/toUser/{subject}")
     @SendToUser("/queue/messages")
-    public void chatToUser(String message, MessageHeaders headers) {
-        String userId = String.valueOf(headers.get("userId"));
-        WebSocketSession webSocketSession = webSocketSessionManager.getSessionByUserId(userId);
+    public void chatToUser(String message, @DestinationVariable("subject") String subject) {
+        WebSocketSession webSocketSession = webSocketSessionManager.getSessionBySubject(subject);
         if (webSocketSession == null) {
-            log.warn("User {} not found in session map.", userId);
+            log.warn("User {} not found in session map.", subject);
             return;
         }
         try {
             webSocketSession.sendMessage(new TextMessage("ChatToUser Echo: " + message));
-            log.info("Message sent to user {}: {}", userId, message);
+            log.info("Message sent to user {}: {}", subject, message);
         } catch (IOException e) {
-            log.error("Failed to send message to user {}: {}", userId, message, e);
+            log.error("Failed to send message to user {}: {}", subject, message, e);
         } catch (IllegalStateException e) {
-            log.error("Session is not open for user {}: {}", userId, message, e);
+            log.error("Session is not open for user {}: {}", subject, message, e);
         }
     }
 
