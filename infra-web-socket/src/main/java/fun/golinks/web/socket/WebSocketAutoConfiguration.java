@@ -19,7 +19,8 @@ public class WebSocketAutoConfiguration {
     public BeanPostProcessor beanPostProcessor(MessageRouterHandler messageRouterHandler) {
         return new BeanPostProcessor() {
             @Override
-            public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
+            public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName)
+                    throws BeansException {
                 if (bean instanceof MessageHandler) {
                     @SuppressWarnings("unchecked")
                     MessageHandler<Message> messageHandler = (MessageHandler<Message>) bean;
@@ -37,7 +38,7 @@ public class WebSocketAutoConfiguration {
 
     @Bean
     public WebSocketServer webSocketServer(WebSocketProperties webSocketProperties,
-                                           MessageRouterHandler messageRouterHandler) {
+            MessageRouterHandler messageRouterHandler) {
         return new WebSocketServer(webSocketProperties, messageRouterHandler);
     }
 }
