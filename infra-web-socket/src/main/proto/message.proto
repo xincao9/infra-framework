@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package infra;
+
+option java_multiple_files = true;
+option java_package = "fun.golinks.web.socket";
+
+message WebSocketMessage {
+  int32 no = 1;  // 消息编号
+  bytes payload = 2;     // 消息体
+}
+
+// 问候请求
+message GreeterRequest {
+  string name = 1;
+}
+
+// 问候响应
+message GreeterResponse {
+  string message = 1;
+}
+
+enum MessageNoEnums {
+  GREETER_REQUEST = 0;
+  GREETER_RESPONSE = 1;
+}
