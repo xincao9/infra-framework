@@ -44,33 +44,39 @@ public class WebSocketServer implements SmartLifecycle {
 
     @Override
     public void start() {
-        if (!running.compareAndSet(false, true)) {
-            return;
-        }
-        ServerBootstrap serverBootstrap = new ServerBootstrap();
-        serverBootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel ch) {
-                        ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast(new HttpServerCodec());
-                        pipeline.addLast(new HttpObjectAggregator(65536));
-                        pipeline.addLast(new WebSocketFrameHandler());
-                        pipeline.addLast(new ProtobufVarint32FrameDecoder());
-                        pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));
-                        pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
-                        pipeline.addLast(new ProtobufEncoder());
-                        pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
-                        pipeline.addLast(messageRouterHandler);
-                    }
-                });
-        serverBootstrap.bind(port).addListener((ChannelFutureListener) channelFuture -> {
-            if (channelFuture.isSuccess()) {
-                log.info("websocket启动成功，端口号: {}", port);
-            } else {
-                log.error("websocket启动失败，端口号: {}", port, channelFuture.cause());
+        try {
+            if (!running.compareAndSet(false, true)) {
+                return;
             }
-        });
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            serverBootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) {
+                            ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(new HttpServerCodec());
+                            pipeline.addLast(new HttpObjectAggregator(65536));
+                            pipeline.addLast(new WebSocketFrameHandler());
+                            pipeline.addLast(new ProtobufVarint32FrameDecoder());
+                            pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));
+                            pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
+                            pipeline.addLast(new ProtobufEncoder());
+                            pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
+                            pipeline.addLast(messageRouterHandler);
+                        }
+                    });
+            serverBootstrap.bind(port).addListener((ChannelFutureListener) channelFuture -> {
+                if (channelFuture.isSuccess()) {
+                    log.info("websocket启动成功，端口号: {}", port);
+                } else {
+                    log.error("websocket启动失败，端口号: {}", port, channelFuture.cause());
+                    stop();
+                }
+            });
+        } catch (Exception e) {
+            log.error("WebSocket服务器启动过程中发生异常", e);
+            stop();
+        }
     }
 
     @Override
@@ -78,8 +84,10 @@ public class WebSocketServer implements SmartLifecycle {
         if (!running.compareAndSet(true, false)) {
             return;
         }
-        bossGroup.shutdownGracefully();
-        workerGroup.shutdownGracefully();
+        log.info("开始关闭WebSocket服务器...");
+        bossGroup.shutdownGracefully().syncUninterruptibly();
+        workerGroup.shutdownGracefully().syncUninterruptibly();
+        log.info("WebSocket服务器已关闭");
     }
 
     @Override

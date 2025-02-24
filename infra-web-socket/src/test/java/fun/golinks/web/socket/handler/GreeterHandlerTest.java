@@ -26,6 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @SpringBootTest(classes = SystemConfig.class)
@@ -42,7 +43,7 @@ public class GreeterHandlerTest {
         try {
             Bootstrap bootstrap = new Bootstrap();
             URI uri = new URI("ws://localhost:8888/ws");
-            WebSocketClientHandshaker webSocketClientHandshaker = WebSocketClientHandshakerFactory.newHandshaker(
+            WebSocketClientHandshaker handshaker = WebSocketClientHandshakerFactory.newHandshaker(
                     uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders());
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
@@ -52,7 +53,7 @@ public class GreeterHandlerTest {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new HttpClientCodec());
                             pipeline.addLast(new HttpObjectAggregator(65536));
-                            pipeline.addLast(new WebSocketClientProtocolHandler(webSocketClientHandshaker));
+                            pipeline.addLast(new WebSocketClientProtocolHandler(handshaker));
                             pipeline.addLast(new WebSocketFrameHandler());
                             pipeline.addLast(new ProtobufVarint32FrameDecoder());
                             pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));
@@ -62,7 +63,8 @@ public class GreeterHandlerTest {
                         }
                     });
             Channel channel = bootstrap.connect("localhost", 8888).sync().channel();
-            webSocketClientHandshaker.handshake(channel).sync();
+            handshaker.handshake(channel).sync(); // 完成 WebSocket 握手
+
             GreeterRequest greeterRequest = GreeterRequest.newBuilder()
                     .setName("xincao")
                     .build();
@@ -71,7 +73,7 @@ public class GreeterHandlerTest {
                     .setPayload(greeterRequest.toByteString())
                     .build();
             ByteBuf byteBuf = Unpooled.wrappedBuffer(webSocketMessage.toByteArray());
-            ChannelFuture channelFuture = channel.writeAndFlush(new BinaryWebSocketFrame(byteBuf));
+            ChannelFuture channelFuture = channel.writeAndFlush(new BinaryWebSocketFrame(byteBuf)); // 发送 BinaryWebSocketFrame
             channelFuture.addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
                     log.info("发送消息成功");
@@ -82,7 +84,7 @@ public class GreeterHandlerTest {
         } finally {
             group.shutdownGracefully();
         }
-        countDownLatch.await();
+        countDownLatch.await(10, TimeUnit.SECONDS); // 设置10秒超时
     }
 
     public static class Log extends SimpleChannelInboundHandler<WebSocketMessage> {
