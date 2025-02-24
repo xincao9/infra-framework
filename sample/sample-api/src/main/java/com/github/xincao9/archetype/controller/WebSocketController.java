@@ -3,6 +3,7 @@ package com.github.xincao9.archetype.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
@@ -24,7 +25,7 @@ public class WebSocketController {
      */
     @MessageMapping("/chat/broadcast")
     @SendTo("/topic/messages")
-    public String chatBroadcast(String message) {
+    public String chatBroadcast(@Payload String message) {
         return "ChatBroadcast Echo: " + message;
     }
 
@@ -33,7 +34,7 @@ public class WebSocketController {
      */
     @MessageMapping("/chat/private")
     @SendToUser("/queue/messages")
-    public String chatPrivate(String message) {
+    public String chatPrivate(@Payload String message) {
         return "ChatPrivate Echo: " + message;
     }
 
@@ -42,7 +43,7 @@ public class WebSocketController {
      */
     @MessageMapping("/chat/toUser/{subject}")
     @SendToUser("/queue/messages")
-    public void chatToUser(String message, @DestinationVariable("subject") String subject) {
+    public void chatToUser(@Payload String message, @DestinationVariable("subject") String subject) {
         WebSocketSession webSocketSession = webSocketSessionManager.getSessionBySubject(subject);
         if (webSocketSession == null) {
             log.warn("User {} not found in session map.", subject);

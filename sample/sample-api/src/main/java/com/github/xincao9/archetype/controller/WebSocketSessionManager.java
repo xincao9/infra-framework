@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ *
+ */
 @Slf4j
 @Component
 public class WebSocketSessionManager extends TextWebSocketHandler {
@@ -36,7 +39,7 @@ public class WebSocketSessionManager extends TextWebSocketHandler {
         String subject = getSubject(session);
         if (subject == null) {
             session.sendMessage(new TextMessage(JsonUtils.toJson(R.failed(StatusEnums.FORBIDDEN))));
-            session.close(CloseStatus. NORMAL);
+            session.close(CloseStatus.NORMAL);
             return;
         }
         sessionMap.put(subject, session);
