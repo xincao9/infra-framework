@@ -7,5 +7,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "infra.web.socket")
 public class WebSocketProperties {
 
-    private int port = 8888;
+    private ServerProperties server = new ServerProperties();
+
+    @Data
+    public static class ServerProperties {
+
+        private Integer port = 8888;
+    }
 }

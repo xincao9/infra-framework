@@ -34,9 +34,8 @@ public class WebSocketServer implements SmartLifecycle {
     private final AtomicBoolean running = new AtomicBoolean(false);
     private final List<MessageHandler<Message>> messageHandlers;
 
-    public WebSocketServer(WebSocketProperties webSocketProperties,
-                           List<MessageHandler<Message>> messageHandlers) {
-        this.port = webSocketProperties.getPort();
+    public WebSocketServer(WebSocketProperties webSocketProperties, List<MessageHandler<Message>> messageHandlers) {
+        this.port = webSocketProperties.getServer().getPort();
         this.messageHandlers = messageHandlers;
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
@@ -69,8 +68,6 @@ public class WebSocketServer implements SmartLifecycle {
             serverBootstrap.bind(port).sync().channel().closeFuture().sync();
         } catch (Throwable e) {
             log.error("", e);
-        } finally {
-
         }
     }
 

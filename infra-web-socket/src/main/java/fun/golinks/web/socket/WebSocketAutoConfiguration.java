@@ -14,7 +14,7 @@ public class WebSocketAutoConfiguration {
 
     @Bean
     public WebSocketServer webSocketServer(WebSocketProperties webSocketProperties,
-                                           ObjectProvider<List<MessageHandler<Message>>> messageHandlersProvider) {
+            ObjectProvider<List<MessageHandler<Message>>> messageHandlersProvider) {
         return new WebSocketServer(webSocketProperties, messageHandlersProvider.getIfAvailable());
     }
 }
