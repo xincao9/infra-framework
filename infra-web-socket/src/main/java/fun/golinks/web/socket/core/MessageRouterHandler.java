@@ -6,10 +6,8 @@ import fun.golinks.web.socket.WebSocketMessage;
 import fun.golinks.web.socket.exception.WebSocketException;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,28 +16,23 @@ public class MessageRouterHandler extends SimpleChannelInboundHandler<WebSocketM
 
     private final Map<Integer, Pair<Parser<Message>, MessageHandler<Message>>> routes = new ConcurrentHashMap<>();
 
-    public MessageRouterHandler(List<MessageHandler<Message>> messageHandlers) {
-        if (CollectionUtils.isEmpty(messageHandlers)) {
+    public void addHandler(MessageHandler<Message> messageHandler) {
+        Class<Message> messageClass = messageHandler.requestType();
+        int no = messageHandler.messageNo();
+        if (messageClass == null) {
             return;
         }
-        for (MessageHandler<Message> messageHandler : messageHandlers) {
-            Class<Message> messageClass = messageHandler.requestType();
-            int no = messageHandler.messageNo();
-            if (messageClass == null) {
-                continue;
-            }
-            Parser<Message> parser = null;
-            try {
-                Method parserMethod = messageClass.getMethod("parser");
-                parser = (Parser<Message>) parserMethod.invoke(null);
-            } catch (Throwable e) {
-                throw new WebSocketException(e);
-            }
-            if (routes.containsKey(no)) {
-                continue;
-            }
-            routes.put(no, new Pair<>(parser, messageHandler));
+        Parser<Message> parser = null;
+        try {
+            Method parserMethod = messageClass.getMethod("parser");
+            parser = (Parser<Message>) parserMethod.invoke(null);
+        } catch (Throwable e) {
+            throw new WebSocketException(e);
         }
+        if (routes.containsKey(no)) {
+            return;
+        }
+        routes.put(no, new Pair<>(parser, messageHandler));
     }
 
     @Override

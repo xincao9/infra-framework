@@ -1,7 +1,5 @@
 package fun.golinks.web.socket;
 
-import com.google.protobuf.Message;
-import fun.golinks.web.socket.core.MessageHandler;
 import fun.golinks.web.socket.core.MessageRouterHandler;
 import fun.golinks.web.socket.core.WebSocketFrameHandler;
 import fun.golinks.web.socket.properties.WebSocketProperties;
@@ -24,7 +22,6 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.SmartLifecycle;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -34,11 +31,11 @@ public class WebSocketServer implements SmartLifecycle {
     private final EventLoopGroup bossGroup;
     private final EventLoopGroup workerGroup;
     private final AtomicBoolean running = new AtomicBoolean(false);
-    private final List<MessageHandler<Message>> messageHandlers;
+    private final MessageRouterHandler messageRouterHandler;
 
-    public WebSocketServer(WebSocketProperties webSocketProperties, List<MessageHandler<Message>> messageHandlers) {
+    public WebSocketServer(WebSocketProperties webSocketProperties, MessageRouterHandler messageRouterHandler) {
         this.port = webSocketProperties.getServer().getPort();
-        this.messageHandlers = messageHandlers;
+        this.messageRouterHandler = messageRouterHandler;
         this.bossGroup = new NioEventLoopGroup(webSocketProperties.getServer().getBossThreads(),
                 new NamedThreadFactory("web-socket-boss-"));
         this.workerGroup = new NioEventLoopGroup(webSocketProperties.getServer().getWorkerThreads(),
@@ -64,7 +61,7 @@ public class WebSocketServer implements SmartLifecycle {
                         pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
                         pipeline.addLast(new ProtobufEncoder());
                         pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
-                        pipeline.addLast(new MessageRouterHandler(messageHandlers));
+                        pipeline.addLast(messageRouterHandler);
                     }
                 });
         serverBootstrap.bind(port).addListener((ChannelFutureListener) channelFuture -> {
