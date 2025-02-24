@@ -64,8 +64,17 @@ public class WebSocketServer implements SmartLifecycle {
                             pipeline.addLast(new MessageRouterHandler(messageHandlers));
                         }
                     });
-
-            serverBootstrap.bind(port).sync().channel().closeFuture().sync();
+            Thread thread = new Thread(new ThreadGroup("WebSocketServer"), new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        serverBootstrap.bind(port).sync().channel().closeFuture().sync();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            thread.start();
         } catch (Throwable e) {
             log.error("", e);
         }
