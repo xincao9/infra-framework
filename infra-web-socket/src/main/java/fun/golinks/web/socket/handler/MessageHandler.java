@@ -1,4 +1,4 @@
-package fun.golinks.web.socket.core;
+package fun.golinks.web.socket.handler;
 
 import com.google.protobuf.Message;
 import io.netty.channel.ChannelHandlerContext;

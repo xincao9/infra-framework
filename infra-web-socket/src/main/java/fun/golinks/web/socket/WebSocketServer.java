@@ -1,7 +1,8 @@
 package fun.golinks.web.socket;
 
-import fun.golinks.web.socket.core.MessageRouterHandler;
-import fun.golinks.web.socket.core.WebSocketFrameHandler;
+import fun.golinks.web.socket.core.BinaryWebSocketFrameToByteBufDecoder;
+import fun.golinks.web.socket.core.ByteBufToBinaryWebSocketFrameEncoder;
+import fun.golinks.web.socket.handler.MessageRouterHandler;
 import fun.golinks.web.socket.properties.WebSocketProperties;
 import fun.golinks.web.socket.util.NamedThreadFactory;
 import io.netty.bootstrap.ServerBootstrap;
@@ -17,8 +18,6 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
-import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
-import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.SmartLifecycle;
 
@@ -56,12 +55,11 @@ public class WebSocketServer implements SmartLifecycle {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new HttpServerCodec());
                             pipeline.addLast(new HttpObjectAggregator(65536));
-                            pipeline.addLast(new WebSocketFrameHandler());
-                            pipeline.addLast(new ProtobufVarint32FrameDecoder());
-                            pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));
-                            pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
-                            pipeline.addLast(new ProtobufEncoder());
                             pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
+                            pipeline.addLast(new BinaryWebSocketFrameToByteBufDecoder());
+                            pipeline.addLast(new ByteBufToBinaryWebSocketFrameEncoder());
+                            pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));
+                            pipeline.addLast(new ProtobufEncoder());
                             pipeline.addLast(messageRouterHandler);
                         }
                     });

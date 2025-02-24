@@ -1,4 +1,4 @@
-package fun.golinks.web.socket.core;
+package fun.golinks.web.socket.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

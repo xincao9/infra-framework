@@ -1,8 +1,8 @@
 package fun.golinks.web.socket;
 
 import com.google.protobuf.Message;
-import fun.golinks.web.socket.core.MessageHandler;
-import fun.golinks.web.socket.core.MessageRouterHandler;
+import fun.golinks.web.socket.handler.MessageHandler;
+import fun.golinks.web.socket.handler.MessageRouterHandler;
 import fun.golinks.web.socket.properties.WebSocketProperties;
 import lombok.NonNull;
 import org.springframework.beans.BeansException;

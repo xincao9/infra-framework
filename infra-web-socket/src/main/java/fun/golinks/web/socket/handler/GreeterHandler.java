@@ -4,7 +4,6 @@ import fun.golinks.web.socket.GreeterRequest;
 import fun.golinks.web.socket.GreeterResponse;
 import fun.golinks.web.socket.MessageNoEnums;
 import fun.golinks.web.socket.WebSocketMessage;
-import fun.golinks.web.socket.core.MessageHandler;
 import io.netty.channel.ChannelHandlerContext;
 
 public class GreeterHandler implements MessageHandler<GreeterRequest> {
@@ -22,7 +21,10 @@ public class GreeterHandler implements MessageHandler<GreeterRequest> {
     @Override
     public void handle(ChannelHandlerContext ctx, GreeterRequest greeterRequest) {
         // 返回响应示例
-        ctx.writeAndFlush(WebSocketMessage.newBuilder().setNo(MessageNoEnums.GREETER_RESPONSE_VALUE).setPayload(
-                GreeterResponse.newBuilder().setMessage("hello " + greeterRequest.getName()).build().toByteString()));
+        ctx.writeAndFlush(
+                WebSocketMessage
+                        .newBuilder().setNo(MessageNoEnums.GREETER_RESPONSE_VALUE).setPayload(GreeterResponse
+                                .newBuilder().setMessage("hello " + greeterRequest.getName()).build().toByteString())
+                        .build());
     }
 }

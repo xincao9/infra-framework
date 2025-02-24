@@ -1,9 +1,10 @@
-package fun.golinks.web.socket.core;
+package fun.golinks.web.socket.handler;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
 import fun.golinks.web.socket.WebSocketMessage;
 import fun.golinks.web.socket.exception.WebSocketException;
+import fun.golinks.web.socket.util.Pair;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
