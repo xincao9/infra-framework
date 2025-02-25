@@ -20,11 +20,11 @@ public class GreeterHandler implements MessageHandler<GreeterRequest> {
 
     @Override
     public void handle(ChannelHandlerContext ctx, GreeterRequest greeterRequest) {
+        WebSocketMessage webSocketMessage = WebSocketMessage.newBuilder().setNo(MessageNoEnums.GREETER_RESPONSE_VALUE)
+                .setPayload(GreeterResponse.newBuilder().setMessage("hello " + greeterRequest.getName()).build()
+                        .toByteString())
+                .build();
         // 返回响应示例
-        ctx.writeAndFlush(
-                WebSocketMessage
-                        .newBuilder().setNo(MessageNoEnums.GREETER_RESPONSE_VALUE).setPayload(GreeterResponse
-                                .newBuilder().setMessage("hello " + greeterRequest.getName()).build().toByteString())
-                        .build());
+        ctx.writeAndFlush(webSocketMessage);
     }
 }

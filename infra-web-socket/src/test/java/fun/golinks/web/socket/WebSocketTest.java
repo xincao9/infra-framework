@@ -1,8 +1,12 @@
 package fun.golinks.web.socket;
 
-import fun.golinks.web.socket.core.WebSocketFrameRouter;
+import fun.golinks.web.socket.core.ProtoToWebSocketFrameEncoder;
+import fun.golinks.web.socket.core.WebSocketFrameToProtoDecoder;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
@@ -12,12 +16,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
-import io.netty.handler.codec.protobuf.ProtobufDecoder;
-import io.netty.handler.codec.protobuf.ProtobufEncoder;
-import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
-import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -40,23 +38,12 @@ public class WebSocketTest {
                         @Override
                         protected void initChannel(Channel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new LoggingHandler(LogLevel.DEBUG));
                             pipeline.addLast(new HttpClientCodec());
                             pipeline.addLast(new HttpObjectAggregator(65536));
                             pipeline.addLast(new WebSocketClientProtocolHandler(handshaker));
-                            pipeline.addLast(new WebSocketFrameRouter());
-                            pipeline.addLast(new ProtobufVarint32FrameDecoder());
-                            pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));
-                            pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
-                            pipeline.addLast(new ProtobufEncoder());
+                            pipeline.addLast(new WebSocketFrameToProtoDecoder());
+                            pipeline.addLast(new ProtoToWebSocketFrameEncoder());
                             pipeline.addLast(new ClientBusinessLogicHandler());
-                            pipeline.addLast(new ChannelInboundHandlerAdapter() {
-                                @Override
-                                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-                                    log.error("Pipeline error", cause);
-                                    ctx.close();
-                                }
-                            });
                         }
                     });
             Channel channel = bootstrap.connect("localhost", 8888).sync().channel();
