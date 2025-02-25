@@ -1,10 +1,8 @@
 package fun.golinks.web.socket;
 
+import fun.golinks.web.socket.core.WebSocketFrameRouter;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
@@ -46,11 +44,19 @@ public class WebSocketTest {
                             pipeline.addLast(new HttpClientCodec());
                             pipeline.addLast(new HttpObjectAggregator(65536));
                             pipeline.addLast(new WebSocketClientProtocolHandler(handshaker));
+                            pipeline.addLast(new WebSocketFrameRouter());
                             pipeline.addLast(new ProtobufVarint32FrameDecoder());
                             pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));
                             pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
                             pipeline.addLast(new ProtobufEncoder());
                             pipeline.addLast(new ClientBusinessLogicHandler());
+                            pipeline.addLast(new ChannelInboundHandlerAdapter() {
+                                @Override
+                                public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+                                    log.error("Pipeline error", cause);
+                                    ctx.close();
+                                }
+                            });
                         }
                     });
             Channel channel = bootstrap.connect("localhost", 8888).sync().channel();

@@ -1,5 +1,6 @@
 package fun.golinks.web.socket;
 
+import fun.golinks.web.socket.core.WebSocketFrameRouter;
 import fun.golinks.web.socket.handler.MessageRouterHandler;
 import fun.golinks.web.socket.properties.WebSocketProperties;
 import fun.golinks.web.socket.util.NamedThreadFactory;
@@ -18,6 +19,8 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.SmartLifecycle;
@@ -54,10 +57,12 @@ public class WebSocketServer implements SmartLifecycle {
                         @Override
                         protected void initChannel(SocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(new LoggingHandler(LogLevel.DEBUG));
                             pipeline.addLast(new HttpServerCodec());
                             pipeline.addLast(new ChunkedWriteHandler());
                             pipeline.addLast(new HttpObjectAggregator(65536)); // 调整缓冲区大小
                             pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
+                            pipeline.addLast(new WebSocketFrameRouter());
                             // Protobuf 编解码器
                             pipeline.addLast(new ProtobufVarint32FrameDecoder());
                             pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));
