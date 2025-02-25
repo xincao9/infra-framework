@@ -38,7 +38,7 @@ public class WebSocketAutoConfiguration {
 
     @Bean
     public WebSocketServer webSocketServer(WebSocketProperties webSocketProperties,
-            MessageRouterHandler messageRouterHandler) {
+                                           MessageRouterHandler messageRouterHandler) {
         return new WebSocketServer(webSocketProperties, messageRouterHandler);
     }
 }

@@ -1,5 +1,6 @@
 package fun.golinks.web.socket;
 
+import fun.golinks.web.socket.core.WebSocketFrameExtractor;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -45,6 +46,7 @@ public class WebSocketTest {
                                 WebSocketClientHandshakerFactory.newHandshaker(
                                         uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders())
                         ));
+                        pipeline.addLast(new WebSocketFrameExtractor());
                         pipeline.addLast(new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4));
                         pipeline.addLast(new LengthFieldPrepender(4));
                         pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));

@@ -1,5 +1,6 @@
 package fun.golinks.web.socket;
 
+import fun.golinks.web.socket.core.WebSocketFrameExtractor;
 import fun.golinks.web.socket.handler.MessageRouterHandler;
 import fun.golinks.web.socket.properties.WebSocketProperties;
 import fun.golinks.web.socket.util.NamedThreadFactory;
@@ -56,6 +57,7 @@ public class WebSocketServer implements SmartLifecycle {
                             pipeline.addLast(new HttpServerCodec());
                             pipeline.addLast(new HttpObjectAggregator(65536));
                             pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
+                            pipeline.addLast(new WebSocketFrameExtractor());
                             // Protobuf 编解码器
                             pipeline.addLast(new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4));
                             pipeline.addLast(new LengthFieldPrepender(4));
