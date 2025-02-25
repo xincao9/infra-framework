@@ -3,10 +3,7 @@ package fun.golinks.web.socket;
 import fun.golinks.web.socket.core.ProtoToWebSocketFrameEncoder;
 import fun.golinks.web.socket.core.WebSocketFrameToProtoDecoder;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
@@ -53,6 +50,23 @@ public class WebSocketTest {
                 channel.close();
                 throw e;
             }
+            GreeterRequest greeterRequest = GreeterRequest.newBuilder()
+                    .setName("xincao")
+                    .build();
+            WebSocketMessage webSocketMessage = WebSocketMessage.newBuilder()
+                    .setNo(MessageNoEnums.GREETER_REQUEST_VALUE)
+                    .setPayload(greeterRequest.toByteString())
+                    .build();
+            ChannelFuture channelFuture = channel.writeAndFlush(webSocketMessage);
+            channelFuture.addListener((ChannelFutureListener) future -> {
+                if (future.isSuccess()) {
+                    log.info("发送消息成功");
+                    Thread.sleep(5000);
+                } else {
+                    log.error("发送消息失败", future.cause());
+                }
+            });
+            Thread.sleep(10000);
         } finally {
             group.shutdownGracefully();
         }

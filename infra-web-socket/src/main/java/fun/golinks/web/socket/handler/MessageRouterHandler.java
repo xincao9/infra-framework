@@ -51,4 +51,10 @@ public class MessageRouterHandler extends SimpleChannelInboundHandler<WebSocketM
         Message message = parser.parseFrom(payload);
         messageHandler.handle(ctx, message);
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        ctx.fireExceptionCaught(cause);
+        ctx.close();
+    }
 }
