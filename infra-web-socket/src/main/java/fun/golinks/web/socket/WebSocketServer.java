@@ -1,6 +1,7 @@
 package fun.golinks.web.socket;
 
-import fun.golinks.web.socket.core.WebSocketFrameExtractor;
+import fun.golinks.web.socket.core.ByteBufToWebSocketFrameEncoder;
+import fun.golinks.web.socket.core.WebSocketFrameToByteBufDecoder;
 import fun.golinks.web.socket.handler.MessageRouterHandler;
 import fun.golinks.web.socket.properties.WebSocketProperties;
 import fun.golinks.web.socket.util.NamedThreadFactory;
@@ -55,9 +56,11 @@ public class WebSocketServer implements SmartLifecycle {
                         protected void initChannel(SocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new HttpServerCodec());
-                            pipeline.addLast(new HttpObjectAggregator(65536));
+                            pipeline.addLast(new HttpObjectAggregator(1048576)); // 调整缓冲区大小
                             pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
-                            pipeline.addLast(new WebSocketFrameExtractor());
+                            pipeline.addLast(new WebSocketFrameToByteBufDecoder());
+                            pipeline.addLast(new ByteBufToWebSocketFrameEncoder());
+
                             // Protobuf 编解码器
                             pipeline.addLast(new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4));
                             pipeline.addLast(new LengthFieldPrepender(4));
@@ -71,12 +74,24 @@ public class WebSocketServer implements SmartLifecycle {
                     log.info("websocket启动成功，端口号: {}", port);
                 } else {
                     log.error("websocket启动失败，端口号: {}", port, channelFuture.cause());
-                    stop();
+                    try {
+                        stop();
+                    } catch (Exception e) {
+                        log.error("停止WebSocket服务器时发生异常", e);
+                    } finally {
+                        running.set(false); // 确保状态重置
+                    }
                 }
             });
         } catch (Exception e) {
             log.error("WebSocket服务器启动过程中发生异常", e);
-            stop();
+            try {
+                stop();
+            } catch (Exception ex) {
+                log.error("停止WebSocket服务器时发生异常", ex);
+            } finally {
+                running.set(false); // 确保状态重置
+            }
         }
     }
 

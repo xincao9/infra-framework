@@ -1,6 +1,7 @@
 package fun.golinks.web.socket;
 
-import fun.golinks.web.socket.core.WebSocketFrameExtractor;
+import fun.golinks.web.socket.core.ByteBufToWebSocketFrameEncoder;
+import fun.golinks.web.socket.core.WebSocketFrameToByteBufDecoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -28,40 +29,41 @@ import java.net.URI;
 public class WebSocketTest {
 
     @Test
-public void testHandle() throws Exception {
-    EventLoopGroup group = new NioEventLoopGroup();
-    try {
-        Bootstrap bootstrap = new Bootstrap();
-        URI uri = new URI("ws://localhost:8888/ws");
-        WebSocketClientHandshaker handshaker = WebSocketClientHandshakerFactory.newHandshaker(
-                uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders());
-        bootstrap.group(group)
-                .channel(NioSocketChannel.class)
-                .handler(new ChannelInitializer<Channel>() {
-                    @Override
-                    protected void initChannel(Channel ch) {
-                        ChannelPipeline pipeline = ch.pipeline();
-                        pipeline.addLast(new HttpClientCodec());
-                        pipeline.addLast(new HttpObjectAggregator(65536));
-                        pipeline.addLast(new WebSocketClientProtocolHandler(handshaker));
-                        pipeline.addLast(new WebSocketFrameExtractor());
-                        pipeline.addLast(new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4));
-                        pipeline.addLast(new LengthFieldPrepender(4));
-                        pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));
-                        pipeline.addLast(new ProtobufEncoder());
-                        pipeline.addLast(new ClientBusinessLogicHandler());
-                    }
-                });
-        Channel channel = bootstrap.connect("localhost", 8888).sync().channel();
+    public void testHandle() throws Exception {
+        EventLoopGroup group = new NioEventLoopGroup();
         try {
-            handshaker.handshake(channel).sync();
-        } catch (Exception e) {
-            channel.close();
-            throw e;
+            Bootstrap bootstrap = new Bootstrap();
+            URI uri = new URI("ws://localhost:8888/ws");
+            WebSocketClientHandshaker handshaker = WebSocketClientHandshakerFactory.newHandshaker(
+                    uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders());
+            bootstrap.group(group)
+                    .channel(NioSocketChannel.class)
+                    .handler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel ch) {
+                            ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(new HttpClientCodec());
+                            pipeline.addLast(new HttpObjectAggregator(65536));
+                            pipeline.addLast(new WebSocketClientProtocolHandler(handshaker));
+                            pipeline.addLast(new WebSocketFrameToByteBufDecoder());
+                            pipeline.addLast(new ByteBufToWebSocketFrameEncoder());
+                            pipeline.addLast(new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4));
+                            pipeline.addLast(new LengthFieldPrepender(4));
+                            pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));
+                            pipeline.addLast(new ProtobufEncoder());
+                            pipeline.addLast(new ClientBusinessLogicHandler());
+                        }
+                    });
+            Channel channel = bootstrap.connect("localhost", 8888).sync().channel();
+            try {
+                handshaker.handshake(channel).sync();
+            } catch (Exception e) {
+                channel.close();
+                throw e;
+            }
+        } finally {
+            group.shutdownGracefully();
         }
-    } finally {
-        group.shutdownGracefully();
     }
-}
 
 }
