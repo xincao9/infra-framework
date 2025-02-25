@@ -18,6 +18,8 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -40,6 +42,7 @@ public class WebSocketTest {
                         @Override
                         protected void initChannel(Channel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(new LoggingHandler(LogLevel.DEBUG));
                             pipeline.addLast(new HttpClientCodec());
                             pipeline.addLast(new HttpObjectAggregator(65536));
                             pipeline.addLast(new WebSocketClientProtocolHandler(handshaker));
