@@ -1,7 +1,5 @@
 package fun.golinks.web.socket;
 
-import fun.golinks.web.socket.core.ByteBufToWebSocketFrameEncoder;
-import fun.golinks.web.socket.core.WebSocketFrameToByteBufDecoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -9,8 +7,6 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -20,6 +16,8 @@ import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +33,7 @@ public class WebSocketTest {
             Bootstrap bootstrap = new Bootstrap();
             URI uri = new URI("ws://localhost:8888/ws");
             WebSocketClientHandshaker handshaker = WebSocketClientHandshakerFactory.newHandshaker(
-                    uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders());
+                    uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders());
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<Channel>() {
@@ -45,11 +43,9 @@ public class WebSocketTest {
                             pipeline.addLast(new HttpClientCodec());
                             pipeline.addLast(new HttpObjectAggregator(65536));
                             pipeline.addLast(new WebSocketClientProtocolHandler(handshaker));
-                            pipeline.addLast(new WebSocketFrameToByteBufDecoder());
-                            pipeline.addLast(new ByteBufToWebSocketFrameEncoder());
-                            pipeline.addLast(new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4));
-                            pipeline.addLast(new LengthFieldPrepender(4));
+                            pipeline.addLast(new ProtobufVarint32FrameDecoder());
                             pipeline.addLast(new ProtobufDecoder(WebSocketMessage.getDefaultInstance()));
+                            pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
                             pipeline.addLast(new ProtobufEncoder());
                             pipeline.addLast(new ClientBusinessLogicHandler());
                         }
