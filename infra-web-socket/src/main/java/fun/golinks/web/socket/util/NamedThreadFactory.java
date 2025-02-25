@@ -16,6 +16,6 @@ public class NamedThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(@NonNull Runnable r) {
-        return new Thread(new ThreadGroup(prefix + counter.getAndIncrement()), r);
+        return new Thread(r, prefix + counter.getAndIncrement());
     }
 }
