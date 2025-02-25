@@ -5,6 +5,7 @@ import com.google.protobuf.Parser;
 import fun.golinks.web.socket.WebSocketMessage;
 import fun.golinks.web.socket.exception.WebSocketException;
 import fun.golinks.web.socket.util.Pair;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("ALL")
+@ChannelHandler.Sharable
 public class MessageRouterHandler extends SimpleChannelInboundHandler<WebSocketMessage> {
 
     private final Map<Integer, Pair<Parser<Message>, MessageHandler<Message>>> routes = new ConcurrentHashMap<>();
