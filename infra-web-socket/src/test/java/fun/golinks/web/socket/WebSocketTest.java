@@ -28,7 +28,7 @@ public class WebSocketTest {
             Bootstrap bootstrap = new Bootstrap();
             URI uri = new URI("ws://localhost:8888/ws");
             WebSocketClientHandshaker handshaker = WebSocketClientHandshakerFactory.newHandshaker(
-                    uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders());
+                    uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders());
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<Channel>() {
@@ -44,12 +44,6 @@ public class WebSocketTest {
                         }
                     });
             Channel channel = bootstrap.connect("localhost", 8888).sync().channel();
-            try {
-                handshaker.handshake(channel).sync();
-            } catch (Exception e) {
-                channel.close();
-                throw e;
-            }
             GreeterRequest greeterRequest = GreeterRequest.newBuilder()
                     .setName("xincao")
                     .build();

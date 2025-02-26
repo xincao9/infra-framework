@@ -8,11 +8,13 @@ import fun.golinks.web.socket.util.Pair;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @SuppressWarnings("ALL")
 @ChannelHandler.Sharable
 public class MessageRouterHandler extends SimpleChannelInboundHandler<WebSocketMessage> {

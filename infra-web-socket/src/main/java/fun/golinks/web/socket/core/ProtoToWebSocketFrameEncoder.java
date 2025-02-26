@@ -13,10 +13,15 @@ public class ProtoToWebSocketFrameEncoder extends MessageToMessageEncoder<Object
     @Override
     protected void encode(ChannelHandlerContext ctx, Object obj, List<Object> out) throws Exception {
         if (obj instanceof Message) {
-            Message message = (Message) obj;
-            out.add(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(message.toByteArray())));
+            try {
+                Message message = (Message) obj;
+                out.add(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(message.toByteArray())));
+            } catch (Throwable e) {
+                ctx.fireExceptionCaught(e);
+            }
         } else {
             out.add(obj); // 将非Message类的对象直接向下传递
         }
     }
+
 }

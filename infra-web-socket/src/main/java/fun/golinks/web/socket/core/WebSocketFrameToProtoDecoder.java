@@ -1,6 +1,5 @@
 package fun.golinks.web.socket.core;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import fun.golinks.web.socket.WebSocketMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -19,7 +18,7 @@ public class WebSocketFrameToProtoDecoder extends MessageToMessageDecoder<WebSoc
             try {
                 WebSocketMessage message = WebSocketMessage.parseFrom(ByteBufUtil.getBytes(content));
                 out.add(message);
-            } catch (InvalidProtocolBufferException e) {
+            } catch (Throwable e) {
                 ctx.fireExceptionCaught(e);
             }
         } else {
