@@ -26,7 +26,7 @@ public class WebSocketTest {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap bootstrap = new Bootstrap();
-            URI uri = new URI("ws://localhost:8888/ws");
+            URI uri = new URI("ws://localhost:8888/ws"); // 考虑从配置文件读取
             WebSocketClientHandshaker handshaker = WebSocketClientHandshakerFactory.newHandshaker(
                     uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders());
             bootstrap.group(group)
@@ -55,15 +55,16 @@ public class WebSocketTest {
             channelFuture.addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
                     log.info("发送消息成功");
-                    Thread.sleep(5000);
+                    // 更好的方式是等待服务器响应而不是固定睡眠时间
+                    channel.closeFuture().sync();
                 } else {
                     log.error("发送消息失败", future.cause());
                 }
             });
-            Thread.sleep(10000);
         } finally {
             group.shutdownGracefully();
         }
     }
+
 
 }

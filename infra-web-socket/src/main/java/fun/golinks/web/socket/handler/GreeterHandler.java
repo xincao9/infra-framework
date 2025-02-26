@@ -4,8 +4,11 @@ import fun.golinks.web.socket.GreeterRequest;
 import fun.golinks.web.socket.GreeterResponse;
 import fun.golinks.web.socket.MessageNoEnums;
 import fun.golinks.web.socket.WebSocketMessage;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class GreeterHandler implements MessageHandler<GreeterRequest> {
 
     @Override
@@ -25,6 +28,14 @@ public class GreeterHandler implements MessageHandler<GreeterRequest> {
                         .toByteString())
                 .build();
         // 返回响应示例
-        ctx.writeAndFlush(webSocketMessage);
+        ChannelFuture channelFuture = ctx.channel().writeAndFlush(webSocketMessage);
+        channelFuture.addListener(future -> {
+            if (future.isSuccess()) {
+                log.info("发送消息成功");
+            } else {
+                log.error("发送消息失败", future.cause());
+            }
+        });
+
     }
 }

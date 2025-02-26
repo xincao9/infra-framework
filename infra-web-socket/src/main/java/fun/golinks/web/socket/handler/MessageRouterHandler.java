@@ -41,17 +41,32 @@ public class MessageRouterHandler extends SimpleChannelInboundHandler<WebSocketM
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, WebSocketMessage webSocketMessage) throws Exception {
-        int no = webSocketMessage.getNo();
-        byte[] payload = webSocketMessage.getPayload().toByteArray();
-        Pair<Parser<Message>, MessageHandler<Message>> pair = routes.get(no);
-        if (pair == null) {
-            throw new WebSocketException(String.format("没有找到消息编号{%d}对应的处理器！", no));
+    protected void channelRead0(ChannelHandlerContext ctx, WebSocketMessage webSocketMessage) {
+        try {
+            int no = webSocketMessage.getNo();
+            byte[] payload = webSocketMessage.getPayload().toByteArray();
+            // 输入验证
+            if (no <= 0 || payload == null || payload.length == 0) {
+                throw new WebSocketException("无效的消息编号或负载！");
+            }
+            Pair<Parser<Message>, MessageHandler<Message>> pair = routes.get(no);
+            if (pair == null) {
+                log.error("没有找到消息编号{}对应的处理器！", no);
+                throw new WebSocketException("没有找到消息编号对应的处理器！");
+            }
+            Parser<Message> parser = pair.getO1();
+            MessageHandler<Message> messageHandler = pair.getO2();
+            try {
+                Message message = parser.parseFrom(payload);
+                messageHandler.handle(ctx, message);
+            } catch (Exception e) {
+                log.error("处理消息时发生错误：", e);
+                // TODO 可以选择发送（服务器内部错误）错误响应给客户端
+            }
+        } catch (Exception e) {
+            log.error("处理WebSocket消息时发生错误：", e);
+            // TODO 可以选择发送（处理WebSocket消息时发生错误）错误响应给客户端
         }
-        Parser<Message> parser = pair.getO1();
-        MessageHandler<Message> messageHandler = pair.getO2();
-        Message message = parser.parseFrom(payload);
-        messageHandler.handle(ctx, message);
     }
 
     @Override

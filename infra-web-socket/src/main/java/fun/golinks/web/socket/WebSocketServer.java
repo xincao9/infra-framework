@@ -6,10 +6,7 @@ import fun.golinks.web.socket.handler.MessageRouterHandler;
 import fun.golinks.web.socket.properties.WebSocketProperties;
 import fun.golinks.web.socket.util.NamedThreadFactory;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -59,29 +56,19 @@ public class WebSocketServer implements SmartLifecycle {
                             pipeline.addLast(messageRouterHandler);
                         }
                     });
-            serverBootstrap.bind(port).addListener((ChannelFutureListener) channelFuture -> {
+
+            ChannelFuture bindFuture = serverBootstrap.bind(port);
+            bindFuture.addListener((ChannelFutureListener) channelFuture -> {
                 if (channelFuture.isSuccess()) {
                     log.info("websocket启动成功，端口号: {}", port);
                 } else {
                     log.error("websocket启动失败，端口号: {}", port, channelFuture.cause());
-                    try {
-                        stop();
-                    } catch (Exception e) {
-                        log.error("停止WebSocket服务器时发生异常", e);
-                    } finally {
-                        running.set(false); // 确保状态重置
-                    }
+                    stop();
                 }
             });
         } catch (Exception e) {
             log.error("WebSocket服务器启动过程中发生异常", e);
-            try {
-                stop();
-            } catch (Exception ex) {
-                log.error("停止WebSocket服务器时发生异常", ex);
-            } finally {
-                running.set(false); // 确保状态重置
-            }
+            stop();
         }
     }
 
@@ -91,9 +78,20 @@ public class WebSocketServer implements SmartLifecycle {
             return;
         }
         log.info("开始关闭WebSocket服务器...");
-        bossGroup.shutdownGracefully().syncUninterruptibly();
-        workerGroup.shutdownGracefully().syncUninterruptibly();
-        log.info("WebSocket服务器已关闭");
+        try {
+            // 关闭资源以防止泄漏
+            if (bossGroup != null && !bossGroup.isShutdown()) {
+                bossGroup.shutdownGracefully();
+            }
+            if (workerGroup != null && !workerGroup.isShutdown()) {
+                workerGroup.shutdownGracefully();
+            }
+        } catch (Exception e) {
+            log.error("停止WebSocket服务器时发生异常", e);
+        } finally {
+            running.set(false); // 确保状态重置
+            log.info("WebSocket服务器已关闭");
+        }
     }
 
     @Override
