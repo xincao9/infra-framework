@@ -9,7 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class GreeterHandler implements MessageHandler<GreeterRequest> {
+public class GreeterHandler extends MessageHandler<GreeterRequest> {
 
     @Override
     public int messageNo() {
@@ -28,7 +28,7 @@ public class GreeterHandler implements MessageHandler<GreeterRequest> {
                         .toByteString())
                 .build();
         // 返回响应示例
-        ChannelFuture channelFuture = ctx.channel().writeAndFlush(webSocketMessage);
+        ChannelFuture channelFuture = ctx.channel().writeAndFlush(toBinaryWebSocketFrame(webSocketMessage));
         channelFuture.addListener(future -> {
             if (future.isSuccess()) {
                 log.info("发送消息成功");

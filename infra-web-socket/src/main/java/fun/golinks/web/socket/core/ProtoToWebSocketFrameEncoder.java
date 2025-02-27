@@ -19,7 +19,7 @@ public class ProtoToWebSocketFrameEncoder extends MessageToMessageEncoder<Object
             ByteBuf byteBuf = null;
             try {
                 Message message = (Message) obj;
-                byteBuf = Unpooled.wrappedBuffer(message.toByteArray());
+                byteBuf = Unpooled.wrappedBuffer(message.toByteArray()).retain();
                 out.add(new BinaryWebSocketFrame(byteBuf));
                 log.debug("Encoded message with ByteBuf refCnt: {}", byteBuf.refCnt());
             } catch (Throwable e) {

@@ -1,28 +1,32 @@
 package fun.golinks.web.socket;
 
-import fun.golinks.web.socket.core.ProtoToWebSocketFrameEncoder;
-import fun.golinks.web.socket.core.WebSocketFrameToProtoDecoder;
+import fun.golinks.web.socket.handler.MessageHandler;
+import fun.golinks.web.socket.handler.MessageRouterHandler;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
-import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
-import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
-import io.netty.handler.codec.http.websocketx.WebSocketVersion;
+import io.netty.handler.codec.http.websocketx.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 
 @Slf4j
+@SuppressWarnings("ALL")
 public class WebSocketTest {
 
     @Test
     public void testHandle() throws Exception {
+        GreeterResponseHandler greeterResponseHandler = new GreeterResponseHandler();
+        MessageHandler messageHandler = greeterResponseHandler;
+        MessageRouterHandler messageRouterHandler = new MessageRouterHandler();
+        messageRouterHandler.addHandler(messageHandler);
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap bootstrap = new Bootstrap();
@@ -38,9 +42,7 @@ public class WebSocketTest {
                             pipeline.addLast(new HttpClientCodec());
                             pipeline.addLast(new HttpObjectAggregator(65536));
                             pipeline.addLast(new WebSocketClientProtocolHandler(handshaker));
-                            pipeline.addLast(new WebSocketFrameToProtoDecoder());
-                            pipeline.addLast(new ProtoToWebSocketFrameEncoder());
-                            pipeline.addLast(new ClientBusinessLogicHandler());
+                            pipeline.addLast(new MessageRouterHandler());
                         }
                     });
             Channel channel = bootstrap.connect("localhost", 8888).sync().channel();
@@ -51,7 +53,8 @@ public class WebSocketTest {
                     .setNo(MessageNoEnums.GREETER_REQUEST_VALUE)
                     .setPayload(greeterRequest.toByteString())
                     .build();
-            ChannelFuture channelFuture = channel.writeAndFlush(webSocketMessage);
+            ByteBuf byteBuf = Unpooled.wrappedBuffer(webSocketMessage.toByteArray());
+            ChannelFuture channelFuture = channel.writeAndFlush(new BinaryWebSocketFrame(byteBuf));
             channelFuture.addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
                     log.info("发送消息成功");

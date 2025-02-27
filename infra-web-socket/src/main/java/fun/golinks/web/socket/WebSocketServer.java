@@ -1,7 +1,5 @@
 package fun.golinks.web.socket;
 
-import fun.golinks.web.socket.core.ProtoToWebSocketFrameEncoder;
-import fun.golinks.web.socket.core.WebSocketFrameToProtoDecoder;
 import fun.golinks.web.socket.handler.MessageRouterHandler;
 import fun.golinks.web.socket.properties.WebSocketProperties;
 import fun.golinks.web.socket.util.NamedThreadFactory;
@@ -51,8 +49,6 @@ public class WebSocketServer implements SmartLifecycle {
                             pipeline.addLast(new HttpServerCodec());
                             pipeline.addLast(new HttpObjectAggregator(65536));
                             pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
-                            pipeline.addLast(new WebSocketFrameToProtoDecoder());
-                            pipeline.addLast(new ProtoToWebSocketFrameEncoder());
                             pipeline.addLast(messageRouterHandler);
                         }
                     });

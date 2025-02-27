@@ -1,13 +1,18 @@
 package fun.golinks.web.socket.handler;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.Parser;
 import fun.golinks.web.socket.WebSocketMessage;
 import fun.golinks.web.socket.exception.WebSocketException;
 import fun.golinks.web.socket.util.Pair;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
@@ -17,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @SuppressWarnings("ALL")
 @ChannelHandler.Sharable
-public class MessageRouterHandler extends SimpleChannelInboundHandler<WebSocketMessage> {
+public class MessageRouterHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
 
     private final Map<Integer, Pair<Parser<Message>, MessageHandler<Message>>> routes = new ConcurrentHashMap<>();
 
@@ -40,8 +45,31 @@ public class MessageRouterHandler extends SimpleChannelInboundHandler<WebSocketM
         routes.put(no, new Pair<>(parser, messageHandler));
     }
 
+    private WebSocketMessage toProto(WebSocketFrame frame) throws InvalidProtocolBufferException {
+        if (!(frame instanceof BinaryWebSocketFrame)) {
+            return null;
+        }
+        ByteBuf content = frame.content(); // 先保留引用
+        try {
+            byte[] bytes = ByteBufUtil.getBytes(content);
+            return WebSocketMessage.parseFrom(bytes);
+        } finally {
+            content.release(); // 最后释放引用
+        }
+    }
+
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, WebSocketMessage webSocketMessage) {
+    protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame webSocketFrame) {
+        WebSocketMessage webSocketMessage = null;
+        try {
+            webSocketMessage = toProto(webSocketFrame);
+        } catch (InvalidProtocolBufferException e) {
+            log.error("WebSocketFrame to Proto failure：", e);
+            // TODO 可以选择发送（处理WebSocket消息时发生错误）错误响应给客户端
+        }
+        if (webSocketMessage == null) {
+            return;
+        }
         try {
             int no = webSocketMessage.getNo();
             byte[] payload = webSocketMessage.getPayload().toByteArray();
@@ -74,4 +102,5 @@ public class MessageRouterHandler extends SimpleChannelInboundHandler<WebSocketM
         ctx.fireExceptionCaught(cause);
         ctx.close();
     }
+
 }
